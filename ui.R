@@ -14,7 +14,7 @@ source('PowerCalc_Rare.r')
 tagList(
   navbarPage(
     theme = shinythemes::shinytheme("cerulean"),
-    "AATAP: Aggregated Association test Approximate Power",
+    "PAGEANT: Power Analysis for Genetic Association Tests",
     tabPanel("Overview",
              fluidPage(
                # sidebarPanel(
@@ -43,7 +43,7 @@ tagList(
 ", style = "font-family: 'times'; font-si20pt"),
                  p("Power calculations estimate an average power under three relationships: 1) there is no relationship between MAF and % of variations explained by a variant; 2) there is no relationship between MAF and effect size (log-OR) and 3) effect size (log-OR) is proportional to log10(MAF).", style = "font-family: 'times'; font-si20pt"),
                  h3("Contributor"),
-                 p("AATAP is designed by Andriy Derkach, Haoyu Zhang and Nilanjan Chatterjee
+                 p("PAGEANT is designed by Andriy Derkach, Haoyu Zhang and Nilanjan Chatterjee
 ", style = "font-family: 'times'; font-si16pt")
                  ,width = 15)
              )),
