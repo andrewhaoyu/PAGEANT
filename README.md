@@ -1,5 +1,6 @@
 ATTAP
 ======
+ATTAP:Aggregated Association test Approximate Power
 
 Introduction
 ============
