@@ -1,6 +1,6 @@
-ATTAP
+PAGEANT
 ======
-ATTAP:Aggregated Association test Approximate Power
+PAGEANT: Power Analysis for Genetic Association Tests
 
 Introduction
 ============
