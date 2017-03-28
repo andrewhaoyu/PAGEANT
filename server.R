@@ -378,11 +378,12 @@ function(input, output) {
                     TEST=input$method2)
           
         }
-        else if(is.na(input$JJ2)!=1&is.na(input$PC2)!=1){
+        else{
+        #else if(is.na(input$JJ2)!=1&is.na(input$PC2)!=1){
           EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
-          get_Aprox(EV_new/100,
-                    input$Alpha2,
-                    (input$total),
+          get_Aprox(EV=EV_new/100,
+                    alpha=input$Alpha2,
+                    Total=(input$total2),
                     PC=input$PC2,
                     JJ=input$JJ2,
                     QT='QT',
