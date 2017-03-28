@@ -1,3 +1,22 @@
+genRoc
+======
+
+The genetic interpretation of area under the ROC curve in genomic profiling
+
+Shiny based implementation of the original [GENROC](http://gump.qimr.edu.au/genroc/)
+
+[Hosted on RStudio's glimmer server](http://glimmer.rstudio.com/kn3in/genRoc/)
+
+or run on your machine:
+```R
+install.packages('shiny')
+library(shiny)
+runGitHub("genRoc", "kn3in")
+```
+
+or have a look at [shiny_example](https://github.com/rstudio/shiny_example)
+for alternative ways of running shiny apps.
+
 Introduction
 These are simplified power calculations for commonly used rare variant tests such as SKAT, C-alpha, Hotelling, Burden [Wu et al. 2011; Neale et al. 2011; Derkach et al. 2014].  Our power calculations can be used to calculate power for specific locus OR for genome-wide calculations where the average power is calculated using minimum number of parameters:
 Essential Input Parameters
