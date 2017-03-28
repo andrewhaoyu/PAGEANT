@@ -22,5 +22,5 @@ Power calculations estimate an average power under three relationships: 1) there
 
 Contributor
 ===========
-AATAP is designed by Andriy Derkach, Haoyu Zhang and Nilanjan Chatterjee
+PAGEANT is designed by Andriy Derkach, Haoyu Zhang and Nilanjan Chatterjee
 
