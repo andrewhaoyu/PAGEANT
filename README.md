@@ -9,6 +9,7 @@ Essential Input Parameters
 ==========================
 
 1)	EV= percent of variation in a trait explained by loci (gene); 2) alpha = level of the test; 3) Number of cases/Number of controls in case-control study; 4) Total Sample Size in continuous trait study. 
+
 Optional Input Parameters
 =========================
 1)	 Number of Variants = number of causal variants in a locus. 2) Range of EV= range of percentages of variation in a trait explained by loci; 3) Proportion of Causal = proportion of causal variants in a locus; 
