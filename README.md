@@ -8,7 +8,7 @@ The application allows rapid power analysis for a variety of genetic association
 
 Power for association test at the level of a single variant or a single gene/region
 -----------------------------------------------
-# Essential Input Parameters
+### Essential Input Parameters
 
 
 1)	EV= percent of variation in a trait explained by loci (gene); 2) alpha = level of the test; 3) Number of cases/Number of controls in case-control study; 4) Total Sample Size in continuous trait study. 
