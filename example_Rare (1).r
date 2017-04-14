@@ -19,37 +19,39 @@
 # Under assumption #1
 # No Gene Specification
 source('PowerCalc_Rare.r')
-source('PowerCalc_Rare_mine.r')
 
 Total = 10000
 ncase = 5000
 ncont = 5000
 alpha= 0.0001
-EV_low <- 0.01
-EV_high <- 0.05
-EV <- seq(EV_low,EV_high,(EV_high-EV_low)/10)
-EV <- 0.5/100
 
-#EV  =c(0.01,0.05) # 1%
+EV  =0.01 # 1%
+EV <- seq(0.0005,0.006,(0.006-0.0005)/10)
+PC <- 0.9
+PRC <- 0
 
-result <- get_Aprox2(EV,alpha,Total,CASE=ncase,CONTROL=ncont) #case control
-EV <- 0.01
-result <- get_Aprox(EV,alpha,Total,CASE=ncase,CONTROL=ncont) #case control
-result <- get_Aprox(EV,alpha,Total,CASE=ncase,CONTROL=ncont,ONESNP=T)
+result <- get_AproxL(EV,alpha,Total,ncase,ncont,PC=PC,PRC = PRC) #case control
 
-result <- get_Aprox(EV,alpha,Total,QT='QT',ONESNP=T) #QT
+result <- get_AproxQ(EV,alpha,Total,QT='QT') #QT
 
-result <- get_Aprox(EV,alpha,Total,QT='QT',PC=0.1) # specify % of causal 
+result <- get_AproxQ(EV,alpha,Total,QT='QT',PC=0.1) # specify % of causal 
 
-result <- get_Aprox(EV,
-          alpha,
-          Total,
-          PC=0.05,
-        
-          QT='QT',
-          TEST='Burden Test',
-          PRC=0)
 
+#
+# Clapha
+#
+result <- get_AproxQ(EV,TEST='Calpha',alpha,Total,QT='QT',PC=0.1)
+#
+# Hotelling
+#
+result <- get_AproxQ(EV,TEST='Hotelling',alpha,Total,QT='QT',PC=0.1)
+
+
+#
+# For burden test
+# Output for only one relationship
+#
+resulta <- get_AproxL(0.005,alpha,Total,ncase,ncont,QT='CC',PC=0.1)
 
 
 
@@ -65,12 +67,12 @@ mytable <- data.frame(
 # Gene AKT1:  ENSG00000142208.
 
 
-get_Aprox(EV,alpha,Total,ncase,ncont,nameEsseble = "ENSG00000142208")
+get_Aprox(EV,alpha,Total,ncase,ncont,"ENSG00000142208")
  
  
  #  You specify, gene size
 
- result <- get_Aprox(EV,alpha,Total,ncase,ncont,JJ = 20)
+ get_Aprox(EV,alpha,Total,ncase,ncont,JJ = 20)
  
  
 # Under assumption #2 change get_Aprox to get_Aprox_BPind

@@ -7,6 +7,17 @@ library(ggplot2)
 
 
 source('PowerCalc_Rare.r')
+source('calc_whole.r')
+
+grid_transform = function(grid){
+  if(grid=="quick"){
+    return(20)
+  }else if(grid=="adequate"){
+    return(50)
+  }else{
+    return(100)
+  }
+}
 
 
 # Define UI for slider demo application
@@ -23,465 +34,327 @@ function(input, output) {
   
   
   
-  data <- eventReactive(input$update,{
-    if(input$evoption=='No'){
-    if((input$method)!='Burden Test'){
-      if(is.na(input$JJ)&is.na(input$PC)){
-        
+  data1 <- eventReactive(input$update,{
+    if(input$SNPoption=="Single SNP"){
+      if(input$evoption=='Single EV'){
         get_Aprox((input$EV)/100,
                   input$Alpha,
                   (input$ncases+input$ncont),
                   input$ncases,input$ncont,
-                  TEST=input$method)
-      }
-      else if(is.na(input$JJ)&is.na(input$PC)!=1){
-        
-        get_Aprox((input$EV)/100,
+                  ONESNP=T)
+      }else{
+        EV_new <- seq(input$EV_range[1],input$EV_range[2],(input$EV_range[2]-input$EV_range[1])/10)
+        get_Aprox((EV_new)/100,
                   input$Alpha,
                   (input$ncases+input$ncont),
-                  input$ncases,
-                  input$ncont,
-                  PC=input$PC,
-                  TEST=input$method)
-        #return(data.frame(PC=input$PC,PRC=input$PRC))
-        
+                  input$ncases,input$ncont,
+                  ONESNP=T)
       }
-      else if(is.na(input$JJ)!=1&is.na(input$PC)){
-        
-        get_Aprox((input$EV)/100,
-                  input$Alpha,
-                  (input$ncases+input$ncont),
-                  input$ncases,
-                  input$ncont,
-                  JJ=input$JJ,
-                  TEST=input$method)
-        
-      }
-      else{
-        
-        get_Aprox((input$EV)/100,
-                  input$Alpha,
-                  (input$ncases+input$ncont),
-                  input$ncases,
-                  input$ncont,
-                  PC=input$PC,
-                  TEST=input$method,
-                  JJ=input$JJ)
-        
-      }
-    
-     
       
-    }
-    else if((input$method)=='Burden Test'){
-      if(is.na(input$JJ)&is.na(input$PC_new)){
-        
-        get_Aprox((input$EV)/100,
-                  input$Alpha,
-                  (input$ncases+input$ncont),
-                  input$ncases,input$ncont,
-                  TEST=input$method,
-                  PRC=input$PRC)
-      }
-      else if(is.na(input$JJ)&is.na(input$PC_new)!=1){
-        
-        get_Aprox((input$EV)/100,
-                  input$Alpha,
-                  (input$ncases+input$ncont),
-                  input$ncases,
-                  input$ncont,
-                  TEST=input$method,
-                  PC=input$PC_new,
-                  PRC=input$PRC)
-        
-        #return(data.frame(PC=input$PC,PRC=input$PRC))
-        
-      }
-      else if(is.na(input$JJ)!=1&is.na(input$PC_new)){
-        
-        get_Aprox((input$EV)/100,
-                  input$Alpha,
-                  (input$ncases+input$ncont),
-                  input$ncases,
-                  input$ncont,
-                  JJ=input$JJ,
-                  TEST=input$method,
-                  PRC=input$PRC)
-        
-      }
-      else{
-        
-        get_Aprox((input$EV)/100,
-                  input$Alpha,
-                  (input$ncases+input$ncont),
-                  input$ncases,
-                  input$ncont,
-                  PC=input$PC_new,
-                  TEST=input$method,
-                  JJ=input$JJ,
-                  PRC=input$PRC)
-        
-      }
-     
-    }
-    
+    }else if(input$SNPoption=='Whole Genome'){
+      calcGenomeLevel(K=input$K,
+                      m=input$m,
+                      grid=grid_transform(input$grid),
+                      epr=(input$GEV/(input$K*100)),
+                      alphaT=input$Alpha_whole,
+                      Total=(input$ncases+input$ncont),
+                      CASE=input$ncases,
+                      CONTROL=input$ncont,
+                      TEST = input$method_whole,
+                      QT='CC',
+                      PC=input$PC_whole,
+                      JJ=input$JJ_whole)
     }else{
-    NULL
+        if(input$evoption=='Single EV'){
+          if((input$method)!='Burden Test'){
+            
+            get_Aprox(EV=(input$EV)/100,
+                                   alpha=input$Alpha,
+                                   Total=(input$ncases+input$ncont),
+                                    CASE=input$ncases,
+                                   CONTROL=input$ncont,
+                                   TEST=input$method,
+                      QT='CC',
+                      PC=input$PC,
+                      JJ=input$JJ,
+                      PRC=input$PRC)
+            
+            
+           
+            
+            
+          }
+          else if((input$method)=='Burden Test'){
+            get_Aprox(EV=(input$EV)/100,
+                      alpha=input$Alpha,
+                      Total=(input$ncases+input$ncont),
+                      CASE=input$ncases,
+                      CONTROL=input$ncont,
+                      PC=input$PC_new,
+                      TEST=input$method, JJ=input$JJ,PRC=input$PRC)
+            
+          }
+          
+        }else if(input$evoption=='Range of EV'){
+          if(input$method!='Burden Test'){
+            EV_new <- seq(input$EV_range[1],input$EV_range[2],(input$EV_range[2]-input$EV_range[1])/10)
+          
+            get_Aprox(EV=(EV_new)/100,
+                                     alpha=input$Alpha,
+                                     Total=(input$ncases+input$ncont),
+                                     CASE=input$ncases,
+                                      CONTROL=input$ncont,
+                                     TEST=input$method,
+                                      PC=input$PC,
+                                      JJ=input$JJ)
+          }
+         else if(input$method=='Burden Test'){
+           EV_new <- seq(input$EV_range[1],input$EV_range[2],(input$EV_range[2]-input$EV_range[1])/10)
+           
+           get_Aprox(EV=(EV_new)/100,
+                     alpha=input$Alpha,
+                     Total=(input$ncases+input$ncont),
+                     CASE=input$ncases,
+                     CONTROL=input$ncont,
+                     TEST=input$method,
+                     PC=input$PC_new,
+                     JJ=input$JJ,
+                     PRC=input$PRC)
+         }
+    }
+   
+          
   }
+  
     })
 
   
-  data_r <- eventReactive(input$update,{
-    if(input$evoption=='Yes'){
-      if(input$method!='Burden Test'){
-        
-        if(is.na(input$JJ)&is.na(input$PC)){
-          
-          EV_new <- seq(input$EV_range[1],input$EV_range[2],(input$EV_range[2]-input$EV_range[1])/10)
-          get_Aprox((EV_new)/100,
-                    input$Alpha,
-                    (input$ncases+input$ncont),
-                    input$ncases,input$ncont,
-                    TEST=input$method)
-        }
-        else if(is.na(input$JJ)&is.na(input$PC)!=1){
-          
-          EV_new <- seq(input$EV_range[1],input$EV_range[2],(input$EV_range[2]-input$EV_range[1])/10)
-          get_Aprox(EV_new/100,
-                    input$Alpha,
-                    (input$ncases+input$ncont),
-                    input$ncases,
-                    input$ncont,
-                    PC=input$PC,
-                    TEST=input$method)
-          
-        }
-        else if(is.na(input$JJ)!=1&is.na(input$PC)){
-          
-          EV_new <- seq(input$EV_range[1],input$EV_range[2],(input$EV_range[2]-input$EV_range[1])/10)
-          get_Aprox(EV_new/100,
-                    input$Alpha,
-                    (input$ncases+input$ncont),
-                    input$ncases,
-                    input$ncont,
-                    JJ=input$JJ,
-                    TEST=input$method)
-          
-        }
-        else{
-          
-          EV_new <- seq(input$EV_range[1],input$EV_range[2],(input$EV_range[2]-input$EV_range[1])/10)
-          get_Aprox(EV_new/100,
-                    input$Alpha,
-                    (input$ncases+input$ncont),
-                    input$ncases,
-                    input$ncont,
-                    PC=input$PC,
-                    JJ=input$JJ,
-                    TEST=input$method)
-          
-        }
-       
-        
-      }
-      else if(input$method=='Burden Test'){
-        
-        
-        if(is.na(input$JJ)&is.na(input$PC_new)){
-          
-          EV_new <- seq(input$EV_range[1],input$EV_range[2],(input$EV_range[2]-input$EV_range[1])/10)
-          get_Aprox((EV_new)/100,
-                    input$Alpha,
-                    (input$ncases+input$ncont),
-                    input$ncases,input$ncont,
-                    TEST=input$method,
-                    PRC=input$PRC)
-        }
-        else if(is.na(input$JJ)&is.na(input$PC_new)!=1){
-          
-          EV_new <- seq(input$EV_range[1],input$EV_range[2],(input$EV_range[2]-input$EV_range[1])/10)
-          get_Aprox(EV_new/100,
-                    input$Alpha,
-                    (input$ncases+input$ncont),
-                    input$ncases,
-                    input$ncont,
-                    PC=input$PC_new,
-                    TEST=input$method,
-                    PRC=input$PRC)
-          
-        }
-        else if(is.na(input$JJ)!=1&is.na(input$PC_new)!=1){
-          
-          EV_new <- seq(input$EV_range[1],input$EV_range[2],(input$EV_range[2]-input$EV_range[1])/10)
-          get_Aprox(EV_new/100,
-                    input$Alpha,
-                    (input$ncases+input$ncont),
-                    input$ncases,
-                    input$ncont,
-                    PC=input$PC_new,
-                    JJ=input$JJ,
-                    TEST=input$method,
-                    PRC=input$PRC)
-          
-        }
-       
-     
-        
-      }
-    }
-    
-  })
+ 
   
   data2 <- eventReactive(input$update2,{
-    if(input$evoption2=='No'){
-    if(input$method2!='Burden Test'){
-      
-      if(is.na(input$JJ2)&is.na(input$PC2)){
-        
-        get_Aprox((input$EV2)/100,
-                  input$Alpha2,
-                  (input$total2),
-                  QT='QT',
-                  TEST=input$method2)
-      }
-      else if(is.na(input$JJ2)&is.na(input$PC2)!=1){
-        
-        get_Aprox(input$EV2/100,
-                  input$Alpha2,
-                  (input$total2),
-                  PC=input$PC2,
-                  QT='QT',
-                  TEST=input$method2)
-        
-      }
-      else if(is.na(input$JJ2)!=1&is.na(input$PC2)){
-        
-        get_Aprox(input$EV2/100,
-                  input$Alpha2,
-                  (input$total2),
-                  JJ=input$JJ2,
-                  QT='QT',
-                  TEST=input$method2)
-        
-      }
-      else if(is.na(input$JJ2)!=1&is.na(input$PC2)!=1){
-        
-        get_Aprox(input$EV2/100,
-                  input$Alpha2,
-                  (input$total),
-                  PC=input$PC2,
-                  JJ=input$JJ2,
-                  QT='QT',
-                  TEST=input$method2)
-        
-      }
-     
-      
-    }
-    else if(input$method2=='Burden Test'){
-      
-      
-      if(is.na(input$JJ2)&is.na(input$PC_new2)){
-        
-        get_Aprox((input$EV2)/100,
-                  input$Alpha2,
-                  (input$total2),
-                  QT='QT',
-                  TEST=input$method2,
-                  PRC=input$PRC2)
-      }
-      else if( is.na(input$JJ2)&is.na(input$PC_new2)!=1){
-        
-        get_Aprox(input$EV2/100,
-                  input$Alpha2,
-                  (input$total2),
-                  PC=input$PC_new2,
-                  QT='QT',
-                  TEST=input$method2,
-                  PRC=input$PRC2)
-        
-      }
-      else if(is.na(input$JJ2)!=1&is.na(input$PC_new2)){
-        
-        get_Aprox(input$EV2/100,
-                  input$Alpha2,
-                  (input$total2),
-                  JJ=input$JJ2,
-                  QT='QT',
-                  TEST=input$method2,
-                  PRC=input$PRC2)
-        
-      }
-      else if(is.na(input$JJ2)!=1&is.na(input$PC_new2)!=1){
-        
-        get_Aprox(input$EV2/100,
-                  input$Alpha2,
-                  (input$total),
-                  PC=input$PC2_new2,
-                  JJ=input$JJ2,
-                  QT='QT',
-                  TEST=input$method2,
-                  PRC=input$PRC2)
-        
-      }
-      else if( is.na(input$JJ2)&is.na(input$PC_new2)){
-        
-        get_Aprox(input$EV2/100,
-                  input$Alpha2,
-                  (input$total2),
-                  nameEsseble = input$nameEsseble2,
-                  QT='QT',
-                  TEST=input$method2,
-                  PRC=input$PRC2)
-        
-      }
-      
-      
-    }
-    }else{
     
-  }
+    if(input$SNPoption2=="Single SNP"){
+      if(input$evoption2=='Single EV'){
+        get_Aprox((input$EV2)/100,
+                  input$Alpha2,
+                  (input$total2),
+                  QT='QT',
+                  ONESNP=T)
+      }else{
+        EV_new2 <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+        get_Aprox((EV_new2)/100,
+                  input$Alpha2,
+                  (input$total2),
+                  QT='QT',
+                  ONESNP=T)
+      }
+      
+    }else if(input$SNPoption2=='Whole Genome'){
+      calcGenomeLevel(K=input$K2,
+                      m=input$m2,
+                      grid=grid_transform(input$grid2),
+                      epr=(input$GEV2/(input$K2*100)),
+                      alphaT=input$Alpha_whole2,
+                      Total=input$total2,
+                      TEST = input$method_whole2,
+                      QT='QT',
+                      PC=input$PC_whole2,
+                      JJ=input$JJ_whole2)
+    }else{
+      if(input$evoption2=='Single EV'){
+        if((input$method2)!='Burden Test'){
+          
+          get_Aprox(EV=(input$EV2)/100,
+                    alpha=input$Alpha2,
+                    Total=input$total2,
+                    PC=input$PC2,
+                    TEST=input$method2, 
+                    JJ=input$JJ2,
+                    PRC=input$PRC2,
+                    QT='QT')
+   
+        }
+        else if((input$method2)=='Burden Test'){
+          get_Aprox(EV=(input$EV2)/100,
+                    alpha=input$Alpha2,
+                    Total=(input$total2),
+                    PC=input$PC_new2,
+                    TEST=input$method2, 
+                    JJ=input$JJ2,
+                    PRC=input$PRC2,
+                    QT='QT')
+          
+        }
+        
+      }else if(input$evoption2=='Range of EV'){
+        if(input$method2!='Burden Test'){
+          EV_new2 <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+          
+          get_Aprox(EV=(EV_new2)/100,
+                    alpha=input$Alpha2,
+                    Total=input$total2,
+                    TEST=input$method2,
+                    PC=input$PC2,
+                    JJ=input$JJ2,
+                    QT='QT')
+        }
+        else if(input$method2=='Burden Test'){
+          EV_new2 <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+          
+          get_Aprox(EV=(EV_new2)/100,
+                    alpha=input$Alpha2,
+                    Total=input$total2,
+                    TEST=input$method2,
+                    PC=input$PC_new2,
+                    JJ=input$JJ2,
+                    PRC=input$PRC2,
+                    QT='QT')
+        }
+      }
+      
+      
+    }
+    
+    
+
+   
   
 })
   
   
-  data2_r <- eventReactive(input$update2,{
-    if(input$evoption2=='Yes'){
-      if(input$method2!='Burden Test'){
-        
-        if(is.na(input$JJ2)&is.na(input$PC2)){
-          
-          EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
-          get_Aprox(EV_new/100,
-                    input$Alpha2,
-                    (input$total2),
-                    QT='QT',
-                    TEST=input$method2)
-        }
-        else if(is.na(input$JJ2)&is.na(input$PC2)!=1){
-          EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
-          get_Aprox(EV_new/100,
-                    input$Alpha2,
-                    (input$total2),
-                    PC=input$PC2,
-                    QT='QT',
-                    TEST=input$method2)
-          
-        }
-        else if(is.na(input$JJ2)!=1&is.na(input$PC2)){
-          EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
-          get_Aprox(EV_new/100,
-                    input$Alpha2,
-                    (input$total2),
-                    JJ=input$JJ2,
-                    QT='QT',
-                    TEST=input$method2)
-          
-        }
-        else{
-        #else if(is.na(input$JJ2)!=1&is.na(input$PC2)!=1){
-          EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
-          get_Aprox(EV=EV_new/100,
-                    alpha=input$Alpha2,
-                    Total=(input$total2),
-                    PC=input$PC2,
-                    JJ=input$JJ2,
-                    QT='QT',
-                    TEST=input$method2)
-          
-        }
-       
-        
-      }
-      else if(input$method2=='Burden Test'){
-        
-        
-        if(is.na(input$JJ2)&is.na(input$PC_new2)){
-          
-          EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
-          get_Aprox(EV_new/100,
-                    input$Alpha2,
-                    (input$total2),
-                    QT='QT',
-                    TEST=input$method2,
-                    PRC=input$PRC2)
-        }
-        else if(is.na(input$JJ2)&is.na(input$PC_new2)!=1){
-          EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
-          get_Aprox(EV_new/100,
-                    input$Alpha2,
-                    (input$total2),
-                    PC=input$PC_new2,
-                    QT='QT',
-                    TEST=input$method2,
-                    PRC=input$PRC2)
-          
-        }
-        else if(is.na(input$JJ2)!=1&is.na(input$PC_new2)){
-          EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
-          get_Aprox(EV_new/100,
-                    input$Alpha2,
-                    (input$total2),
-                    JJ=input$JJ2,
-                    QT='QT',
-                    TEST=input$method2,
-                    PRC=input$PRC2)
-          
-        }
-        else if(is.na(input$JJ2)!=1&is.na(input$PC_new2)!=1){
-          EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
-          get_Aprox(EV_new/100,
-                    input$Alpha2,
-                    (input$total),
-                    PC=input$PC_new2,
-                    JJ=input$JJ2,
-                    QT='QT',
-                    TEST=input$method2,
-                    PRC=input$PRC2)
-          
-        }
-       
-        
-        
-      }
-    }
-  })
-  
+  # data2_r <- eventReactive(input$update2,{
+  #   if(input$evoption2=='Yes'){
+  #     if(input$method2!='Burden Test'){
+  #       
+  #       if(is.na(input$JJ2)&is.na(input$PC2)){
+  #         
+  #         EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+  #         get_Aprox(EV_new/100,
+  #                   input$Alpha2,
+  #                   (input$total2),
+  #                   QT='QT',
+  #                   TEST=input$method2)
+  #       }
+  #       else if(is.na(input$JJ2)&is.na(input$PC2)!=1){
+  #         EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+  #         get_Aprox(EV_new/100,
+  #                   input$Alpha2,
+  #                   (input$total2),
+  #                   PC=input$PC2,
+  #                   QT='QT',
+  #                   TEST=input$method2)
+  #         
+  #       }
+  #       else if(is.na(input$JJ2)!=1&is.na(input$PC2)){
+  #         EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+  #         get_Aprox(EV_new/100,
+  #                   input$Alpha2,
+  #                   (input$total2),
+  #                   JJ=input$JJ2,
+  #                   QT='QT',
+  #                   TEST=input$method2)
+  #         
+  #       }
+  #       else{
+  #       #else if(is.na(input$JJ2)!=1&is.na(input$PC2)!=1){
+  #         EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+  #         get_Aprox(EV=EV_new/100,
+  #                   alpha=input$Alpha2,
+  #                   Total=(input$total2),
+  #                   PC=input$PC2,
+  #                   JJ=input$JJ2,
+  #                   QT='QT',
+  #                   TEST=input$method2)
+  #         
+  #       }
+  #      
+  #       
+  #     }
+  #     else if(input$method2=='Burden Test'){
+  #       
+  #       
+  #       if(is.na(input$JJ2)&is.na(input$PC_new2)){
+  #         
+  #         EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+  #         get_Aprox(EV_new/100,
+  #                   input$Alpha2,
+  #                   (input$total2),
+  #                   QT='QT',
+  #                   TEST=input$method2,
+  #                   PRC=input$PRC2)
+  #       }
+  #       else if(is.na(input$JJ2)&is.na(input$PC_new2)!=1){
+  #         EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+  #         get_Aprox(EV_new/100,
+  #                   input$Alpha2,
+  #                   (input$total2),
+  #                   PC=input$PC_new2,
+  #                   QT='QT',
+  #                   TEST=input$method2,
+  #                   PRC=input$PRC2)
+  #         
+  #       }
+  #       else if(is.na(input$JJ2)!=1&is.na(input$PC_new2)){
+  #         EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+  #         get_Aprox(EV_new/100,
+  #                   input$Alpha2,
+  #                   (input$total2),
+  #                   JJ=input$JJ2,
+  #                   QT='QT',
+  #                   TEST=input$method2,
+  #                   PRC=input$PRC2)
+  #         
+  #       }
+  #       else if(is.na(input$JJ2)!=1&is.na(input$PC_new2)!=1){
+  #         EV_new <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+  #         get_Aprox(EV_new/100,
+  #                   input$Alpha2,
+  #                   (input$total),
+  #                   PC=input$PC_new2,
+  #                   JJ=input$JJ2,
+  #                   QT='QT',
+  #                   TEST=input$method2,
+  #                   PRC=input$PRC2)
+  #         
+  #       }
+  #      
+  #       
+  #       
+  #     }
+  #   }
+  # })
+  # 
   
   # Show the values using an HTML table
   
+  busyIndicator <- function (text = "Loading..", img = "busyIndicator/ajaxloaderq.gif", wait = 1000) {
+    tagList(singleton(tags$head(tags$link(rel = "stylesheet", 
+                                          type = "text/css", href = "busyIndicator/busyIndicator.css"))), 
+            div(class = "shinysky-busy-indicator", p(text), img(src = img)), 
+            tags$script(sprintf("\tsetInterval(function(){\n  \t\t \t if ($('html').hasClass('shiny-busy')) {\n  \t\t      
+                                setTimeout(function() {\n  \t\t      if ($('html').hasClass('shiny-busy')) {\n  \t\t        $
+                                ('div.shinysky-busy-indicator').show()\n  \t\t      }\n  \t\t    }, %d)  \t\t    \n  \t\t  } 
+                                else {\n  \t\t    $('div.shinysky-busy-indicator').hide()\n  \t\t  }\n  \t\t},100)\n  \t\t", 
+                                wait)))
+    }
   
-    output$values <- DT::renderDataTable( 
-      withProgress(message="We are computing",{ 
-      data()[[1]]
-         })  
-      
-      ,options=list(dom='t',autoWidth=T,columnDefs = list(list(width = '150px', targets = "_all"))),rownames=F
-    )
-
-    output$plot = renderPlot(data()[[2]],height=300,width=600)
+  output$values <- DT::renderDataTable( 
+    
+    withProgress( message = "WE ARE COMPUTING..", value = 0.9,{ 
+      data1()[[1]]
+    })  
+    
+    ,options=list(dom='t',autoWidth=T,columnDefs = list(list(width = '150px', targets = "_all"))),rownames=F
+  )
+  output$plot = renderPlot(data1()[[2]],height=300,width=600)
     
     
-    output$values_r <- DT::renderDataTable( 
-      withProgress(message="We are based on different EV range",{ 
-        data_r()[[1]]
-         })  
-      
-      ,options=list(dom='t',autoWidth=T,columnDefs = list(list(width = '150px', targets = "_all"))),rownames=F
-    )
-    
-    
-    #output$explain2 = renderText({("Genetic Architecture I: &beta; independent of MAF
-#Geneic Architecture II : EV independent of MAF
-#Genetic Architecture III: &beta;~log_10(MAF)")
-    #})
-   
-   output$plot_r <- renderPlot(data_r()[[2]],height = 300,width = 600)
    
    
      
    output$values2 <- DT::renderDataTable( 
-     withProgress(message="We are computing",{ 
+   
+     withProgress( message = "WE ARE COMPUTING..", value = 0.9,{ 
    data2()[[1]]
         })  
      
@@ -489,14 +362,14 @@ function(input, output) {
    )
    output$plot2 = renderPlot(data2()[[2]],height=300,width=600)
     
-   output$values2_r <- DT::renderDataTable( 
-     withProgress(message="We are computing based on different EV range",{ 
-       data2_r()[[1]]
-     })  
-     ,options=list(dom='t',autoWidth=T,columnDefs = list(list(width = '150px', targets = "_all"))),rownames=F
-   )
-   output$plot2_r <- renderPlot(data2_r()[[2]],height = 300,width = 600)
-    
+   # output$values2_r <- DT::renderDataTable( 
+   #   withProgress(message="We are computing based on different EV range",{ 
+   #     data2_r()[[1]]
+   #   })  
+   #   ,options=list(dom='t',autoWidth=T,columnDefs = list(list(width = '150px', targets = "_all"))),rownames=F
+   # )
+   # output$plot2_r <- renderPlot(data2_r()[[2]],height = 300,width = 600)
+   #  
  
   
   

@@ -1,0 +1,72 @@
+/* Make sure the filename doesn't extend past the bounds of the container */
+.shiny-input-container input[type=file] {
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.shiny-progress-container {
+    position: fixed;
+    top: 10px;
+    width: 100%;
+    z-index: 2000;
+}
+
+.shiny-progress .progress {
+    position: absolute;
+    width: 100%;
+    top: 0px;
+    /* The default height is only 1px which is find to be TINY */
+    height: 0px;
+    margin: 0px;
+}
+
+.shiny-progress .bar {
+    background-color: #4f90d9;
+    .opacity = 0.8;
+    transition-duration: 950ms;
+}
+
+.shiny-progress .progress-text {
+    position: absolute;
+    right: 100px;
+    height: 30px;
+    width: 490px;
+    background-color: #4f90d9;
+    padding-top: 0px;
+    padding-right: 3px;
+    padding-bottom: 2px;
+    padding-left: 3px;
+    opacity: 0.95;
+    /* I also wanted to round off the corners of the text box */
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+}
+
+.progress-text {
+    /* Copy the below to vertically center the progress bar text box in the shiny dashboard header */
+    /* !important is crucial here otherwise it gets overridden by the dreaded element.style */
+    top: 400px !important;
+	right: 500px !important;
+    color: #FFFFFF !important;
+    text-align: center;
+}
+
+/* Bold Initial part of message */
+.shiny-progress .progress-text .progress-message {
+    padding-top: 0px;
+    padding-right: 3px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* Message detail */
+.shiny-progress .progress-text .progress-detail {
+    padding-top: 0px;
+    padding-right: 3px;
+    padding-bottom: 3px;
+    padding-left: 3px;
+    font-size: 17px;
+}
