@@ -1,14 +1,13 @@
-###PAGEANT
-
-###PAGEANT: Power Analysis for Genetic Association Tests
-
-##Introduction
+PAGEANT
+==========
+PAGEANT: Power Analysis for Genetic Association Tests
+==========
+Introduction
 ============
 The application allows rapid power analysis for a variety of genetic association tests by specification of a few key parameters [Derkach et al. 2017]. Power calculations can be done at the level of single variant for simple trend test, at the level of a genes/regions for various complex aggregated tests [Neale et al. 2011, Derkach et al. 2013, Wu et al. 2011, Madsen and Browning 2009] and at the level of the whole genome for the assessment of overall yield of a study. The calculations currently uses underlying distribution of gene size and minor allele frequencies of variants observed in the in the public data for 60,000 individuals from Exome Aggregation Consortium [Lek et al. 2016]
 
 Power for association test at the level of a single variant or a single gene/region
-====================================================================================
-
+-----------------------------------------------
 Essential Input Parameters
 ==========================
 
