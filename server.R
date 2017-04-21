@@ -10,9 +10,9 @@ source('PowerCalc_Rare.r')
 source('calc_whole.r')
 
 grid_transform = function(grid){
-  if(grid=="quick"){
+  if(grid=="Quick"){
     return(20)
-  }else if(grid=="adequate"){
+  }else if(grid=="Adequate"){
     return(50)
   }else{
     return(100)
@@ -52,6 +52,7 @@ function(input, output) {
       }
       
     }else if(input$SNPoption=='Whole Genome'){
+    
       calcGenomeLevel(K=input$K,
                       m=input$m,
                       grid=grid_transform(input$grid),
@@ -64,6 +65,7 @@ function(input, output) {
                       QT='CC',
                       PC=input$PC_whole,
                       JJ=input$JJ_whole)
+     
     }else{
         if(input$evoption=='Single EV'){
           if((input$method)!='Burden Test'){
@@ -340,11 +342,12 @@ function(input, output) {
   
   output$values <- DT::renderDataTable( 
     
-    withProgress( message = "WE ARE COMPUTING..", value = 0.9,{ 
+    withProgress( message = "WE ARE COMPUTING..", value = 0.6,{ 
       data1()[[1]]
+   
     })  
     
-    ,options=list(dom='t',autoWidth=T,columnDefs = list(list(width = '150px', targets = "_all"))),rownames=F
+    ,options=list(dom='t',autoWidth=F,columnDefs = list(list(width = "150", targets = "_all"))),rownames=F
   )
   output$plot = renderPlot(data1()[[2]],height=300,width=600)
     
@@ -358,7 +361,7 @@ function(input, output) {
    data2()[[1]]
         })  
      
-     ,options=list(dom='t',autoWidth=T,columnDefs = list(list(width = '150px', targets = "_all"))),rownames=F
+     ,options=list(dom='t',autoWidth=F,columnDefs = list(list(width = "150", targets = "_all"))),rownames=F
    )
    output$plot2 = renderPlot(data2()[[2]],height=300,width=600)
     

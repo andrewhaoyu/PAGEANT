@@ -225,9 +225,9 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
         geom_density(aes(group=Method,colour=Method,fill=Method),alpha=0.3,adjust=1)+
         scale_x_continuous(limits=limits.x,expand = c(0,0),breaks = breaks.x)+
         scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
-        #scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
         theme_new()+
-        labs(title="The Density of Power",y="Density")
+        labs(title="The Density of Power",y="Density",x="Power")+
+       +theme(title ="The Density of Power" )
       # p <- ggplot(data, aes(x=Power)) +
       #   geom_histogram(aes(y=..density..,fill=Method,colour=Method,group=Method),binwidth=.02, alpha=.3, position="identity")+
       #   scale_x_continuous(limits=c(0,1.02),expand = c(0,0),breaks = seq(0,1.02,0.1))+
@@ -373,7 +373,6 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       data <- data.frame(EV_x,group,Power)
       y.up <- min(1,(max(Power)+0.1))
       p <- ggplot(data)+geom_line(aes(x=EV_x,y=Power,colour=group))+
-        #scale_x_continuous(limits=limits.x,expand = c(0,0),breaks = breaks.x)+
         scale_y_continuous(expand = c(0,0),limits=c(0,y.up))+
         #scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
         theme_new()+
@@ -508,7 +507,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
         scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
         #scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
         theme_new()+
-        labs(title="The Density of Power",y="Density")
+        labs(title="The Density of Power",y="Density",x="Power")
       # p <- ggplot(data, aes(x=Power)) +
       #   geom_histogram(aes(y=..density..,fill=Method,colour=Method,group=Method),binwidth=.02, alpha=.3, position="identity")+
       #   scale_x_continuous(limits=c(0,1.02),expand = c(0,0),breaks = seq(0,1.02,0.1))+
@@ -781,13 +780,12 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       Method <- c(rep("Geneic Arc I",length(PowerEindP)),rep("Genetic Arc II",length(PowerBindP)),rep("Genetic Arc III",length(PowerRelBandP)))
       data <- data.frame(Power,Method)
 
-      p <- ggplot(data,aes(x=Power))+
-        geom_density(aes(group=Method,colour=Method,fill=Method),alpha=0.3,adjust=1)+
+      p <- ggplot(data,aes(x=Power))+ geom_density(aes(group=Method,colour=Method,fill=Method),alpha=0.3,adjust=1)+
         scale_x_continuous(limits=limits.x,expand = c(0,0),breaks = breaks.x)+
         scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
-        #scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
-        theme_new()+
-        labs(title="The Density of Power",y="Density")
+       
+       theme_new()+
+      labs(title="The Density of Power",y="Density",x="Power")
       # p <- ggplot(data, aes(x=Power)) +
       #   geom_histogram(aes(y=..density..,fill=Method,colour=Method,group=Method),binwidth=.02, alpha=.3, position="identity")+
       #   scale_x_continuous(limits=c(0,1.02),expand = c(0,0),breaks = seq(0,1.02,0.1))+
@@ -1069,7 +1067,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
         scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
         #scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
         theme_new()+
-        labs(title="The Density of Power",y="Density")
+        labs(title="The Density of Power",y="Density",x="Power")
       # p <- ggplot(data, aes(x=Power)) +
       #   geom_histogram(aes(y=..density..,fill=Method,colour=Method,group=Method),binwidth=.02, alpha=.3, position="identity")+
       #   scale_x_continuous(limits=c(0,1.02),expand = c(0,0),breaks = seq(0,1.02,0.1))+

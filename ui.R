@@ -37,34 +37,38 @@ tagList(
                mainPanel(
                  h3("PAGEANT: Power Analysis for GEnetic AssociatioN Tests"),
                  h3("Introduction"),
-                 p("The application allows rapid power analysis for a variety of genetic association tests by specification of a few key parameters [Derkach et al. 2017]. Power calculations can be done at the level of single variant for simple trend test, at the level of a genes/regions for various complex aggregated tests [Neale et al. 2011, Derkach et al. 2013, Wu et al. 2011, Madsen and Browning 2009] and at the level of the whole genome for the assessment of overall yield of a study. The calculations currently uses underlying distribution of gene size and minor allele frequencies of variants observed in the in the public data for 60,000 individuals from Exome Aggregation Consortium [Lek et al. 2016]
+                 p("The application allows rapid power analysis for a variety of genetic association tests by specification of a few key parameters [Derkach et al. 2017]. Power calculations can be done at the level of a single variant for simple trend test, at the level of a genes/regions for various complex aggregated tests [Neale et al. 2011, Derkach et al. 2013, Wu et al. 2011, Madsen and Browning 2009] and at the level of the whole genome for the assessment of overall yield of a study. The calculations currently uses underlying distribution of gene sizes and minor allele frequencies of variants observed in the in the public data for 60,000 individuals from Exome Aggregation Consortium [Lek et al. 2016] 
 ", style = "font-family: 'times'; font-si20pt"),
                  h3("Power for association test at the level of a single variant or a single gene/region
 "),
                  h4("Essential Input Parameters "),
-                 p("1)	EV: For continuous trait, EV represents % of phenotypic variance explained the variants in a gene (or by a single variant for single-variant tests). For binary trait, EV represents sum of squares of log-odds-ratios (in standardized unit) for the variants in a gene (or for a single variant). For example, if power calculation is desired for a locus which may have 5 causal variants each with an OR=1.2, then EV should be set to 5× (ln(1.2)^2)=0.17;", style = "font-family: 'times'; font-si20pt"),
-                 p("2) alpha = level of the test;", style = "font-family: 'times'; font-si20pt"),
+                 p("1)	EV: For continuous trait, EV represents % of phenotypic variance explained the variants in a gene (or by a single variant for single-variant tests). For binary trait, EV represents sum of squares of log-odds-ratios (in standardized unit) associated with the variants in a gene (or that for a single variant). For example, if power calculation is desired for a locus which may have 5 causal variants each with an OR=1.2, then EV should be set to \\(5× (ln(1.2)^2)=0.17\\);", style = "font-family: 'times'; font-si20pt"),
+                 p("2) \\(\\alpha\\) = level of the test;", style = "font-family: 'times'; font-si20pt"),
                  p("3) Sample size: Total sample size for a continuous trait or the number of cases and number of controls for a case-control study;", style = "font-family: 'times'; font-si20pt"),
                  h4("Optional Parameters
 "),
-                 p("1)	Total number of variants (J): The total number of variants under study within a gene/region. This is a key parameter in power calculation for the gene-level tests and when it’s not specified the application evaluates distribution of power according to distribution observed for in the ExAC database.With J=1, gene based power calculation simplifies to  single variant one.", style = "font-family: 'times'; font-si20pt"),
-                 p("2)	Proportion of causal variants (J_c/J) : Assumed proportion of causal variants in a locus as a ratio to the total number of variants. This parameter is required for burden test and a more accurate second-order approximation of the variance component test. For burden tests, it’s assumed that all causal variants are either deleterious or protective and by default proportion of causal variants is set to 20%.", style = "font-family: 'times'; font-si20pt"),
+                 p("1)	Total number of variants (\\(J\\)): The total number of variants under study within a gene/region. This is a key parameter in power calculation for the gene-level tests and when it’s not specified the application evaluates distribution of power according to distribution observed for in the ExAC database.With J=1, gene based power calculation simplifies that for a single variant.", style = "font-family: 'times'; font-si20pt"),
+                 withMathJax(),
+                 p("2)	Proportion of causal variants (\\(J_c/J\\)) : Assumed proportion of causal variants in a locus as a ratio to the total number of variants. This parameter is required for burden test and a more accurate second-order approximation of the variance component test. For burden tests, it’s assumed that all causal variants are either deleterious or protective and by default proportion of causal variants is set to 0.2.", style = "font-family: 'times'; font-si20pt"),
                  p("3)Range of EV: Instead of a single EV, the user can specify a range of EV over which power calculation is desired 
                    ", style = "font-family: 'times'; font-si20pt"),
                  h4("Output"),
-                 p("     The application conducts power analysis under three different models for genetic architecture assuming (I): MAF is independent of EV ;(II) MAF is independent of genetic effects measured in the unit of per copy of an allele (beta^2=EV/(2MAF(1-MAF))); and (III) MAF is negatively correlated with genetic effect through the function .  When a single EV is specified, for each genetic architecture, it returns a distribution of power and key summary measures (mean, median,  25th and 75th percentiles). This distribution corresponds to uncertainty association with various additional parameters, such as number of variants within a gene and minor allele frequencies. If a range of EV is specified, plots and table for average power over the range of specified EV is returned.
+p("The application conducts power analysis under three different models for genetic architecture assuming (I) MAF is independent of EV (II) MAF is independent of genetic effects measured in the unit of per copy of an allele (\\(\\beta^2\\)=EV/(2MAF(1-MAF)) and (III) MAF is negatively correlated with genetic effect through the function \\(\\beta=-\\log_{10}\\)(MAF).  When a single EV is specified, for each genetic architecture, it returns a distribution of power and key summary measures (mean, median,  25th and 75th percentiles). This distribution corresponds to uncertainty association with various additional parameters, such as the number of variants within a gene and minor allele frequencies. If a range of EV is specified, plots and table for average power over the range of specified EV is returned.
 
 ", style = "font-family: 'times'; font-si20pt"),
                  h3("Genome-level power calculation"),
                  h4("Essential Input parameter:"),
                  p("1) M: Hypothesized number of underlying causal loci (or variants if analysis to be done based on single variant test)", style = "font-family: 'times'; font-si20pt"),
                  p("2) GEV: Total EV explained by  loci in genome -wide study (see definition of EV above)", style = "font-family: 'times'; font-si20pt"),
+                 
+
                  h4("Optional Input Parameter"),
-                 p(" m: The number of causal loci for which probability of discovery to be calculated (see output)", style = "font-family: 'times'; font-si20pt"),
+                 p(" 1) m: The number of causal loci for which probability of discovery to be calculated (see output).For example if it is assumed M=100, then a user may want to find out what is the probability of discovery of m=5 or less number of loci from a given study of a specific sample size.", style = "font-family: 'times'; font-si20pt"),
+p("2) Computational Complexity: The number of  models and iterations used to estimate range of expected number of discoveries and probabilities (see output). There are three options: Quick, Adequate and Complete.  Quick option runs genome-wide calculations  within 3 minutes and  provides rough estimates. Adequate option runs genome-wide calculations  within 6 minutes and provides more accurate estimates. Lastly, Complete option runs genome-wide calculations  within 15 minutes and  provides very accurate estimates. ", style = "font-family: 'times'; font-si20pt"),
                  h4("Output"),
-                 p("Expected number of discoveries: The application returns expected number of discoveries where the expectation is calculated across the M loci accounting for uncertainty associated with distribution of number of variants per locus (J), allele frequencies and the distributions of EVs the loci explains. Currently, the distribution of J and MAF in these calculations are obtained from those observed in the ExAC database. In addition, it is assumed the effect size distribution follows a L-shaped gamma distribution with mean specified as .  The application calculates a range of expected number of discoveries based on the range of the dispersion parameter of the underlying gamma distribution for the effect size distribution and the corresponding maximum and minimum values are returned.  
+                 p("Expected number of discoveries: The application returns expected number of discoveries where the expectation is calculated across the M loci accounting for uncertainty associated with distribution of number of variants per locus (J), allele frequencies and the distributions of EVs the loci explains. Currently, the distribution of J and MAF in these calculations are obtained from those observed in the ExAC database. In addition, it is assumed the effect size distribution follows a L-shaped gamma distribution with mean specified as \\(\\mu=\\)GEV/M.  The application calculates a range of expected number of discoveries based on the range of the dispersion parameter of the underlying gamma distribution for the effect size distribution and the corresponding maximum and minimum values are returned.  
            Probability of discoveries: This returns maximum and minimum probability of a certain number of discoveries (m) for values of specified by the user. ", style = "font-family: 'times'; font-si20pt"),
-                 h4("Additional notes"),
+                 h3("Additional notes"),
                  p("Currently power calculations are based on distribution of number of variants per gene and minor allele frequencies observed in the public data for 60,000 individuals from Exome Aggregation Consortium [Lek et al. 2016]. It will underestimate the total number of variants per gene/region for whole-genome study and may overestimate power for gene-level tests. ", style = "font-family: 'times'; font-si16pt"),
                  h3("Contributor"),
                  p("PAGEANT is designed by Andriy Derkach, Haoyu Zhang and Nilanjan Chatterjee
@@ -91,14 +95,14 @@ tagList(
                   numericInput("GEV", "GEV: Genome-wide Variance Explained(Percent)",
                                value = 20),
                   selectInput("grid",
-                              "grid search",
-                              c("quick","adequate","complete")),
+                              " Computational Complexity (optional)",
+                              c("Quick","Adequate","Complete")),
               selectInput(
                 "method_whole", "Method",
                 c("SKAT","Calpha","Hotelling","Burden Test")
               ),
-              numericInput("K","Number of Genes",value=1000),
-              numericInput("m","Number of discoveries",value=2),
+              numericInput("K","Number of causal loci",value=1000),
+              numericInput("m","Number of discoveries",value=0),
               numericInput("PC_whole","Proportion of Causal Variants (Optional)",value=NA),
               numericInput("JJ_whole","Number of Variants (Optional)",value=NA)
                 ),
@@ -133,7 +137,7 @@ tagList(
                     ),   
                     conditionalPanel(
                       condition="input.method=='Burden Test'",
-                      numericInput("PC_new","Proportion of Causal Variants",value=0.05),
+                      numericInput("PC_new","Proportion of Causal Variants",value=0.2),
                       numericInput("PRC","Proportion of Protective",value=0)
                     ),
                     
@@ -156,13 +160,15 @@ tagList(
                          # p(HTML("Genetic Architecture I: &beta; independent of MAF"),style = "font-family: 'times'; font-si20pt"),
                         #  p("Geneic Architecture II : EV independent of MAF",style = "font-family: 'times'; font-si20pt"), 
                          # p(HTML("Genetic Architecture III: &beta;~log_10(MAF);"),style = "font-family: 'times'; font-si20pt"),
-               h4("Whole genome power calculation will take around 5 to 10 minutes"),
+               conditionalPanel(
+                 condition = "input.SNPoption=='Whole Genome'",
+               h5(" For whole genome power calculation, quick option runs genome-wide calculations  within 3 minutes and  provides rough estimates. Adequate option runs genome-wide calculations  within 6 minutes and provides more accurate estimates. Lastly, Complete option runs genome-wide calculations  within 15 minutes and  provides very accurate estimates.")),
                 p("Genetic Arc I: MAF is independent of EV;",style = "font-family: 'times'; font-si20pt"),
                  p("Geneic Arc II : MAF is independent of genetic effects measured in the unit of per copy of an allele;",style = "font-family: 'times'; font-si20pt"), 
                 p("Genetic Arc III: MAF is negatively correlated with genetic effect through the function ;",style = "font-family: 'times'; font-si20pt"),
                           theme = "bootstrap1.css",
                           busyIndicator(text = "Loading..", img = "busyIndicator/ajaxloaderq.gif", wait = 1),
-                          dataTableOutput("values"),
+                          DT::dataTableOutput("values"),
                            plotOutput("plot")
                         #   ),
               # tabPanel("Mean Power Distribution based on different EV",
@@ -196,15 +202,16 @@ tagList(
                  numericInput("Alpha_whole2",HTML("&alpha;:"), value=2.5e-06),
                  numericInput("GEV2", "GEV: Genome-wide Variance Explained(Percent)",
                               value = 20),
-                 selectInput("grid2",
-                             "grid search",
-                             c("quick","adequate","complete")),
+                 
                  selectInput(
                    "method_whole2", "Method",
                    c("SKAT","Calpha","Hotelling","Burden Test")
                  ),
-                 numericInput("K2","Number of Genes",value=1000),
-                 numericInput("m2","Number of discoveries",value=2),
+                 selectInput("grid2",
+                             "Computational Complexity(Optional)",
+                             c("Quick","Adequate","Complete")),
+                 numericInput("K2","Number of causal loci",value=1000),
+                 numericInput("m2","Number of discoveries",value=0),
                  numericInput("PC_whole2","Proportion of Causal Variants (Optional)",value=NA),
                  numericInput("JJ_whole2","Number of Variants (Optional)",value=NA)
                ),
@@ -239,7 +246,7 @@ tagList(
                    ),   
                    conditionalPanel(
                      condition="input.method2=='Burden Test'",
-                     numericInput("PC_new2","Proportion of Causal Variants",value=0.05),
+                     numericInput("PC_new2","Proportion of Causal Variants",value=0.2),
                      numericInput("PRC2","Proportion of Protective",value=0)
                    ),
                    
@@ -260,13 +267,15 @@ tagList(
              
                #tabsetPanel(
                 # tabPanel("Power Density",
-               h4("Whole genome power calculation will take around 5 to 10 minutes"),
+               conditionalPanel(
+                 condition = "input.SNPoption2=='Whole Genome'",
+                 h5(" For whole genome power calculation, quick option runs genome-wide calculations  within 3 minutes and  provides rough estimates. Adequate option runs genome-wide calculations  within 6 minutes and provides more accurate estimates. Lastly, Complete option runs genome-wide calculations  within 15 minutes and  provides very accurate estimates.")),
                p("Genetic Arc I: MAF is independent of EV;",style = "font-family: 'times'; font-si20pt"),
                p("Geneic Arc II : MAF is independent of genetic effects measured in the unit of per copy of an allele;",style = "font-family: 'times'; font-si20pt"), 
                p("Genetic Arc III: MAF is negatively correlated with genetic effect through the function ;",style = "font-family: 'times'; font-si20pt"),
                theme = "bootstrap2.css",
                busyIndicator(text = "Loading..", img = "busyIndicator/ajaxloaderq.gif", wait = 1),
-                          dataTableOutput("values2"),
+                          DT::dataTableOutput("values2"),
                           plotOutput("plot2")
                #  ),
                  #tabPanel("Mean Power Distribution based on different EV",
@@ -290,7 +299,14 @@ tagList(
 ", style = "font-family: 'times'; font-si20pt"), 
     p("Derkach, A., Lawless, J.F., and Sun, L. (2013). Robust and powerful tests for rare variants using Fisher's method to combine evidence of association from two or more complementary tests. Genet Epidemiol 37, 110-121.", style = "font-family: 'times'; font-si20pt"), 
     p("Wu, M.C., Lee, S., Cai, T., Li, Y., Boehnke, M., and Lin, X. (2011). Rare-variant association testing for sequencing data with the sequence kernel association test. Am J Hum Genet 89, 82-93.", style = "font-family: 'times'; font-si20pt"), 
-    p("Madsen, B.E., and Browning, S.R. (2009). A groupwise association test for rare mutations using a weighted sum statistic. PLoS Genet 5, e1000384.", style = "font-family: 'times'; font-si20pt")
+    p("Madsen, B.E., and Browning, S.R. (2009). A groupwise association test for rare mutations using a weighted sum statistic. PLoS Genet 5, e1000384.", style = "font-family: 'times'; font-si20pt"),
+    p(" Li and Leal 2008, Am J Hum Genet. 2008 Sep;83(3):311-21. doi: 10.1016/j.ajhg.2008.06.024. Epub 2008 Aug 7.Methods for detecting associations with rare variants for common diseases: application to analysis of sequence data.
+      ", style = "font-family: 'times'; font-si20pt"),
+    p("  Neale et al. 2011, Derkach et al. 2013, Wu et al. 2011, Madsen and Browning 2009
+      ", style = "font-family: 'times'; font-si20pt")
+   
+   
+    
     )    
     
     

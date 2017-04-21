@@ -3,7 +3,7 @@ source('PowerCalc_Rare.r')
 source('PowerCalc_Rare_whole.r')
 source('trgamma.r')
 
-calcGenomeLevel = function(K,m,grid,epr,alphaT,Total,CASE=NULL,CONTROL=NULL,PC=NULL,TEST = test,QT=NULL,nameEsseble=NULL,JJ=NULL){
+calcGenomeLevel = function(K,m,grid,epr,alphaT,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = test,QT=NULL,nameEsseble=NULL,JJ=NA){
 Esp = epr*K
 
 
@@ -13,8 +13,7 @@ topval = max(PP)
 alM = alphav[which(PP==topval)]
 twoSolutions = PP[1000000]<topval
 Prp =seq(1/2*epr,topval,length.out=grid)
-
-
+Obj = transform(Total)
 
 EVTV = NULL
 
@@ -26,7 +25,9 @@ PL2 = NULL
 
 PM3 = NULL
 PL3 = NULL
-
+if (grid==20){perm=2500}
+if (grid==50){perm=5000}
+if (grid==100){perm=10000}
 
 for (e in 1:grid){
 cat('Running ',e,'th EV distribution \n')
@@ -51,7 +52,7 @@ if (!is.na(alpha) & !is.na(beta) & ((alpha/beta*K)<=0.5)){
 i=1
 kEV=NULL
 b1 = proc.time()
-while (i<=5000){
+while (i<=2500){
 EVV = rtrunc(K,'gamma',0,0.01,alpha,beta) 
 if(sum(EVV)<=0.5){
 kEV = c(kEV,sum(EVV))
@@ -65,7 +66,7 @@ b2=proc.time()
 cat('Est',b2-b1,'\n')
 EVTV= c(EVTV,mean(kEV))
 a1=proc.time()
-result <- get_AproxQ2(alpha,beta,K,alphaT,Total,CASE=CASE,CONTROL=CONTROL,PC=PC,TEST = TEST,QT=QT,nameEsseble=NULL,JJ=JJ) 
+result <- get_AproxQ2(alpha,beta,K,alphaT,Total,Obj,perm,CASE=CASE,CONTROL=CONTROL,PC=PC,TEST = TEST,QT=QT,nameEsseble=NULL,JJ=JJ) 
 result$a[result$a==0]=10^(-16)
 result$a[result$a==1]=1-10^(-16)
 PM1 = c(PM1,mean(result$a))
@@ -115,7 +116,7 @@ b2=proc.time()
 cat('Est',b2-b1,'\n')
 EVTV= c(EVTV,mean(kEV))
 a1=proc.time()
-result <- get_AproxQ2(alpha,beta,K,alphaT,Total,CASE=CASE,CONTROL=CONTROL,PC=PC,TEST = TEST,QT=QT,nameEsseble=NULL,JJ=JJ) 
+result <- get_AproxQ2(alpha,beta,K,alphaT,Total,Obj,perm,CASE=CASE,CONTROL=CONTROL,PC=PC,TEST = TEST,QT=QT,nameEsseble=NULL,JJ=JJ) 
  
 result$a[result$a==0]=10^(-16)
 result$a[result$a==1]=1-10^(-16)
@@ -155,7 +156,7 @@ b2=proc.time()
 cat('Est',b2-b1,'\n')
 EVTV= c(EVTV,mean(kEV))
 a1=proc.time()
-result <- get_AproxQ2(alpha,beta,K,alphaT,Total,CASE=CASE,CONTROL=CONTROL,PC=PC,TEST = TEST,QT=QT,nameEsseble=NULL,JJ=JJ) 
+result <- get_AproxQ2(alpha,beta,K,alphaT,Total,Obj,perm,CASE=CASE,CONTROL=CONTROL,PC=PC,TEST = TEST,QT=QT,nameEsseble=NULL,JJ=JJ) 
 result$a[result$a==0]=10^(-16)
 result$a[result$a==1]=1-10^(-16)
 PM1 = c(PM1,mean(result$a))
@@ -203,20 +204,45 @@ modelS1_E = list(min=min(E1),max=max(E1))
 modelS2_E = list(min=min(E2),max=max(E2))
 modelS3_E = list(min=min(E3),max=max(E3))
 m=mm
-Obj <- list(modelS1_E=modelS1_E,modelS2_E=modelS2_E,modelS3_E=modelS3_E,PrbMax1=apply(Prb1,2,max),PrbMax2=apply(Prb2,2,max),PrbMax3=apply(Prb3,2,max),
-            PrbMin1=apply(Prb1,2,min),PrbMin2=apply(Prb2,2,min),PrbMin3=apply(Prb3,2,min),
-            PrbMax1_m=(apply(Prb1,2,max))[m+1],PrbMax2_m=(apply(Prb2,2,max))[m+1],PrbMax3_m=(apply(Prb3,2,max))[m+1],
-            PrbMin1_m=(apply(Prb1,2,min))[m+1],PrbMin2_m=(apply(Prb2,2,min))[m+1],PrbMin3_m=(apply(Prb3,2,min))[m+1]
-)
-places <- 2
-S1 <- round(as.numeric(c(Obj[[1]][1],Obj[[1]][2],Obj[[10]],Obj[[13]])),places)
-S2 <- round(as.numeric(c(Obj[[2]][1],Obj[[2]][2],Obj[[11]],Obj[[14]])),places)
-S3 <- round(as.numeric(c(Obj[[3]][1],Obj[[3]][2],Obj[[12]],Obj[[15]])),places)
-Item <- c("Min expected number of discoveries ","Max expected number of discoveries",paste0("max probability of ",m,"-discoveries"),paste0("min probability of ",m,"-discoveries"))
-result <- data.frame(Item=Item,S1=S1,S2=S2,S3=S3)
-colnames(result) <- c("","Genetic Arc I","Genetic Arc II","Genetic Arc III")
-return (list(result,NULL))
+if(m==0){
+  Prb1M = Prb1[,1]
+  Prb2M = Prb2[,1]
+  Prb3M = Prb3[,1]
+}else{
+  Prb1M = rowSums(Prb1[,1:(m+1)])
+  Prb2M = rowSums(Prb2[,1:(m+1)])
+  Prb3M = rowSums(Prb3[,1:(m+1)])
 }
+
+
+
+
+Obj = list(modelS1_E=modelS1_E,modelS2_E=modelS2_E,modelS3_E=modelS3_E,prb1M =list(min=min(Prb1M),max=max(Prb1M)),prb2M =list(min=min(Prb2M),max=max(Prb2M)),prb3M =list(min=min(Prb3M),max=max(Prb3M))) 
+
+places <- 2
+S1 <- round(as.numeric(c(Obj[[1]][1],Obj[[1]][2],Obj[[4]][1],Obj[[4]][2])),places)
+S2 <- round(as.numeric(c(Obj[[2]][1],Obj[[2]][2],Obj[[5]][1],Obj[[5]][2])),places)
+S3 <- round(as.numeric(c(Obj[[3]][1],Obj[[3]][2],Obj[[6]][1],Obj[[6]][2])),places)
+Item <- c("Min expected number of discoveries ","Max expected number of discoveries",paste0("min probability of ",m," or less discoveries"),paste0("max probability of ",m," or less discoveries"))
+result <- data.frame(Item=Item,S1=S1,S2=S2,S3=S3)
+ colnames(result) <- c("","Genetic Arc I","Genetic Arc II","Genetic Arc III")
+ return (list(result,NULL))
+}
+
+# Obj <- list(modelS1_E=modelS1_E,modelS2_E=modelS2_E,modelS3_E=modelS3_E,PrbMax1=apply(Prb1,2,max),PrbMax2=apply(Prb2,2,max),PrbMax3=apply(Prb3,2,max),
+#             PrbMin1=apply(Prb1,2,min),PrbMin2=apply(Prb2,2,min),PrbMin3=apply(Prb3,2,min),
+#             PrbMax1_m=(apply(Prb1,2,max))[m+1],PrbMax2_m=(apply(Prb2,2,max))[m+1],PrbMax3_m=(apply(Prb3,2,max))[m+1],
+#             PrbMin1_m=(apply(Prb1,2,min))[m+1],PrbMin2_m=(apply(Prb2,2,min))[m+1],PrbMin3_m=(apply(Prb3,2,min))[m+1]
+# )
+# places <- 2
+# S1 <- round(as.numeric(c(Obj[[1]][1],Obj[[1]][2],Obj[[10]],Obj[[13]])),places)
+# S2 <- round(as.numeric(c(Obj[[2]][1],Obj[[2]][2],Obj[[11]],Obj[[14]])),places)
+# S3 <- round(as.numeric(c(Obj[[3]][1],Obj[[3]][2],Obj[[12]],Obj[[15]])),places)
+# Item <- c("Min expected number of discoveries ","Max expected number of discoveries",paste0("max probability of ",m,"-discoveries"),paste0("min probability of ",m,"-discoveries"))
+# result <- data.frame(Item=Item,S1=S1,S2=S2,S3=S3)
+# colnames(result) <- c("","Genetic Arc I","Genetic Arc II","Genetic Arc III")
+# return (list(result,NULL))
+#}
 #return (list(Prb1=Prb1,E1=E1,Prb2=Prb2,E2=E2,Prb3=Prb3,E3=E3))
 
 

@@ -1,4 +1,4 @@
-get_AproxQ2  = function(al,be,K,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NULL,TEST = 'SKAT',QT='CC',nameEsseble=NULL,JJ=NULL){
+get_AproxQ2  = function(al,be,K,alpha,Total,Obj,perm,CASE=NULL,CONTROL=NULL,PC=NULL,TEST = 'SKAT',QT='CC',nameEsseble=NULL,JJ=NULL){
 PowerEindP = NULL
 PowerBindP = NULL
 PowerRelBandP = NULL
@@ -24,7 +24,7 @@ if (QT == 'QT'){
 n = Total # sample size
 }
 ptm <- proc.time()
-Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
+#Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
 
 
 MAFL = 1/Total
@@ -45,7 +45,7 @@ EindP =NULL
 BindP = NULL
 ErelP = NULL
 
-for (i in 1:10000){
+for (i in 1:perm){
 #cat(i,'\n')
 
 EVV = 0.51
