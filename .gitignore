@@ -1,0 +1,14 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+whole.rds
+whole_N17500.rds
+whole_N35000.rds
+whole_N4375.rds
+whole_N8750.rds
+database.RData
+database_seq
+google-analytics.js
+N10000_G_Exon
+.DS_Store
