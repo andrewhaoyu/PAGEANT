@@ -4,9 +4,9 @@ source('PowerCalc_RareSample_A.R')
 # ncase = 5000
 # ncont = 5000
 alpha= 0.0001
-#EV_low <- 0.01
-#EV_high <- 0.05
-#EV <- seq(EV_low,EV_high,(EV_high-EV_low)/10)
+EV_low <- 0.01
+EV_high <- 0.05
+EV <- seq(EV_low,EV_high,(EV_high-EV_low)/10)
 EV <- 0.5/100
 PowerThr <- 0.8
 

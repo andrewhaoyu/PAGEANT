@@ -146,7 +146,7 @@ return (sampleSize)
 get_powerIndsc = function(MAFCausal,PC,EVC,n,aa,bb,level,Ratio){
 	kkk = (1/(n*Ratio^2)) <= MAFCausal
 	if (sum(kkk)==0){
-	cat('no SNPs','\n')
+	#cat('no SNPs','\n')
 	return(10)
 	}
 	pj = MAFCausal[kkk]
@@ -284,7 +284,7 @@ return (sampleSize)
 get_powerDsc = function(MAFCausal,PC,EVC,n,gmx,aa,bb,level,Ratio){
 	kkk = (1/(n*Ratio^2)) <= MAFCausal
 	if (sum(kkk)==0){
-	cat('no SNPs','\n')
+	#cat('no SNPs','\n')
 	return(10)
 	}
 	pj = MAFCausal[kkk]

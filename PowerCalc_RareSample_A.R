@@ -158,70 +158,75 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
         PowerEindP = rbind(PowerEindP,EindP)
 		save(PowerRelBandP,PowerBindP,PowerEindP,file='1')
       }
-      #cat(sdd,'\n')
-      #ptm1 <- proc.time()
-      #cat('CPU time Total:',ptm1-ptm,'\n')
-
-      #mmEinP = round(mean(PowerEindP),4)
       mmEinP = ceilupto(mean(PowerEindP))
       qunatEinP = ceilupto(quantile(PowerEindP))[2:4] #25%, median, 75%
-
-      #mmBinP = round(mean(PowerBindP),4)
+      
+      
       mmBinP = ceilupto(mean(PowerBindP))
       qunatBinP = ceilupto(quantile(PowerBindP))[2:4] #25%, median, 75%
-
+      
       mmBrelP = ceilupto(mean(PowerRelBandP))
-
+      
       qunatBrelP =  ceilupto(quantile(PowerRelBandP))[2:4]
-      density.Ein <- density(PowerEindP)
-      density.Bin <- density(PowerBindP)
-      density.Brel <- density(PowerRelBandP)
-
-      density.y.max <- max(c(quantile(density.Ein$y),quantile(density.Bin$y),quantile(density.Brel$y)))
-      density.x.min <- min(c(density.Ein$x,density.Bin$x,density.Brel$x))
-      density.x.max <- max(c(density.Ein$x,density.Bin$x,density.Brel$x))
-
-      limits.x <- c(0,1)
-      breaks.x <- seq(0,1,0.1)
-      if((density.x.max-density.x.min)<0.1)
-      {
-        limits.x.low <- round(density.x.min,1)
-        limits.x.high <- round(density.x.max,1)
-        if(limits.x.low==limits.x.high){
-          limits.x.low <- max((limits.x.low-0.01),0)
-        }
-        limits.x <- c(limits.x.low,limits.x.high)
-        breaks.x <- seq(limits.x.low,limits.x.high,0.001)
-      }
-
-      Power <- c(PowerEindP,PowerBindP,PowerRelBandP)
-      Method <- c(rep("Senarario 1",length(PowerEindP)),rep("Senarario 2",length(PowerBindP)),rep("Senarario 3",length(PowerRelBandP)))
-      data <- data.frame(Power,Method)
-
-      p <- ggplot(data,aes(x=Power))+
-        geom_density(aes(group=Method,colour=Method,fill=Method),alpha=0.3,adjust=1)+
-        scale_x_continuous(limits=limits.x,expand = c(0,0),breaks = breaks.x)+
-        scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
+      
+      data <- data.frame(PowerEindP=t(PowerEindP),
+                         PowerBindP=t(PowerBindP),
+                         PowerRelBandP=t(PowerRelBandP),
+                         JJ.vec = JJ.vec)
+      colnames(data) <- c("EindP","BindP","ErelP","JJ")
+      
+      
+      p1 <- ggplot(data,aes(data$EindP))+
+        geom_histogram(aes(x=data$EindP,y=..density..),
+                       fill="#c0392b",
+                       alpha=0.75
+        )+
+        theme_bw()+
         theme_new()+
-        labs(title="The Density of Power",y="Density",x="Power")+
-       +theme(title ="The Density of Power" )
-      # p <- ggplot(data, aes(x=Power)) +
-      #   geom_histogram(aes(y=..density..,fill=Method,colour=Method,group=Method),binwidth=.02, alpha=.3, position="identity")+
-      #   scale_x_continuous(limits=c(0,1.02),expand = c(0,0),breaks = seq(0,1.02,0.1))+
-      #   #scale_y_continuous(expand = c(0,0),limits=c(0,15))+
-      #   theme_new()+
-      #   labs(title="The Density of Power",y="Density")
-
-      Gene_Arc_1 <- c(mmEinP)
-      Gene_Arc_2 <- c(mmBinP)
-      Gene_Arc_3 <- c(mmBrelP)
-      Power_Dist <- c("Power")
+        labs(title="The Histogram of Sample Size of Senarario 1",x="Sample Size")
+      p2 <- ggplot(data,aes(data$BindP))+
+        geom_histogram(aes(x=data$BindP,y=..density..),
+                       fill="dodgerblue4",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Sample Size of Senarario 2",x="Sample Size")
+      p3 <- ggplot(data,aes(data$ErelP))+
+        geom_histogram(aes(x=data$ErelP,y=..density..),
+                       fill="chartreuse4",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Sample Size of Senarario 3",x="Sample Size")
+      p4 <- ggplot(data,aes(data$JJ))+
+        geom_histogram(aes(x=data$JJ,y=..density..),
+                       fill="gray15",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Parameters",x="Parameters")
+      
+      Gene_Arc_1 <- c(mmEinP,qunatEinP)
+      Gene_Arc_2 <- c(mmBinP,qunatBinP)
+      Gene_Arc_3 <- c(mmBrelP,qunatBrelP)
+      
+      Power_Dist <- c("Mean Sample Size","25% Quantile of Sample Size","Medium of Sample Size",
+                      "75% Quantile of Sample Size")
       combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
       colnames(combind.result) <- c("Sample Size Distribution","Senarario 1","Senarario 2",
                                     "Senarario 3")
+      
+      
+      #return (list(combind.result,p1=p1,p2=p2,p3=p3,p4=p4))
+      
+      
+      
 
 
-      return (list(combind.result,p=NULL))
+      return (list(combind.result,p1=NULL,p2=NULL,p3=NULL,p4=p4))
     }
     else if(length(EV)>1&TEST!='Burden Test'){
       PowerEindP = NULL
@@ -309,7 +314,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
           #
           # Draw MAF
           #
-
+          JJ.vec[i] <- J
           pj = as.numeric(sample(MAF,J,replace=TRUE))
           #pj =runif(J)*0.1
           m = E*n/J/(a+g*mean(pj))
@@ -352,8 +357,8 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       EV.Length <- length(EV)
 
       EV_x <- rep(EV*100,3)
-      group <- c(rep("Genetic Arc I",EV.Length),rep("Genetic Arc II",EV.Length),
-                 rep("Genetic Arc III",EV.Length))
+      group <- c(rep("Senarario 1",EV.Length),rep("Senarario 2",EV.Length),
+                 rep("Senarario 3",EV.Length))
       Power <- c(EinMean,BinMean,BrelMean)
       data <- data.frame(EV_x,group,Power)
       y.up <- min(1,(max(Power)+0.1))
@@ -361,12 +366,12 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
         scale_y_continuous(expand = c(0,0),limits=c(0,y.up))+
         #scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
         theme_new()+
-        labs(title="The Mean Power Distribution",y="Mean Power",x="Variance Explained (Percent)")
+        labs(title="The Mean Sample Size Distribution",y="Mean Sample Size",x="Variance Explained (Percent)")
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Genetic Arc I Mean Power",
-                                       "Genetic Arc II Mean Power",
-                                       "Genetic Arc III Mean Power"
+                                       "Senarario 1 Mean Sample Size",
+                                       "Senarario 2 Mean Sample Size",
+                                       "Senarario 3 Mean Sample Size"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
       MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]
@@ -488,7 +493,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       }
 
       Power <- c(PowerEindP,PowerBindP,PowerRelBandP)
-      Method <- c(rep("Geneic Arc I",length(PowerEindP)),rep("Genetic Arc II",length(PowerBindP)),rep("Genetic Arc III",length(PowerRelBandP)))
+      Method <- c(rep("Senarario 1",length(PowerEindP)),rep("Senarario 2",length(PowerBindP)),rep("Senarario 3",length(PowerRelBandP)))
       data <- data.frame(Power,Method)
 
       p <- ggplot(data,aes(x=Power))+
@@ -497,21 +502,15 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
         scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
         #scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
         theme_new()+
-        labs(title="The Density of Power",y="Density",x="Power")
-      # p <- ggplot(data, aes(x=Power)) +
-      #   geom_histogram(aes(y=..density..,fill=Method,colour=Method,group=Method),binwidth=.02, alpha=.3, position="identity")+
-      #   scale_x_continuous(limits=c(0,1.02),expand = c(0,0),breaks = seq(0,1.02,0.1))+
-      #   #scale_y_continuous(expand = c(0,0),limits=c(0,15))+
-      #   theme_new()+
-      #   labs(title="The Density of Power",y="Density")
-
+        labs(title="The Density of Sample Size",y="Density",x="Sample Size")
+   
       Gene_Arc_1 <- c(mmEinP)
       Gene_Arc_2 <- c(mmBinP)
       Gene_Arc_3 <- c(mmBrelP)
-      Power_Dist <- c("Power")
+      Power_Dist <- c("Sample Size")
       combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
-      colnames(combind.result) <- c("Power Distribution","Genetic Arc I","Genetic Arc II",
-                                    "Genetic Arc III")
+      colnames(combind.result) <- c("Sample Size Distribution","Senarario 1","Senarario 2",
+                                    "Senarario 3")
       return (list(combind.result,p=NULL))
     }else if(TEST=='Burden Test'&(length(EV)>1)){
       Power= NULL
@@ -603,8 +602,8 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       EV.Length <- length(EV)
 
       EV_x <- rep(EV*100,3)
-      group <- c(rep("Genetic Arc I",EV.Length),rep("Genetic Arc II",EV.Length),
-                 rep("Genetic Arc III",EV.Length))
+      group <- c(rep("Senarario 1",EV.Length),rep("Senarario 2",EV.Length),
+                 rep("Senarario 3",EV.Length))
       Power <- c(EinMean,BinMean,BrelMean)
       data <- data.frame(EV_x,group,Power)
       y.up <- min(1,(max(Power)+0.1))
@@ -613,12 +612,12 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
         scale_y_continuous(expand = c(0,0),limits=c(0,y.up))+
         #scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
         theme_new()+
-        labs(title="The Mean Power Distribution",y="Mean Power",x="Variance Explained (Percent)")
+        labs(title="The Mean Sample Size Distribution",y="Mean Sample Size",x="Variance Explained (Percent)")
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Genetic Arc I Mean Power",
-                                       "Genetic Arc II Mean Power",
-                                       "Genetic Arc III Mean Power"
+                                       "Senarario 1 Mean Sample Size",
+                                       "Senarario 2 Mean Sample Size",
+                                       "Senarario 3 Mean Sample Size"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
       MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]
@@ -836,7 +835,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
                                     "Senarario 3")
 
 
-      return (list(combind.result,p1=p1,p2=p2,p3=p3,p4))
+      return (list(combind.result,p1=p1,p2=p2,p3=p3,p4=p4))
     }
     else if(length(EV)>1&TEST!='Burden Test'){
       PowerEindP = NULL
@@ -924,7 +923,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
           #
           # Draw MAF
           #
-
+          JJ.vec[i] <- JJ
           pj = as.numeric(sample(MAF,J,replace=TRUE))
           #pj =runif(J)*0.1
           m = E*n/J/(a+g*mean(pj))
@@ -965,8 +964,8 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       EV.Length <- length(EV)
 
       EV_x <- rep(EV*100,3)
-      group <- c(rep("Genetic Arc I",EV.Length),rep("Genetic Arc II",EV.Length),
-                 rep("Genetic Arc III",EV.Length))
+      group <- c(rep("Senarario 1",EV.Length),rep("Senarario 2",EV.Length),
+                 rep("Senarario 3",EV.Length))
       Power <- c(EinMean,BinMean,BrelMean)
       data <- data.frame(EV_x,group,Power)
       y.up <- min(1,(max(Power)+0.1))
@@ -975,12 +974,12 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
         scale_y_continuous(expand = c(0,0),limits=c(0,y.up))+
         #scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
         theme_new()+
-        labs(title="The Mean Power Distribution",y="Mean Power",x="Variance Explained (Percent)")
+        labs(title="The Mean Sample Size Distribution",y="Mean Sample Size",x="Variance Explained (Percent)")
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Genetic Arc I Mean Power",
-                                       "Genetic Arc II Mean Power",
-                                       "Genetic Arc III Mean Power"
+                                       "Senarario 1 Mean Sample Size",
+                                       "Senarario 2 Mean Sample Size",
+                                       "Senarario 3 Mean Sample Size"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
       MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]
@@ -1100,7 +1099,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       }
 
       Power <- c(PowerEindP,PowerBindP,PowerRelBandP)
-      Method <- c(rep("Geneic Arc I",length(PowerEindP)),rep("Genetic Arc II",length(PowerBindP)),rep("Genetic Arc III",length(PowerRelBandP)))
+      Method <- c(rep("Senarario 1",length(PowerEindP)),rep("Senarario 2",length(PowerBindP)),rep("Senarario 3",length(PowerRelBandP)))
       data <- data.frame(Power,Method)
 
       p <- ggplot(data,aes(x=Power))+
@@ -1109,7 +1108,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
         scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
         #scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
         theme_new()+
-        labs(title="The Density of Power",y="Density",x="Power")
+        labs(title="The Density of Sample Size",y="Density",x="Sample Size")
       # p <- ggplot(data, aes(x=Power)) +
       #   geom_histogram(aes(y=..density..,fill=Method,colour=Method,group=Method),binwidth=.02, alpha=.3, position="identity")+
       #   scale_x_continuous(limits=c(0,1.02),expand = c(0,0),breaks = seq(0,1.02,0.1))+
@@ -1120,11 +1119,11 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       Gene_Arc_1 <- c(mmEinP,qunatEinP)
       Gene_Arc_2 <- c(mmBinP,qunatBinP)
       Gene_Arc_3 <- c(mmBrelP,qunatBrelP)
-      Power_Dist <- c("Mean Power","25% Quantile of Power","Medium of Power",
-                      "75% Quantile of Power")
+      Power_Dist <- c("Mean Sample Size","25% Quantile of Sample Size","Medium of Sample Size",
+                      "75% Quantile of Sample Size")
       combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
-      colnames(combind.result) <- c("Power Distribution","Genetic Arc I","Genetic Arc II",
-                                    "Genetic Arc III")
+      colnames(combind.result) <- c("Sample Size Distribution","Senarario 1","Senarario 2",
+                                    "Senarario 3")
       return (list(combind.result,p=p))
     }else if(TEST=='Burden Test'&(length(EV)>1)){
       Power= NULL
@@ -1218,8 +1217,8 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       EV.Length <- length(EV)
 
       EV_x <- rep(EV*100,3)
-      group <- c(rep("Genetic Arc I",EV.Length),rep("Genetic Arc II",EV.Length),
-                 rep("Genetic Arc III",EV.Length))
+      group <- c(rep("Senarario 1",EV.Length),rep("Senarario 2",EV.Length),
+                 rep("Senarario 3",EV.Length))
       Power <- c(EinMean,BinMean,BrelMean)
       data <- data.frame(EV_x,group,Power)
       y.up <- min(1,(max(Power)+0.1))
@@ -1228,12 +1227,12 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
         scale_y_continuous(expand = c(0,0),limits=c(0,y.up))+
         #scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
         theme_new()+
-        labs(title="The Mean Power Distribution",y="Mean Power",x="Variance Explained (Percent)")
+        labs(title="The Mean Sample Size Distribution",y="Mean Sample Size",x="Variance Explained (Percent)")
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Genetic Arc I Mean Power",
-                                       "Genetic Arc II Mean Power",
-                                       "Genetic Arc III Mean Power"
+                                       "Senarario 1 Mean Sample Size",
+                                       "Senarario 2 Mean Sample Size",
+                                       "Senarario 3 Mean Sample Size"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
       MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]
