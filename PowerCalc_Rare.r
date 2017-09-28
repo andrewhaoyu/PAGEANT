@@ -22,55 +22,6 @@ theme_new <- function(base_size = 12, base_family = "Helvetica"){
 
 
 
-# QT indicator for quantative trait
-
-#
-# E  can be a vector
-#
-
-
-#
-# Delete nameEsseble
-#
-
-
-#
-# 
-#
-
-
-#
-# TEST has following otions
-# 	SKAT (default)
-#   Calpha
-#   Hotelling
-
-# get_single_power = function(EV,alpha,Total,Case=NULL,Control=NULL){
-#   if(length(EV)==1){
-#     if(!is.null(Case)&!is.null(Control)){
-#       N <- Case*Control/(Case+Control)
-#     }
-#     N = Total
-#     ct = qchisq(1-alpha,df=1)
-#     power = 1-pchisq(ct,df=1,nc=N*EV)
-#     Power_Dist <- c("Power")
-#     combind.result <- data.frame(Power_Dist,power,power,power)
-#     colnames(combind.result) <- c("One SNP Power ","Genetic Arc I","Genetic Arc II",
-#                                   "Genetic Arc III")
-#     return(combind.result,p=NULL)
-#   }else{
-#     
-#     
-#   }
-#   
-# }
-# 
-# get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',QT='CC',nameEsseble=NULL,JJ=NA,PRC=NULL,ONESNP=F){
-#   result <- data.frame(a=is.null(JJ),
-#                        b=is.na(JJ))
-#   return(list(result,NULL))
-# }
-
 
 get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',QT='CC',nameEsseble=NULL,JJ=NA,PRC=NA,ONESNP=F){
   JJ.vec <- rep(0,1000)
@@ -200,54 +151,60 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       mmBrelP = round(mean(PowerRelBandP),4)
       
       qunatBrelP =  round(quantile(PowerRelBandP),4)[2:4]
-      density.Ein <- density(PowerEindP)
-      density.Bin <- density(PowerBindP)
-      density.Brel <- density(PowerRelBandP)
       
-      density.y.max <- max(c(quantile(density.Ein$y),quantile(density.Bin$y),quantile(density.Brel$y)))
-      density.x.min <- min(c(density.Ein$x,density.Bin$x,density.Brel$x))
-      density.x.max <- max(c(density.Ein$x,density.Bin$x,density.Brel$x))
+      data <- data.frame(PowerEindP=t(PowerEindP),
+                         PowerBindP=t(PowerBindP),
+                         PowerRelBandP=t(PowerRelBandP),
+                         JJ.vec = JJ.vec)
+      colnames(data) <- c("EindP","BindP","ErelP","JJ")
       
-      limits.x <- c(0,1)
-      breaks.x <- seq(0,1,0.1)
-      if((density.x.max-density.x.min)<0.1)
-      {
-        limits.x.low <- round(density.x.min,1)
-        limits.x.high <- round(density.x.max,1)
-        if(limits.x.low==limits.x.high){
-          limits.x.low <- max((limits.x.low-0.01),0)
-        }
-        limits.x <- c(limits.x.low,limits.x.high)
-        breaks.x <- seq(limits.x.low,limits.x.high,0.001)
-      }
       
-      Power <- c(PowerEindP,PowerBindP,PowerRelBandP)
-      Method <- c(rep("Geneic Arc I",length(PowerEindP)),rep("Genetic Arc II",length(PowerBindP)),rep("Genetic Arc III",length(PowerRelBandP)))
-      data <- data.frame(Power,Method)
-      
-      p <- ggplot(data,aes(x=Power))+
-        geom_density(aes(group=Method,colour=Method,fill=Method),alpha=0.3,adjust=1)+
-        scale_x_continuous(limits=limits.x,expand = c(0,0),breaks = breaks.x)+
-        scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
+      p1 <- ggplot(data,aes(data$EindP))+
+        geom_histogram(aes(x=data$EindP,y=(..count..)/sum(..count..)),
+                       fill="#c0392b",
+                       alpha=0.75
+        )+
+        theme_bw()+
         theme_new()+
-        labs(title="The Density of Power",y="Density",x="Power")
-      # p <- ggplot(data, aes(x=Power)) +
-      #   geom_histogram(aes(y=..density..,fill=Method,colour=Method,group=Method),binwidth=.02, alpha=.3, position="identity")+
-      #   scale_x_continuous(limits=c(0,1.02),expand = c(0,0),breaks = seq(0,1.02,0.1))+
-      #   #scale_y_continuous(expand = c(0,0),limits=c(0,15))+
-      #   theme_new()+
-      #   labs(title="The Density of Power",y="Density")
+        labs(title="The Histogram of Power of Senarario S1",x="Power",y="Proportion")
+      p2 <- ggplot(data,aes(data$BindP))+
+        geom_histogram(aes(x=data$BindP,y=(..count..)/sum(..count..)),
+                       fill="dodgerblue4",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Power of Senarario S2",x="Power",y="Proportion")
+      p3 <- ggplot(data,aes(data$ErelP))+
+        geom_histogram(aes(x=data$ErelP,y=(..count..)/sum(..count..)),
+                       fill="chartreuse4",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Power of Senarario S3",x="Power",y="Proportion")
+      p4 <- ggplot(data,aes(data$JJ))+
+        geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
+                       fill="gray15",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Total number of variants (J)",x="Total number of variants (J)",y="Proportion")
       
-      Gene_Arc_1 <- c(mmEinP)
-      Gene_Arc_2 <- c(mmBinP)
-      Gene_Arc_3 <- c(mmBrelP)
-      Power_Dist <- c("Power")
+      Gene_Arc_1 <- c(mmEinP,qunatEinP)
+      Gene_Arc_2 <- c(mmBinP,qunatBinP)
+      Gene_Arc_3 <- c(mmBrelP,qunatBrelP)
+      
+      Power_Dist <- c("Mean Power","25% Quantile of Power","Medium of Power",
+                      "75% Quantile of Power")
       combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
-      colnames(combind.result) <- c("Power Distribution","Genetic Arc I","Genetic Arc II",
-                                    "Genetic Arc III")
+      colnames(combind.result) <- c("Power Distribution","Senarario S1","Senarario S2",
+                                    "Senarario S3")
       
       
-      return (list(combind.result,p=NULL))
+      #return (list(combind.result,p1=NULL,p2=NULL,p3=NULL,p4=p4))
+      return (list(combind.result,p1=p1,p2=p2,p3=p3,p4=p4))
     }
     else if(length(EV)>1&TEST!='Burden Test'){
       PowerEindP = NULL
@@ -334,7 +291,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           # Draw MAF
           #
-          
+          JJ.vec[i] <- J
           pj = as.numeric(sample(MAF,J,replace=TRUE))
           #pj =runif(J)*0.1
           m = E*n/J/(a+g*mean(pj))
@@ -458,7 +415,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           # Draw MAF
           #
-          
+          JJ.vec[i] <- J
           SC = ceiling(J*PC)
           SP = ceiling(PRC*SC)
           pEP = calcPowerL(J,SC,SP,E,n,alpha)
@@ -470,62 +427,54 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       PowerBindP <- PowerEindP <- PowerRelBandP <- Power
       
-      mmEinP = round(mean(PowerEindP),4)
-      qunatEinP = round(quantile(PowerEindP),4)[2:4] #25%, median, 75%
       
-      mmBinP = round(mean(PowerBindP),4)
-      qunatBinP = round(quantile(PowerBindP),4)[2:4] #25%, median, 75%
       
-      mmBrelP = round(mean(PowerRelBandP),4)
+      BrelMean <- apply(PowerRelBandP,1,mean)
+      BinMean <- apply(PowerBindP,1,mean)
+      EinMean <- apply(PowerEindP,1,mean)
       
-      qunatBrelP =  round(quantile(PowerRelBandP),4)[2:4]
-      density.Ein <- density(PowerEindP)
-      density.Bin <- density(PowerBindP)
-      density.Brel <- density(PowerRelBandP)
+      EV.Length <- length(EV)
       
-      density.y.max <- max(c(quantile(density.Ein$y),quantile(density.Bin$y),quantile(density.Brel$y)))
-      density.x.min <- min(c(density.Ein$x,density.Bin$x,density.Brel$x))
-      density.x.max <- max(c(density.Ein$x,density.Bin$x,density.Brel$x))
       
-      limits.x <- c(0,1)
-      breaks.x <- seq(0,1,0.1)
-      if((density.x.max-density.x.min)<0.1)
-      {
-        limits.x.low <- round(density.x.min,1)
-        limits.x.high <- round(density.x.max,1)
-        if(limits.x.low==limits.x.high){
-          limits.x.low <- max((limits.x.low-0.01),0)
-        }
-        limits.x <- c(limits.x.low,limits.x.high)
-        breaks.x <- seq(limits.x.low,limits.x.high,0.001)
-      }
+      EV.Length <- length(EV)
       
-      Power <- c(PowerEindP,PowerBindP,PowerRelBandP)
-      Method <- c(rep("Geneic Arc I",length(PowerEindP)),rep("Genetic Arc II",length(PowerBindP)),rep("Genetic Arc III",length(PowerRelBandP)))
-      data <- data.frame(Power,Method)
-      
-      p <- ggplot(data,aes(x=Power))+
-        geom_density(aes(group=Method,colour=Method,fill=Method),alpha=0.3,adjust=1)+
-        scale_x_continuous(limits=limits.x,expand = c(0,0),breaks = breaks.x)+
-        scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
-        #scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
+      data <- data.frame(EV*100,EinMean,BinMean,BrelMean)
+      colnames(data) <- c("EV","EindP","BindP","ErelP")
+      #y.up <- min(1,(max(Power)+0.1))
+      p1 <- ggplot(data)+geom_line(aes(x=EV,y=EindP), colour="#c0392b")+
+        theme_bw()+
         theme_new()+
-        labs(title="The Density of Power",y="Density",x="Power")
-      # p <- ggplot(data, aes(x=Power)) +
-      #   geom_histogram(aes(y=..density..,fill=Method,colour=Method,group=Method),binwidth=.02, alpha=.3, position="identity")+
-      #   scale_x_continuous(limits=c(0,1.02),expand = c(0,0),breaks = seq(0,1.02,0.1))+
-      #   #scale_y_continuous(expand = c(0,0),limits=c(0,15))+
-      #   theme_new()+
-      #   labs(title="The Density of Power",y="Density")
+        labs(title="The Mean Power Distribution of Senarario 1",y="Mean Power",x="Variance Explained (Percent)",y="Proportion")
+      p2 <- ggplot(data)+geom_line(aes(x=EV,y=BindP), colour="dodgerblue4")+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Mean Power Distribution of Senarario 2",y="Mean Power",x="Variance Explained (Percent)")
+      p3 <- ggplot(data)+geom_line(aes(x=EV,y=ErelP), colour="chartreuse4")+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Mean Power Distribution of Senarario 3",y="Mean Power",x="Variance Explained (Percent)")
+      data <- data.frame(JJ=JJ.vec)
+      p4 <- ggplot(data,aes(data$JJ))+
+        geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
+                       fill="gray15",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)",y="Proportion")
       
-      Gene_Arc_1 <- c(mmEinP)
-      Gene_Arc_2 <- c(mmBinP)
-      Gene_Arc_3 <- c(mmBrelP)
-      Power_Dist <- c("Power")
-      combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
-      colnames(combind.result) <- c("Power Distribution","Genetic Arc I","Genetic Arc II",
-                                    "Genetic Arc III")
-      return (list(combind.result,p=NULL))
+      
+      
+      
+      MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
+      colnames(MeanPower.combine) <- c("EV(Percent)",
+                                       "Senarario 1 Mean Power",
+                                       "Senarario 2 Mean Power",
+                                       "Senarario 3 Mean Power"
+      )
+      MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
+      MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]
+      return(list(MeanPower.combine,p1=p1,p2=p2,p3=p3,p4=p4))
     }else if(TEST=='Burden Test'&(length(EV)>1)){
       Power= NULL
       
@@ -593,7 +542,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           # Draw MAF
           #
-          
+          JJ.vec[i] <- J
           SC = ceiling(J*PC)
           SP = ceiling(PRC*SC)
           pEP = calcPowerL(J,SC,SP,E,n,alpha)
@@ -605,33 +554,54 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       }
       
       PowerRelBandP <- PowerBindP <- PowerEindP <- Power
+      
+      
       BrelMean <- apply(PowerRelBandP,1,mean)
       BinMean <- apply(PowerBindP,1,mean)
       EinMean <- apply(PowerEindP,1,mean)
       
       EV.Length <- length(EV)
       
-      EV_x <- rep(EV*100,3)
-      group <- c(rep("Genetic Arc I",EV.Length),rep("Genetic Arc II",EV.Length),
-                 rep("Genetic Arc III",EV.Length))
-      Power <- c(EinMean,BinMean,BrelMean)
-      data <- data.frame(EV_x,group,Power)
-      y.up <- min(1,(max(Power)+0.1))
-      p <- ggplot(data)+geom_line(aes(x=EV_x,y=Power,colour=group))+
-        #scale_x_continuous(limits=limits.x,expand = c(0,0),breaks = breaks.x)+
-        scale_y_continuous(expand = c(0,0),limits=c(0,y.up))+
-        #scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
+      
+      EV.Length <- length(EV)
+      
+      data <- data.frame(EV*100,EinMean,BinMean,BrelMean)
+      colnames(data) <- c("EV","EindP","BindP","ErelP")
+      #y.up <- min(1,(max(Power)+0.1))
+      p1 <- ggplot(data)+geom_line(aes(x=EV,y=EindP), colour="#c0392b")+
+        theme_bw()+
         theme_new()+
-        labs(title="The Mean Power Distribution",y="Mean Power",x="Variance Explained (Percent)")
+        labs(title="The Mean Power Distribution of Senarario 1",y="Mean Power",x="Variance Explained (Percent)",y="Proportion")
+      p2 <- ggplot(data)+geom_line(aes(x=EV,y=BindP), colour="dodgerblue4")+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Mean Power Distribution of Senarario 2",y="Mean Power",x="Variance Explained (Percent)")
+      p3 <- ggplot(data)+geom_line(aes(x=EV,y=ErelP), colour="chartreuse4")+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Mean Power Distribution of Senarario 3",y="Mean Power",x="Variance Explained (Percent)")
+      data <- data.frame(JJ=JJ.vec)
+      p4 <- ggplot(data,aes(data$JJ))+
+        geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
+                       fill="gray15",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)",y="Proportion")
+      
+      
+      
+      
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Genetic Arc I Mean Power",
-                                       "Genetic Arc II Mean Power",
-                                       "Genetic Arc III Mean Power"
+                                       "Senarario 1 Mean Power",
+                                       "Senarario 2 Mean Power",
+                                       "Senarario 3 Mean Power"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
       MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]
-      return(list(MeanPower.combine,p))
+      return(list(MeanPower.combine,p1=p1,p2=p2,p3=p3,p4=p4))
     }
   }else{
     if(length(EV)==1&TEST!='Burden Test'){
@@ -897,7 +867,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           # Draw MAF
           #
-          
+          JJ.vec[i] <- J
           pj = as.numeric(sample(MAF,J,replace=TRUE))
           #pj =runif(J)*0.1
           m = E*n/J/(a+g*mean(pj))
@@ -926,33 +896,54 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       #cat(sdd,'\n')
       #ptm1 <- proc.time()
       #cat('CPU time Total:',ptm1-ptm,'\n')
+      
+      
       BrelMean <- apply(PowerRelBandP,1,mean)
       BinMean <- apply(PowerBindP,1,mean)
       EinMean <- apply(PowerEindP,1,mean)
       
       EV.Length <- length(EV)
       
-      EV_x <- rep(EV*100,3)
-      group <- c(rep("Genetic Arc I",EV.Length),rep("Genetic Arc II",EV.Length),
-                 rep("Genetic Arc III",EV.Length))
-      Power <- c(EinMean,BinMean,BrelMean)
-      data <- data.frame(EV_x,group,Power)
-      y.up <- min(1,(max(Power)+0.1))
-      p <- ggplot(data)+geom_line(aes(x=EV_x,y=Power,colour=group))+
-        #scale_x_continuous(limits=limits.x,expand = c(0,0),breaks = breaks.x)+
-        scale_y_continuous(expand = c(0,0),limits=c(0,y.up))+
-        #scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
+      
+      EV.Length <- length(EV)
+      
+      data <- data.frame(EV*100,EinMean,BinMean,BrelMean)
+      colnames(data) <- c("EV","EindP","BindP","ErelP")
+      #y.up <- min(1,(max(Power)+0.1))
+      p1 <- ggplot(data)+geom_line(aes(x=EV,y=EindP), colour="#c0392b")+
+        theme_bw()+
         theme_new()+
-        labs(title="The Mean Power Distribution",y="Mean Power",x="Variance Explained (Percent)")
+        labs(title="The Mean Power Distribution of Senarario 1",y="Mean Power",x="Variance Explained (Percent)",y="Proportion")
+      p2 <- ggplot(data)+geom_line(aes(x=EV,y=BindP), colour="dodgerblue4")+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Mean Power Distribution of Senarario 2",y="Mean Power",x="Variance Explained (Percent)")
+      p3 <- ggplot(data)+geom_line(aes(x=EV,y=ErelP), colour="chartreuse4")+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Mean Power Distribution of Senarario 3",y="Mean Power",x="Variance Explained (Percent)")
+      data <- data.frame(JJ=JJ.vec)
+      p4 <- ggplot(data,aes(data$JJ))+
+        geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
+                       fill="gray15",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)",y="Proportion")
+      
+      
+      
+      
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Genetic Arc I Mean Power",
-                                       "Genetic Arc II Mean Power",
-                                       "Genetic Arc III Mean Power"
+                                       "Senarario 1 Mean Power",
+                                       "Senarario 2 Mean Power",
+                                       "Senarario 3 Mean Power"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
       MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]
-      return(list(MeanPower.combine,p))
+      return(list(MeanPower.combine,p1=p1,p2=p2,p3=p3,p4=p4))
     }
     else if(TEST=='Burden Test'&length(EV)==1) {
       
@@ -1022,7 +1013,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           # Draw MAF
           #
-          
+          JJ.vec[i] <- J
           SC = ceiling(J*PC)
           SP = ceiling(PRC*SC)
           pEP = calcPowerL(J,SC,SP,E,n,alpha)
@@ -1043,54 +1034,60 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       mmBrelP = round(mean(PowerRelBandP),4)
       
       qunatBrelP =  round(quantile(PowerRelBandP),4)[2:4]
-      density.Ein <- density(PowerEindP)
-      density.Bin <- density(PowerBindP)
-      density.Brel <- density(PowerRelBandP)
       
-      density.y.max <- max(c(quantile(density.Ein$y),quantile(density.Bin$y),quantile(density.Brel$y)))
-      density.x.min <- min(c(density.Ein$x,density.Bin$x,density.Brel$x))
-      density.x.max <- max(c(density.Ein$x,density.Bin$x,density.Brel$x))
+      data <- data.frame(PowerEindP=t(PowerEindP),
+                         PowerBindP=t(PowerBindP),
+                         PowerRelBandP=t(PowerRelBandP),
+                         JJ.vec = JJ.vec)
+      colnames(data) <- c("EindP","BindP","ErelP","JJ")
       
-      limits.x <- c(0,1)
-      breaks.x <- seq(0,1,0.1)
-      if((density.x.max-density.x.min)<0.1)
-      {
-        limits.x.low <- round(density.x.min,1)
-        limits.x.high <- round(density.x.max,1)
-        if(limits.x.low==limits.x.high){
-          limits.x.low <- max((limits.x.low-0.01),0)
-        }
-        limits.x <- c(limits.x.low,limits.x.high)
-        breaks.x <- seq(limits.x.low,limits.x.high,0.001)
-      }
       
-      Power <- c(PowerEindP,PowerBindP,PowerRelBandP)
-      Method <- c(rep("Geneic Arc I",length(PowerEindP)),rep("Genetic Arc II",length(PowerBindP)),rep("Genetic Arc III",length(PowerRelBandP)))
-      data <- data.frame(Power,Method)
-      
-      p <- ggplot(data,aes(x=Power))+
-        geom_density(aes(group=Method,colour=Method,fill=Method),alpha=0.3,adjust=1)+
-        scale_x_continuous(limits=limits.x,expand = c(0,0),breaks = breaks.x)+
-        scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
-        #scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
+      p1 <- ggplot(data,aes(data$EindP))+
+        geom_histogram(aes(x=data$EindP,y=(..count..)/sum(..count..)),
+                       fill="#c0392b",
+                       alpha=0.75
+        )+
+        theme_bw()+
         theme_new()+
-        labs(title="The Density of Power",y="Density",x="Power")
-      # p <- ggplot(data, aes(x=Power)) +
-      #   geom_histogram(aes(y=..density..,fill=Method,colour=Method,group=Method),binwidth=.02, alpha=.3, position="identity")+
-      #   scale_x_continuous(limits=c(0,1.02),expand = c(0,0),breaks = seq(0,1.02,0.1))+
-      #   #scale_y_continuous(expand = c(0,0),limits=c(0,15))+
-      #   theme_new()+
-      #   labs(title="The Density of Power",y="Density")
+        labs(title="The Histogram of Power of Senarario S1",x="Power",y="Proportion")
+      p2 <- ggplot(data,aes(data$BindP))+
+        geom_histogram(aes(x=data$BindP,y=(..count..)/sum(..count..)),
+                       fill="dodgerblue4",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Power of Senarario S2",x="Power",y="Proportion")
+      p3 <- ggplot(data,aes(data$ErelP))+
+        geom_histogram(aes(x=data$ErelP,y=(..count..)/sum(..count..)),
+                       fill="chartreuse4",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Power of Senarario S3",x="Power",y="Proportion")
+      p4 <- ggplot(data,aes(data$JJ))+
+        geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
+                       fill="gray15",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Total number of variants (J)",x="Total number of variants (J)",y="Proportion")
       
       Gene_Arc_1 <- c(mmEinP,qunatEinP)
       Gene_Arc_2 <- c(mmBinP,qunatBinP)
       Gene_Arc_3 <- c(mmBrelP,qunatBrelP)
+      
       Power_Dist <- c("Mean Power","25% Quantile of Power","Medium of Power",
                       "75% Quantile of Power")
       combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
-      colnames(combind.result) <- c("Power Distribution","Genetic Arc I","Genetic Arc II",
-                                    "Genetic Arc III")
-      return (list(combind.result,p=p))
+      colnames(combind.result) <- c("Power Distribution","Senarario S1","Senarario S2",
+                                    "Senarario S3")
+      
+      
+      #return (list(combind.result,p1=NULL,p2=NULL,p3=NULL,p4=p4))
+      return (list(combind.result,p1=p1,p2=p2,p3=p3,p4=p4))
     }else if(TEST=='Burden Test'&(length(EV)>1)){
       Power= NULL
       
@@ -1158,7 +1155,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           # Draw MAF
           #
-          
+          JJ.vec[i] <- J
           SC = ceiling(J*PC)
           SP = ceiling(PRC*SC)
           pEP = calcPowerL(J,SC,SP,E,n,alpha)
@@ -1170,33 +1167,55 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       }
       
       PowerRelBandP <- PowerBindP <- PowerEindP <- Power
+      
+      
+      
       BrelMean <- apply(PowerRelBandP,1,mean)
       BinMean <- apply(PowerBindP,1,mean)
       EinMean <- apply(PowerEindP,1,mean)
       
       EV.Length <- length(EV)
       
-      EV_x <- rep(EV*100,3)
-      group <- c(rep("Genetic Arc I",EV.Length),rep("Genetic Arc II",EV.Length),
-                 rep("Genetic Arc III",EV.Length))
-      Power <- c(EinMean,BinMean,BrelMean)
-      data <- data.frame(EV_x,group,Power)
-      y.up <- min(1,(max(Power)+0.1))
-      p <- ggplot(data)+geom_line(aes(x=EV_x,y=Power,colour=group))+
-        #scale_x_continuous(limits=limits.x,expand = c(0,0),breaks = breaks.x)+
-        scale_y_continuous(expand = c(0,0),limits=c(0,y.up))+
-        #scale_y_continuous(expand = c(0,0),limits=c(0,(density.y.max+0.5)))+
+      
+      EV.Length <- length(EV)
+      
+      data <- data.frame(EV*100,EinMean,BinMean,BrelMean)
+      colnames(data) <- c("EV","EindP","BindP","ErelP")
+      #y.up <- min(1,(max(Power)+0.1))
+      p1 <- ggplot(data)+geom_line(aes(x=EV,y=EindP), colour="#c0392b")+
+        theme_bw()+
         theme_new()+
-        labs(title="The Mean Power Distribution",y="Mean Power",x="Variance Explained (Percent)")
+        labs(title="The Mean Power Distribution of Senarario 1",y="Mean Power",x="Variance Explained (Percent)",y="Proportion")
+      p2 <- ggplot(data)+geom_line(aes(x=EV,y=BindP), colour="dodgerblue4")+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Mean Power Distribution of Senarario 2",y="Mean Power",x="Variance Explained (Percent)")
+      p3 <- ggplot(data)+geom_line(aes(x=EV,y=ErelP), colour="chartreuse4")+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Mean Power Distribution of Senarario 3",y="Mean Power",x="Variance Explained (Percent)")
+      data <- data.frame(JJ=JJ.vec)
+      p4 <- ggplot(data,aes(data$JJ))+
+        geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
+                       fill="gray15",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)",y="Proportion")
+      
+      
+      
+      
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Genetic Arc I Mean Power",
-                                       "Genetic Arc II Mean Power",
-                                       "Genetic Arc III Mean Power"
+                                       "Senarario 1 Mean Power",
+                                       "Senarario 2 Mean Power",
+                                       "Senarario 3 Mean Power"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
       MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]
-      return(list(MeanPower.combine,p))
+      return(list(MeanPower.combine,p1=p1,p2=p2,p3=p3,p4=p4))
     }
   }
 }

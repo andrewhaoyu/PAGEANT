@@ -1,0 +1,12 @@
+name: PAGEANT_code
+title: PAGEANT_code
+username:
+account: andrewhaoyu
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 219969
+bundleId: 1002057
+url: https://andrewhaoyu.shinyapps.io/PAGEANT_code/
+when: 1506618261.89275
+asMultiple: FALSE
+asStatic: FALSE
