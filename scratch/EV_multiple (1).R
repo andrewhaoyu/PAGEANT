@@ -1,6 +1,6 @@
-BrelMean <- ceilupto(apply(PowerRelBandP,1,mean))
-BinMean <- ceilupto(apply(PowerBindP,1,mean))
-EinMean <- ceilupto(apply(PowerEindP,1,mean))
+BrelMean <- apply(PowerRelBandP,1,mean)
+BinMean <- apply(PowerBindP,1,mean)
+EinMean <- apply(PowerEindP,1,mean)
 
 EV.Length <- length(EV)
 
@@ -26,13 +26,13 @@ p3 <- ggplot(data)+geom_line(aes(x=EV,y=ErelP), colour="chartreuse4")+
   labs(title="The Mean Sample Size Distribution of Senarario 3",y="Mean Sample Size",x="Variance Explained (Percent)")
 data <- data.frame(JJ=JJ.vec)
 p4 <- ggplot(data,aes(data$JJ))+
-  geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
+  geom_histogram(aes(x=data$JJ,y=..density..),
                  fill="gray15",
                  alpha=0.75
   )+
   theme_bw()+
   theme_new()+
-  labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)")
+  labs(title="The Histogram of Parameters",x="Parameters")
 
 
 

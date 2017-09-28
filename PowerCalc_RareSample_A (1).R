@@ -4,10 +4,8 @@
 ## Function of EV and J
 ##
 ##
-
 source('skat_sample_calculatorsc.r')
 source('sampler.r')
-
 
 ###ceil a funciton up to a 10^places digit
 ceilupto <- function(number,places=2){
@@ -180,46 +178,46 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       
       
       p1 <- ggplot(data,aes(data$EindP))+
-        geom_histogram(aes(x=data$EindP,y=(..count..)/sum(..count..)),
-                       fill="#c0392b",
-                       alpha=0.75
+        geom_density(aes(x=data$EindP,y=..density..),
+                     fill="#c0392b",
+                     alpha=0.75
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Sample Size of Senarario S1",x="Sample Size",y="Proportion")
+        labs(title="The Histogram of Power of Senarario S1",x="Power",y="Density")
       p2 <- ggplot(data,aes(data$BindP))+
-        geom_histogram(aes(x=data$BindP,y=(..count..)/sum(..count..)),
-                       fill="dodgerblue4",
-                       alpha=0.75
+        geom_density(aes(x=data$BindP,y=..density..),
+                     fill="dodgerblue4",
+                     alpha=0.75
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Sample Size of Senarario S2",x="Sample Size",y="Proportion")
+        labs(title="The Histogram of Power of Senarario S2",x="Power",y="Density")
       p3 <- ggplot(data,aes(data$ErelP))+
-        geom_histogram(aes(x=data$ErelP,y=(..count..)/sum(..count..)),
-                       fill="chartreuse4",
-                       alpha=0.75
+        geom_density(aes(x=data$ErelP,y=..density..),
+                     fill="chartreuse4",
+                     alpha=0.75
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Sample Size of Senarario S3",x="Sample Size",y="Proportion")
+        labs(title="The Histogram of Power of Senarario S3",x="Power",y="Density")
       p4 <- ggplot(data,aes(data$JJ))+
-        geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
-                       fill="gray15",
-                       alpha=0.75
+        geom_density(aes(x=data$JJ,y=..density..),
+                     fill="gray15",
+                     alpha=0.75
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Total number of variants (J)",x="Total number of variants (J)",y="Proportion")
+        labs(title="The Histogram of Total number of variants (J)",x="Total number of variants (J)",y="Density")
       
       Gene_Arc_1 <- c(mmEinP,qunatEinP)
       Gene_Arc_2 <- c(mmBinP,qunatBinP)
       Gene_Arc_3 <- c(mmBrelP,qunatBrelP)
       
-      Power_Dist <- c("Mean Sample Size","25% Quantile of Sample Size","Medium of Sample Size",
-                      "75% Quantile of Sample Size")
+      Power_Dist <- c("Mean Power","25% Quantile of Power","Medium of Power",
+                      "75% Quantile of Power")
       combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
-      colnames(combind.result) <- c("Sample Size Distribution","Senarario S1","Senarario S2",
+      colnames(combind.result) <- c("Power Distribution","Senarario S1","Senarario S2",
                                     "Senarario S3")
       
       
@@ -346,15 +344,15 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
         PowerEindP = rbind(PowerEindP,EindP)
 		save(PowerRelBandP,PowerBindP,PowerEindP,file='2')
       }
-      BrelMean <- ceilupto(apply(PowerRelBandP,1,mean))
-      BinMean <- ceilupto(apply(PowerBindP,1,mean))
-      EinMean <- ceilupto(apply(PowerEindP,1,mean))
+      BrelMean <- apply(PowerRelBandP,1,mean)
+      BinMean <- apply(PowerBindP,1,mean)
+      EinMean <- apply(PowerEindP,1,mean)
       
       EV.Length <- length(EV)
       
       # EV_x <- rep(EV*100,3)
-      # group <- c(rep("Senarario 1",EV.Length),rep("Senarario 2",EV.Length),
-      #            rep("Senarario 3",EV.Length))
+      # group <- c(rep("Senarario S1",EV.Length),rep("Senarario S2",EV.Length),
+      #            rep("Senarario S3",EV.Length))
       # Power <- c(EinMean,BinMean,BrelMean)
       # data <- data.frame(EV_x,group,Power)
       data <- data.frame(EV*100,EinMean,BinMean,BrelMean)
@@ -363,39 +361,312 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       p1 <- ggplot(data)+geom_line(aes(x=EV,y=EindP), colour="#c0392b")+
         theme_bw()+
         theme_new()+
-        labs(title="The Mean Sample Size Distribution of Senarario 1",y="Mean Sample Size",x="Variance Explained (Percent)",y="Proportion")
+        labs(title="The Mean Sample Size Distribution of Senarario S1",y="Mean Sample Size",x="Variance Explained (Percent)")
       p2 <- ggplot(data)+geom_line(aes(x=EV,y=BindP), colour="dodgerblue4")+
         theme_bw()+
         theme_new()+
-        labs(title="The Mean Sample Size Distribution of Senarario 2",y="Mean Sample Size",x="Variance Explained (Percent)")
+        labs(title="The Mean Sample Size Distribution of Senarario S2",y="Mean Sample Size",x="Variance Explained (Percent)")
       p3 <- ggplot(data)+geom_line(aes(x=EV,y=ErelP), colour="chartreuse4")+
         theme_bw()+
         theme_new()+
-        labs(title="The Mean Sample Size Distribution of Senarario 3",y="Mean Sample Size",x="Variance Explained (Percent)")
+        labs(title="The Mean Sample Size Distribution of Senarario S3",y="Mean Sample Size",x="Variance Explained (Percent)")
       data <- data.frame(JJ=JJ.vec)
-      p4 <- ggplot(data,aes(data$JJ))+
-        geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
-                       fill="gray15",
-                       alpha=0.75
-        )+
-        theme_bw()+
-        theme_new()+
-        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)")
+     
       
       
       
       
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Senarario 1 Mean Sample Size",
-                                       "Senarario 2 Mean Sample Size",
-                                       "Senarario 3 Mean Sample Size"
+                                       "Senarario S1 Mean Sample Size",
+                                       "Senarario S2 Mean Sample Size",
+                                       "Senarario S3 Mean Sample Size"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
       MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]
       return(list(MeanPower.combine,p1=p1,p2=p2,p3=p3,p4=p4))
     }
-  
+    else if(TEST=='Burden Test'&length(EV)==1) {
+
+      Power= NULL
+
+      n = CASE*CONTROL/Total
+      if (QT == 'QT'){
+        n = 1 # sample size
+		Ratio=1
+      }
+      #ptm <- proc.time()
+      Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
+
+
+      MAFL = 1/Total
+      MAFU = 0.01
+      g = (2*MAFU*(1-MAFU)*log10(MAFU)^2 - 2*MAFL*(1-MAFL)*log10(MAFL)^2)/(MAFU - MAFL)
+      a = 2*MAFU*(1-MAFU)*log10(MAFU)^2 - MAFU*g
+
+
+
+      VPNames = Obj$Names
+      TJ = Obj$SizeGene
+      TJJ = Obj$SizeGeneV
+      DJ = dist(TJ)
+      meanP = Obj$mean
+      MAF = Obj$maf
+      LL = length(EV)
+
+
+
+      for (j in 1:LL){
+        E  = EV[j]
+
+        Pow =NULL
+
+
+        for (i in 1:1000){
+          #cat(i,'\n')
+
+          if (is.na(JJ)){
+            if (is.null(nameEsseble)){
+              #
+              # Draw sample
+              #
+              #cat('Gene is not  Present','\n')
+              J = as.numeric(sampleD(DJ,names(TJ),1))
+
+            }else{
+              kkk = which(VPNames==nameEsseble)
+              if (length(kkk)==0){
+                #
+                # Draw sample
+                #
+                #cat('Gene is not  Present','\n')
+                J = as.numeric(sampleD(DJ,names(TJ),1))
+              }else{
+                #cat('Gene is Present','\n')
+                J = TJJ[kkk]
+                #cat(J,'\n')
+              }
+            }
+          }else{
+            #cat('JJ',JJ,'\n')
+            J = JJ
+          }
+          #cat(J,'\n')
+          #
+          # Draw MAF
+          #
+          JJ.vec[i] <- J
+          SC = ceiling(J*PC)
+          SP = ceiling(PRC*SC)
+          pEP = calcPowerSampleL(J,PC,PRC,E,PowerThr,alpha,Ratio)
+
+          Pow = c(Pow,pEP)
+        }
+		PowerX = Pow[Pow!=Ratio*10^4]
+		Pow[Pow==Ratio*10^4]=mean(PowerX)
+        Power = rbind(Power,Pow)
+      }
+      PowerBindP <- PowerEindP <- PowerRelBandP <- Power
+      save(PowerRelBandP,PowerBindP,PowerEindP,file='3')
+
+      mmEinP = ceilupto(mean(PowerEindP))
+      qunatEinP = ceilupto(quantile(PowerEindP))[2:4] #25%, median, 75%
+      
+      
+      mmBinP = ceilupto(mean(PowerBindP))
+      qunatBinP = ceilupto(quantile(PowerBindP))[2:4] #25%, median, 75%
+      
+      mmBrelP = ceilupto(mean(PowerRelBandP))
+      
+      qunatBrelP =  ceilupto(quantile(PowerRelBandP))[2:4]
+      
+      data <- data.frame(PowerEindP=t(PowerEindP),
+                         PowerBindP=t(PowerBindP),
+                         PowerRelBandP=t(PowerRelBandP),
+                         JJ.vec = JJ.vec)
+      colnames(data) <- c("EindP","BindP","ErelP","JJ")
+      
+      
+      p1 <- ggplot(data,aes(data$EindP))+
+        geom_histogram(aes(x=data$EindP,y=..count../(sum(..count..))),
+                       fill="#c0392b",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Sample Size of Senarario S1",x="Sample Size",y="Proportion")
+      p2 <- ggplot(data,aes(data$BindP))+
+        geom_histogram(aes(x=data$BindP,y=..count../(sum(..count..))),
+                       fill="dodgerblue4",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Sample Size of Senarario S2",x="Sample Size",y="Proportion")
+      p3 <- ggplot(data,aes(data$ErelP))+
+        geom_histogram(aes(x=data$ErelP,y=..count../(sum(..count..))),
+                       fill="chartreuse4",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Sample Size of Senarario S3",x="Sample Size",y="Proportion")
+      p4 <- ggplot(data,aes(data$JJ))+
+        geom_histogram(aes(x=data$JJ,y=..count../(sum(..count..))),
+                       fill="gray15",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Total number of variants (J)",x="Total number of variants (J)",y="Proportion")
+      
+      Gene_Arc_1 <- c(mmEinP,qunatEinP)
+      Gene_Arc_2 <- c(mmBinP,qunatBinP)
+      Gene_Arc_3 <- c(mmBrelP,qunatBrelP)
+      
+      Power_Dist <- c("Mean Sample Size","25% Quantile of Sample Size","Medium of Sample Size",
+                      "75% Quantile of Sample Size")
+      combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
+      colnames(combind.result) <- c("Sample Size Distribution","Senarario S1","Senarario S2",
+                                    "Senarario S3")
+      
+      
+      #return (list(combind.result,p1=NULL,p2=NULL,p3=NULL,p4=p4))
+      return (list(combind.result,p1=p1,p2=p2,p3=p3,p4=p4))
+      
+      
+    }else if(TEST=='Burden Test'&(length(EV)>1)){
+      Power= NULL
+
+      n = CASE*CONTROL/Total
+      if (QT == 'QT'){
+        n = 1 # sample size
+		Ratio=1
+      }
+      #ptm <- proc.time()
+      Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
+
+
+      MAFL = 1/Total
+      MAFU = 0.01
+      g = (2*MAFU*(1-MAFU)*log10(MAFU)^2 - 2*MAFL*(1-MAFL)*log10(MAFL)^2)/(MAFU - MAFL)
+      a = 2*MAFU*(1-MAFU)*log10(MAFU)^2 - MAFU*g
+
+
+
+      VPNames = Obj$Names
+      TJ = Obj$SizeGene
+      TJJ = Obj$SizeGeneV
+      DJ = dist(TJ)
+      meanP = Obj$mean
+      MAF = Obj$maf
+      LL = length(EV)
+
+
+
+      for (j in 1:LL){
+        E  = EV[j]
+
+        Pow =NULL
+
+
+        for (i in 1:1000){
+          #cat(i,'\n')
+
+          if (is.na(JJ)){
+            if (is.null(nameEsseble)){
+              #
+              # Draw sample
+              #
+              #cat('Gene is not  Present','\n')
+              J = as.numeric(sampleD(DJ,names(TJ),1))
+
+            }else{
+              kkk = which(VPNames==nameEsseble)
+              if (length(kkk)==0){
+                #
+                # Draw sample
+                #
+                #cat('Gene is not  Present','\n')
+                J = as.numeric(sampleD(DJ,names(TJ),1))
+              }else{
+                #cat('Gene is Present','\n')
+                J = TJJ[kkk]
+                #cat(J,'\n')
+              }
+            }
+          }else{
+            #cat('JJ',JJ,'\n')
+            J = JJ
+          }
+          #cat(J,'\n')
+          #
+          # Draw MAF
+          #
+          JJ.vec[i] <- J
+          SC = ceiling(J*PC)
+          SP = ceiling(PRC*SC)
+          pEP = calcPowerLSample(J,SC,SP,E,PowerThr,alpha,Ratio)
+
+          Pow = c(Pow,pEP)
+        }
+		PowerX = Pow[Pow!=Ratio*10^4]
+		Pow[Pow==Ratio*10^4]=mean(PowerX)
+        Power = rbind(Power,Pow)
+
+      }
+
+      PowerRelBandP <- PowerBindP <- PowerEindP <- Power
+	  save(PowerRelBandP,PowerBindP,PowerEindP,file='2')
+	  BrelMean <- apply(PowerRelBandP,1,mean)
+	  BinMean <- apply(PowerBindP,1,mean)
+	  EinMean <- apply(PowerEindP,1,mean)
+	  
+	  EV.Length <- length(EV)
+	  
+	  # EV_x <- rep(EV*100,3)
+	  # group <- c(rep("Senarario S1",EV.Length),rep("Senarario S2",EV.Length),
+	  #            rep("Senarario S3",EV.Length))
+	  # Power <- c(EinMean,BinMean,BrelMean)
+	  # data <- data.frame(EV_x,group,Power)
+	  data <- data.frame(EV*100,EinMean,BinMean,BrelMean)
+	  colnames(data) <- c("EV","EindP","BindP","ErelP")
+	  #y.up <- min(1,(max(Power)+0.1))
+	  p1 <- ggplot(data)+geom_line(aes(x=EV,y=EindP), colour="#c0392b")+
+	    theme_bw()+
+	    theme_new()+
+	    labs(title="The Mean Sample Size Distribution of Senarario S1",y="Mean Sample Size",x="Variance Explained (Percent)")
+	  p2 <- ggplot(data)+geom_line(aes(x=EV,y=BindP), colour="dodgerblue4")+
+	    theme_bw()+
+	    theme_new()+
+	    labs(title="The Mean Sample Size Distribution of Senarario S2",y="Mean Sample Size",x="Variance Explained (Percent)")
+	  p3 <- ggplot(data)+geom_line(aes(x=EV,y=ErelP), colour="chartreuse4")+
+	    theme_bw()+
+	    theme_new()+
+	    labs(title="The Mean Sample Size Distribution of Senarario S3",y="Mean Sample Size",x="Variance Explained (Percent)")
+	  data <- data.frame(JJ=JJ.vec)
+	  p4 <- ggplot(data,aes(data$JJ))+
+	    geom_histogram(aes(x=data$JJ,y=..count../(sum(..count..))),
+	                   fill="gray15",
+	                   alpha=0.75
+	    )+
+	    theme_bw()+
+	    theme_new()+
+	    labs(title="The Histogram of Total number of variants (J)",x="Total number of variants (J)",y="Proportion")
+	  
+	  
+	  
+	  
+	  MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
+	  colnames(MeanPower.combine) <- c("EV(Percent)",
+	                                   "Senarario S1 Mean Sample Size",
+	                                   "Senarario S2 Mean Sample Size",
+	                                   "Senarario S3 Mean Sample Size"
+	  )
+	  MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
+	  MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]
+	  return(list(MeanPower.combine,p1=p1,p2=p2,p3=p3,p4=p4))
+    }
     }else{
     if(length(EV)==1&TEST!='Burden Test'){
       PowerEindP = NULL
@@ -742,50 +1013,39 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       #            rep("Senarario S3",EV.Length))
       # Power <- c(EinMean,BinMean,BrelMean)
       # data <- data.frame(EV_x,group,Power)
-      BrelMean <- ceilupto(apply(PowerRelBandP,1,mean))
-      BinMean <- ceilupto(apply(PowerBindP,1,mean))
-      EinMean <- ceilupto(apply(PowerEindP,1,mean))
-      
-      EV.Length <- length(EV)
-      
-      # EV_x <- rep(EV*100,3)
-      # group <- c(rep("Senarario 1",EV.Length),rep("Senarario 2",EV.Length),
-      #            rep("Senarario 3",EV.Length))
-      # Power <- c(EinMean,BinMean,BrelMean)
-      # data <- data.frame(EV_x,group,Power)
       data <- data.frame(EV*100,EinMean,BinMean,BrelMean)
       colnames(data) <- c("EV","EindP","BindP","ErelP")
       #y.up <- min(1,(max(Power)+0.1))
       p1 <- ggplot(data)+geom_line(aes(x=EV,y=EindP), colour="#c0392b")+
         theme_bw()+
         theme_new()+
-        labs(title="The Mean Sample Size Distribution of Senarario 1",y="Mean Sample Size",x="Variance Explained (Percent)",y="Proportion")
+        labs(title="The Mean Sample Size Distribution of Senarario S1",y="Mean Sample Size",x="Variance Explained (Percent)")
       p2 <- ggplot(data)+geom_line(aes(x=EV,y=BindP), colour="dodgerblue4")+
         theme_bw()+
         theme_new()+
-        labs(title="The Mean Sample Size Distribution of Senarario 2",y="Mean Sample Size",x="Variance Explained (Percent)")
+        labs(title="The Mean Sample Size Distribution of Senarario S2",y="Mean Sample Size",x="Variance Explained (Percent)")
       p3 <- ggplot(data)+geom_line(aes(x=EV,y=ErelP), colour="chartreuse4")+
         theme_bw()+
         theme_new()+
-        labs(title="The Mean Sample Size Distribution of Senarario 3",y="Mean Sample Size",x="Variance Explained (Percent)")
+        labs(title="The Mean Sample Size Distribution of Senarario S3",y="Mean Sample Size",x="Variance Explained (Percent)")
       data <- data.frame(JJ=JJ.vec)
       p4 <- ggplot(data,aes(data$JJ))+
-        geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
+        geom_histogram(aes(x=data$JJ,y=..count../(sum(..count..))),
                        fill="gray15",
                        alpha=0.75
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)")
+        labs(title="The Histogram of Total number of variants (J)",x="Total number of variants (J)",y="Proportion")
       
       
       
       
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Senarario 1 Mean Sample Size",
-                                       "Senarario 2 Mean Sample Size",
-                                       "Senarario 3 Mean Sample Size"
+                                       "Senarario S1 Mean Sample Size",
+                                       "Senarario S2 Mean Sample Size",
+                                       "Senarario S3 Mean Sample Size"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
       MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]

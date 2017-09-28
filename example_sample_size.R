@@ -1,4 +1,5 @@
-source('PowerCalc_RareSample_A.R')
+source('PowerCal_RareSample_A.R')
+source('PowerCalc_RareSample_original.r')
 
 # Total = 10000
 # ncase = 5000
@@ -11,5 +12,6 @@ EV <- 0.5/100
 PowerThr <- 0.8
 
 result <- 
-  get_Aprox_Sample(EV,PowerThr,alpha,PRC=0.1,TEST = 'Burden Test',QT='CC',nameEsseble=NULL,JJ=NA,ONESNP=T,PC=0.1)
-grid.arrange(result[[2]],result[[4]],result[[3]],result[[5]],ncol=2)
+  get_Aprox_Sample(EV,PowerThr,alpha,TEST = 'SKAT',QT='QT',nameEsseble=NULL,JJ=NA,ONESNP=F)
+
+#grid.arrange(result[[2]],result[[4]],result[[3]],result[[5]],ncol=2)

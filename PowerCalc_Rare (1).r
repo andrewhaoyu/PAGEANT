@@ -6,7 +6,6 @@
 ##
 source('skat_calculator2.r')
 source('skat_calculator2sc.r')
-
 source('sampler.r')
 
 theme_new <- function(base_size = 12, base_family = "Helvetica"){
@@ -81,7 +80,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       PowerBindP = NULL
       PowerRelBandP = NULL
       n = CASE*CONTROL/Total
-      
+
       if (TEST=='SKAT'){
         aa=1
         bb=25
@@ -95,22 +94,22 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
         bb=1/2
       }
       #cat(aa,bb,'\n')
-      
-      
+
+
       if (QT == 'QT'){
         n = Total # sample size
       }
       #ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
-      
-      
+
+
       MAFL = 1/Total
       MAFU = 0.01
       g = (2*MAFU*(1-MAFU)*log10(MAFU)^2 - 2*MAFL*(1-MAFL)*log10(MAFL)^2)/(MAFU - MAFL)
       a = 2*MAFU*(1-MAFU)*log10(MAFU)^2 - MAFU*g
-      
-      
-      
+
+
+
       VPNames = Obj$Names
       TJ = Obj$SizeGene
       TJJ = Obj$SizeGeneV
@@ -118,19 +117,19 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       meanP = Obj$mean
       MAF = Obj$maf
       LL = length(EV)
-      
-      
-      
+
+
+
       for (j in 1:LL){
         E  = EV[j]
-        
+
         EindP =NULL
         BindP = NULL
         ErelP = NULL
-        
+
         for (i in 1:1000){
           #cat(i,'\n')
-          
+
           if (is.na(JJ)){
             if (is.null(nameEsseble)){
               #
@@ -138,7 +137,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
               #
               #cat('Gene is not  Present','\n')
               J = as.numeric(sampleD(DJ,names(TJ),1))
-              
+
             }else{
               kkk = which(VPNames==nameEsseble)
               if (length(kkk)==0){
@@ -161,25 +160,25 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           # Draw MAF
           #
-          JJ.vec[i] <- J
+
           pj = as.numeric(sample(MAF,J,replace=TRUE))
           #pj =runif(J)*0.1
           m = E*n/J/(a+g*mean(pj))
           gm = g*m
-          
+
           if (is.na(PC)){
             pEinP = calcPower(pj,n*E,n,aa,bb,alpha)
             pBinP = calcPowerBPind(pj,n*E,n,aa,bb,alpha)
             ErelP = c(ErelP,calcPowerD(pj,n*E,n,gm,aa,bb,alpha))
           }else{
             SC = ceiling(J*PC)
-            
+
             pEinP = calcPower_SC(pj,SC,n*E,n,aa,bb,alpha)
             pBinP = calcPowerBPind_SC(pj,SC,n*E,n,aa,bb,alpha)
             ErelP = c(ErelP,calcPowerD_SC(pj,SC,n*E,n,gm,aa,bb,alpha))
           }
-          
-          
+
+
           BindP = c(BindP,pBinP)
           EindP = c(EindP,pEinP)
         }
@@ -190,24 +189,24 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       #cat(sdd,'\n')
       #ptm1 <- proc.time()
       #cat('CPU time Total:',ptm1-ptm,'\n')
-      
+
       mmEinP = round(mean(PowerEindP),4)
       qunatEinP = round(quantile(PowerEindP),4)[2:4] #25%, median, 75%
-      
+
       mmBinP = round(mean(PowerBindP),4)
       qunatBinP = round(quantile(PowerBindP),4)[2:4] #25%, median, 75%
-      
+
       mmBrelP = round(mean(PowerRelBandP),4)
-      
+
       qunatBrelP =  round(quantile(PowerRelBandP),4)[2:4]
       density.Ein <- density(PowerEindP)
       density.Bin <- density(PowerBindP)
       density.Brel <- density(PowerRelBandP)
-      
+
       density.y.max <- max(c(quantile(density.Ein$y),quantile(density.Bin$y),quantile(density.Brel$y)))
       density.x.min <- min(c(density.Ein$x,density.Bin$x,density.Brel$x))
       density.x.max <- max(c(density.Ein$x,density.Bin$x,density.Brel$x))
-      
+
       limits.x <- c(0,1)
       breaks.x <- seq(0,1,0.1)
       if((density.x.max-density.x.min)<0.1)
@@ -220,11 +219,11 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
         limits.x <- c(limits.x.low,limits.x.high)
         breaks.x <- seq(limits.x.low,limits.x.high,0.001)
       }
-      
+
       Power <- c(PowerEindP,PowerBindP,PowerRelBandP)
       Method <- c(rep("Geneic Arc I",length(PowerEindP)),rep("Genetic Arc II",length(PowerBindP)),rep("Genetic Arc III",length(PowerRelBandP)))
       data <- data.frame(Power,Method)
-      
+
       p <- ggplot(data,aes(x=Power))+
         geom_density(aes(group=Method,colour=Method,fill=Method),alpha=0.3,adjust=1)+
         scale_x_continuous(limits=limits.x,expand = c(0,0),breaks = breaks.x)+
@@ -237,7 +236,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       #   #scale_y_continuous(expand = c(0,0),limits=c(0,15))+
       #   theme_new()+
       #   labs(title="The Density of Power",y="Density")
-      
+
       Gene_Arc_1 <- c(mmEinP)
       Gene_Arc_2 <- c(mmBinP)
       Gene_Arc_3 <- c(mmBrelP)
@@ -245,8 +244,8 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
       colnames(combind.result) <- c("Power Distribution","Genetic Arc I","Genetic Arc II",
                                     "Genetic Arc III")
-      
-      
+
+
       return (list(combind.result,p=NULL))
     }
     else if(length(EV)>1&TEST!='Burden Test'){
@@ -254,7 +253,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       PowerBindP = NULL
       PowerRelBandP = NULL
       n = CASE*CONTROL/Total
-      
+
       if (TEST=='SKAT'){
         aa=1
         bb=25
@@ -268,22 +267,22 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
         bb=1/2
       }
       #cat(aa,bb,'\n')
-      
-      
+
+
       if (QT == 'QT'){
         n = Total # sample size
       }
       # ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
-      
-      
+
+
       MAFL = 1/Total
       MAFU = 0.01
       g = (2*MAFU*(1-MAFU)*log10(MAFU)^2 - 2*MAFL*(1-MAFL)*log10(MAFL)^2)/(MAFU - MAFL)
       a = 2*MAFU*(1-MAFU)*log10(MAFU)^2 - MAFU*g
-      
-      
-      
+
+
+
       VPNames = Obj$Names
       TJ = Obj$SizeGene
       TJJ = Obj$SizeGeneV
@@ -291,19 +290,19 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       meanP = Obj$mean
       MAF = Obj$maf
       LL = length(EV)
-      
-      
-      
+
+
+
       for (j in 1:LL){
         E  = EV[j]
-        
+
         EindP =NULL
         BindP = NULL
         ErelP = NULL
-        
+
         for (i in 1:1000){
           #cat(i,'\n')
-          
+
           if (is.na(JJ)){
             if (is.null(nameEsseble)){
               #
@@ -311,7 +310,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
               #
               #cat('Gene is not  Present','\n')
               J = as.numeric(sampleD(DJ,names(TJ),1))
-              
+
             }else{
               kkk = which(VPNames==nameEsseble)
               if (length(kkk)==0){
@@ -334,25 +333,25 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           # Draw MAF
           #
-          
+
           pj = as.numeric(sample(MAF,J,replace=TRUE))
           #pj =runif(J)*0.1
           m = E*n/J/(a+g*mean(pj))
           gm = g*m
-          
+
           if (is.na(PC)){
             pEinP = calcPower(pj,n*E,n,aa,bb,alpha)
             pBinP = calcPowerBPind(pj,n*E,n,aa,bb,alpha)
             ErelP = c(ErelP,calcPowerD(pj,n*E,n,gm,aa,bb,alpha))
           }else{
             SC = ceiling(J*PC)
-            
+
             pEinP = calcPower_SC(pj,SC,n*E,n,aa,bb,alpha)
             pBinP = calcPowerBPind_SC(pj,SC,n*E,n,aa,bb,alpha)
             ErelP = c(ErelP,calcPowerD_SC(pj,SC,n*E,n,gm,aa,bb,alpha))
           }
-          
-          
+
+
           BindP = c(BindP,pBinP)
           EindP = c(EindP,pEinP)
         }
@@ -366,9 +365,9 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       BrelMean <- apply(PowerRelBandP,1,mean)
       BinMean <- apply(PowerBindP,1,mean)
       EinMean <- apply(PowerEindP,1,mean)
-      
+
       EV.Length <- length(EV)
-      
+
       EV_x <- rep(EV*100,3)
       group <- c(rep("Genetic Arc I",EV.Length),rep("Genetic Arc II",EV.Length),
                  rep("Genetic Arc III",EV.Length))
@@ -391,24 +390,24 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       return(list(MeanPower.combine,p))
     }
     else if(TEST=='Burden Test'&length(EV)==1) {
-      
+
       Power= NULL
-      
+
       n = CASE*CONTROL/Total
       if (QT == 'QT'){
         n = Total # sample size
       }
       #ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
-      
-      
+
+
       MAFL = 1/Total
       MAFU = 0.01
       g = (2*MAFU*(1-MAFU)*log10(MAFU)^2 - 2*MAFL*(1-MAFL)*log10(MAFL)^2)/(MAFU - MAFL)
       a = 2*MAFU*(1-MAFU)*log10(MAFU)^2 - MAFU*g
-      
-      
-      
+
+
+
       VPNames = Obj$Names
       TJ = Obj$SizeGene
       TJJ = Obj$SizeGeneV
@@ -416,18 +415,18 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       meanP = Obj$mean
       MAF = Obj$maf
       LL = length(EV)
-      
-      
-      
+
+
+
       for (j in 1:LL){
         E  = EV[j]
-        
+
         Pow =NULL
-        
-        
+
+
         for (i in 1:1000){
           #cat(i,'\n')
-          
+
           if (is.na(JJ)){
             if (is.null(nameEsseble)){
               #
@@ -435,7 +434,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
               #
               #cat('Gene is not  Present','\n')
               J = as.numeric(sampleD(DJ,names(TJ),1))
-              
+
             }else{
               kkk = which(VPNames==nameEsseble)
               if (length(kkk)==0){
@@ -458,35 +457,35 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           # Draw MAF
           #
-          
+
           SC = ceiling(J*PC)
           SP = ceiling(PRC*SC)
           pEP = calcPowerL(J,SC,SP,E,n,alpha)
-          
+
           Pow = c(Pow,pEP)
         }
         Power = rbind(Power,Pow)
       }
-      
+
       PowerBindP <- PowerEindP <- PowerRelBandP <- Power
-      
+
       mmEinP = round(mean(PowerEindP),4)
       qunatEinP = round(quantile(PowerEindP),4)[2:4] #25%, median, 75%
-      
+
       mmBinP = round(mean(PowerBindP),4)
       qunatBinP = round(quantile(PowerBindP),4)[2:4] #25%, median, 75%
-      
+
       mmBrelP = round(mean(PowerRelBandP),4)
-      
+
       qunatBrelP =  round(quantile(PowerRelBandP),4)[2:4]
       density.Ein <- density(PowerEindP)
       density.Bin <- density(PowerBindP)
       density.Brel <- density(PowerRelBandP)
-      
+
       density.y.max <- max(c(quantile(density.Ein$y),quantile(density.Bin$y),quantile(density.Brel$y)))
       density.x.min <- min(c(density.Ein$x,density.Bin$x,density.Brel$x))
       density.x.max <- max(c(density.Ein$x,density.Bin$x,density.Brel$x))
-      
+
       limits.x <- c(0,1)
       breaks.x <- seq(0,1,0.1)
       if((density.x.max-density.x.min)<0.1)
@@ -499,11 +498,11 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
         limits.x <- c(limits.x.low,limits.x.high)
         breaks.x <- seq(limits.x.low,limits.x.high,0.001)
       }
-      
+
       Power <- c(PowerEindP,PowerBindP,PowerRelBandP)
       Method <- c(rep("Geneic Arc I",length(PowerEindP)),rep("Genetic Arc II",length(PowerBindP)),rep("Genetic Arc III",length(PowerRelBandP)))
       data <- data.frame(Power,Method)
-      
+
       p <- ggplot(data,aes(x=Power))+
         geom_density(aes(group=Method,colour=Method,fill=Method),alpha=0.3,adjust=1)+
         scale_x_continuous(limits=limits.x,expand = c(0,0),breaks = breaks.x)+
@@ -517,7 +516,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       #   #scale_y_continuous(expand = c(0,0),limits=c(0,15))+
       #   theme_new()+
       #   labs(title="The Density of Power",y="Density")
-      
+
       Gene_Arc_1 <- c(mmEinP)
       Gene_Arc_2 <- c(mmBinP)
       Gene_Arc_3 <- c(mmBrelP)
@@ -528,22 +527,22 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       return (list(combind.result,p=NULL))
     }else if(TEST=='Burden Test'&(length(EV)>1)){
       Power= NULL
-      
+
       n = CASE*CONTROL/Total
       if (QT == 'QT'){
         n = Total # sample size
       }
       #ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
-      
-      
+
+
       MAFL = 1/Total
       MAFU = 0.01
       g = (2*MAFU*(1-MAFU)*log10(MAFU)^2 - 2*MAFL*(1-MAFL)*log10(MAFL)^2)/(MAFU - MAFL)
       a = 2*MAFU*(1-MAFU)*log10(MAFU)^2 - MAFU*g
-      
-      
-      
+
+
+
       VPNames = Obj$Names
       TJ = Obj$SizeGene
       TJJ = Obj$SizeGeneV
@@ -551,18 +550,18 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       meanP = Obj$mean
       MAF = Obj$maf
       LL = length(EV)
-      
-      
-      
+
+
+
       for (j in 1:LL){
         E  = EV[j]
-        
+
         Pow =NULL
-        
-        
+
+
         for (i in 1:1000){
           #cat(i,'\n')
-          
+
           if (is.na(JJ)){
             if (is.null(nameEsseble)){
               #
@@ -570,7 +569,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
               #
               #cat('Gene is not  Present','\n')
               J = as.numeric(sampleD(DJ,names(TJ),1))
-              
+
             }else{
               kkk = which(VPNames==nameEsseble)
               if (length(kkk)==0){
@@ -593,24 +592,24 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           # Draw MAF
           #
-          
+
           SC = ceiling(J*PC)
           SP = ceiling(PRC*SC)
           pEP = calcPowerL(J,SC,SP,E,n,alpha)
-          
+
           Pow = c(Pow,pEP)
         }
         Power = rbind(Power,Pow)
-        
+
       }
-      
+
       PowerRelBandP <- PowerBindP <- PowerEindP <- Power
       BrelMean <- apply(PowerRelBandP,1,mean)
       BinMean <- apply(PowerBindP,1,mean)
       EinMean <- apply(PowerEindP,1,mean)
-      
+
       EV.Length <- length(EV)
-      
+
       EV_x <- rep(EV*100,3)
       group <- c(rep("Genetic Arc I",EV.Length),rep("Genetic Arc II",EV.Length),
                  rep("Genetic Arc III",EV.Length))
@@ -633,13 +632,13 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]
       return(list(MeanPower.combine,p))
     }
-  }else{
+    }else{
     if(length(EV)==1&TEST!='Burden Test'){
       PowerEindP = NULL
       PowerBindP = NULL
       PowerRelBandP = NULL
       n = CASE*CONTROL/Total
-      
+
       if (TEST=='SKAT'){
         aa=1
         bb=25
@@ -653,22 +652,22 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
         bb=1/2
       }
       #cat(aa,bb,'\n')
-      
-      
+
+
       if (QT == 'QT'){
         n = Total # sample size
       }
       #ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
-      
-      
+
+
       MAFL = 1/Total
       MAFU = 0.01
       g = (2*MAFU*(1-MAFU)*log10(MAFU)^2 - 2*MAFL*(1-MAFL)*log10(MAFL)^2)/(MAFU - MAFL)
       a = 2*MAFU*(1-MAFU)*log10(MAFU)^2 - MAFU*g
-      
-      
-      
+
+
+
       VPNames = Obj$Names
       TJ = Obj$SizeGene
       TJJ = Obj$SizeGeneV
@@ -676,19 +675,19 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       meanP = Obj$mean
       MAF = Obj$maf
       LL = length(EV)
-      
-      
-      
+
+
+
       for (j in 1:LL){
         E  = EV[j]
-        
+
         EindP =NULL
         BindP = NULL
         ErelP = NULL
-        
+
         for (i in 1:1000){
           #cat(i,'\n')
-          
+
           if (is.na(JJ)){
             if (is.null(nameEsseble)){
               #
@@ -696,7 +695,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
               #
               #cat('Gene is not  Present','\n')
               J = as.numeric(sampleD(DJ,names(TJ),1))
-              
+
             }else{
               kkk = which(VPNames==nameEsseble)
               if (length(kkk)==0){
@@ -724,20 +723,20 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #pj =runif(J)*0.1
           m = E*n/J/(a+g*mean(pj))
           gm = g*m
-          
+
           if (is.na(PC)){
             pEinP = calcPower(pj,n*E,n,aa,bb,alpha)
             pBinP = calcPowerBPind(pj,n*E,n,aa,bb,alpha)
             ErelP = c(ErelP,calcPowerD(pj,n*E,n,gm,aa,bb,alpha))
           }else{
             SC = ceiling(J*PC)
-            
+
             pEinP = calcPower_SC(pj,SC,n*E,n,aa,bb,alpha)
             pBinP = calcPowerBPind_SC(pj,SC,n*E,n,aa,bb,alpha)
             ErelP = c(ErelP,calcPowerD_SC(pj,SC,n*E,n,gm,aa,bb,alpha))
           }
-          
-          
+
+
           BindP = c(BindP,pBinP)
           EindP = c(EindP,pEinP)
         }
@@ -766,37 +765,37 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       
       p1 <- ggplot(data,aes(data$EindP))+
-        geom_histogram(aes(x=data$EindP,y=(..count..)/sum(..count..)),
-                       fill="#c0392b",
-                       alpha=0.75
+        geom_density(aes(x=data$EindP),
+                     fill="#c0392b",
+                     alpha=0.75
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Power of Senarario S1",x="Power",y="Proportion")
+        labs(title="The Histogram of Power of Senarario S1",x="Power",y="Density")
       p2 <- ggplot(data,aes(data$BindP))+
-        geom_histogram(aes(x=data$BindP,y=(..count..)/sum(..count..)),
-                       fill="dodgerblue4",
-                       alpha=0.75
+        geom_density(aes(x=data$BindP),
+                     fill="dodgerblue4",
+                     alpha=0.75
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Power of Senarario S2",x="Power",y="Proportion")
+        labs(title="The Histogram of Power of Senarario S2",x="Power",y="Density")
       p3 <- ggplot(data,aes(data$ErelP))+
-        geom_histogram(aes(x=data$ErelP,y=(..count..)/sum(..count..)),
-                       fill="chartreuse4",
-                       alpha=0.75
+        geom_density(aes(x=data$ErelP),
+                     fill="chartreuse4",
+                     alpha=0.75
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Power of Senarario S3",x="Power",y="Proportion")
+        labs(title="The Histogram of Power of Senarario S3",x="Power",y="Density")
       p4 <- ggplot(data,aes(data$JJ))+
-        geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
-                       fill="gray15",
-                       alpha=0.75
+        geom_density(aes(x=data$JJ),
+                     fill="gray15",
+                     alpha=0.75
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Total number of variants (J)",x="Total number of variants (J)",y="Proportion")
+        labs(title="The Histogram of Total number of variants (J)",x="Total number of variants (J)",y="Density")
       
       Gene_Arc_1 <- c(mmEinP,qunatEinP)
       Gene_Arc_2 <- c(mmBinP,qunatBinP)
@@ -817,7 +816,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       PowerBindP = NULL
       PowerRelBandP = NULL
       n = CASE*CONTROL/Total
-      
+
       if (TEST=='SKAT'){
         aa=1
         bb=25
@@ -831,22 +830,22 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
         bb=1/2
       }
       #cat(aa,bb,'\n')
-      
-      
+
+
       if (QT == 'QT'){
         n = Total # sample size
       }
       # ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
-      
-      
+
+
       MAFL = 1/Total
       MAFU = 0.01
       g = (2*MAFU*(1-MAFU)*log10(MAFU)^2 - 2*MAFL*(1-MAFL)*log10(MAFL)^2)/(MAFU - MAFL)
       a = 2*MAFU*(1-MAFU)*log10(MAFU)^2 - MAFU*g
-      
-      
-      
+
+
+
       VPNames = Obj$Names
       TJ = Obj$SizeGene
       TJJ = Obj$SizeGeneV
@@ -854,19 +853,19 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       meanP = Obj$mean
       MAF = Obj$maf
       LL = length(EV)
-      
-      
-      
+
+
+
       for (j in 1:LL){
         E  = EV[j]
-        
+
         EindP =NULL
         BindP = NULL
         ErelP = NULL
-        
+
         for (i in 1:1000){
           #cat(i,'\n')
-          
+
           if (is.na(JJ)){
             if (is.null(nameEsseble)){
               #
@@ -874,7 +873,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
               #
               #cat('Gene is not  Present','\n')
               J = as.numeric(sampleD(DJ,names(TJ),1))
-              
+
             }else{
               kkk = which(VPNames==nameEsseble)
               if (length(kkk)==0){
@@ -897,25 +896,25 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           # Draw MAF
           #
-          
+
           pj = as.numeric(sample(MAF,J,replace=TRUE))
           #pj =runif(J)*0.1
           m = E*n/J/(a+g*mean(pj))
           gm = g*m
-          
+
           if (is.na(PC)){
             pEinP = calcPower(pj,n*E,n,aa,bb,alpha)
             pBinP = calcPowerBPind(pj,n*E,n,aa,bb,alpha)
             ErelP = c(ErelP,calcPowerD(pj,n*E,n,gm,aa,bb,alpha))
           }else{
             SC = ceiling(J*PC)
-            
+
             pEinP = calcPower_SC(pj,SC,n*E,n,aa,bb,alpha)
             pBinP = calcPowerBPind_SC(pj,SC,n*E,n,aa,bb,alpha)
             ErelP = c(ErelP,calcPowerD_SC(pj,SC,n*E,n,gm,aa,bb,alpha))
           }
-          
-          
+
+
           BindP = c(BindP,pBinP)
           EindP = c(EindP,pEinP)
         }
@@ -929,9 +928,9 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       BrelMean <- apply(PowerRelBandP,1,mean)
       BinMean <- apply(PowerBindP,1,mean)
       EinMean <- apply(PowerEindP,1,mean)
-      
+
       EV.Length <- length(EV)
-      
+
       EV_x <- rep(EV*100,3)
       group <- c(rep("Genetic Arc I",EV.Length),rep("Genetic Arc II",EV.Length),
                  rep("Genetic Arc III",EV.Length))
@@ -955,24 +954,24 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       return(list(MeanPower.combine,p))
     }
     else if(TEST=='Burden Test'&length(EV)==1) {
-      
+
       Power= NULL
-      
+
       n = CASE*CONTROL/Total
       if (QT == 'QT'){
         n = Total # sample size
       }
       #ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
-      
-      
+
+
       MAFL = 1/Total
       MAFU = 0.01
       g = (2*MAFU*(1-MAFU)*log10(MAFU)^2 - 2*MAFL*(1-MAFL)*log10(MAFL)^2)/(MAFU - MAFL)
       a = 2*MAFU*(1-MAFU)*log10(MAFU)^2 - MAFU*g
-      
-      
-      
+
+
+
       VPNames = Obj$Names
       TJ = Obj$SizeGene
       TJJ = Obj$SizeGeneV
@@ -980,18 +979,18 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       meanP = Obj$mean
       MAF = Obj$maf
       LL = length(EV)
-      
-      
-      
+
+
+
       for (j in 1:LL){
         E  = EV[j]
-        
+
         Pow =NULL
-        
-        
+
+
         for (i in 1:1000){
           #cat(i,'\n')
-          
+
           if (is.na(JJ)){
             if (is.null(nameEsseble)){
               #
@@ -999,7 +998,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
               #
               #cat('Gene is not  Present','\n')
               J = as.numeric(sampleD(DJ,names(TJ),1))
-              
+
             }else{
               kkk = which(VPNames==nameEsseble)
               if (length(kkk)==0){
@@ -1022,35 +1021,35 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           # Draw MAF
           #
-          
+
           SC = ceiling(J*PC)
           SP = ceiling(PRC*SC)
           pEP = calcPowerL(J,SC,SP,E,n,alpha)
-          
+
           Pow = c(Pow,pEP)
         }
         Power = rbind(Power,Pow)
       }
-      
+
       PowerBindP <- PowerEindP <- PowerRelBandP <- Power
-      
+
       mmEinP = round(mean(PowerEindP),4)
       qunatEinP = round(quantile(PowerEindP),4)[2:4] #25%, median, 75%
-      
+
       mmBinP = round(mean(PowerBindP),4)
       qunatBinP = round(quantile(PowerBindP),4)[2:4] #25%, median, 75%
-      
+
       mmBrelP = round(mean(PowerRelBandP),4)
-      
+
       qunatBrelP =  round(quantile(PowerRelBandP),4)[2:4]
       density.Ein <- density(PowerEindP)
       density.Bin <- density(PowerBindP)
       density.Brel <- density(PowerRelBandP)
-      
+
       density.y.max <- max(c(quantile(density.Ein$y),quantile(density.Bin$y),quantile(density.Brel$y)))
       density.x.min <- min(c(density.Ein$x,density.Bin$x,density.Brel$x))
       density.x.max <- max(c(density.Ein$x,density.Bin$x,density.Brel$x))
-      
+
       limits.x <- c(0,1)
       breaks.x <- seq(0,1,0.1)
       if((density.x.max-density.x.min)<0.1)
@@ -1063,11 +1062,11 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
         limits.x <- c(limits.x.low,limits.x.high)
         breaks.x <- seq(limits.x.low,limits.x.high,0.001)
       }
-      
+
       Power <- c(PowerEindP,PowerBindP,PowerRelBandP)
       Method <- c(rep("Geneic Arc I",length(PowerEindP)),rep("Genetic Arc II",length(PowerBindP)),rep("Genetic Arc III",length(PowerRelBandP)))
       data <- data.frame(Power,Method)
-      
+
       p <- ggplot(data,aes(x=Power))+
         geom_density(aes(group=Method,colour=Method,fill=Method),alpha=0.3,adjust=1)+
         scale_x_continuous(limits=limits.x,expand = c(0,0),breaks = breaks.x)+
@@ -1081,7 +1080,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       #   #scale_y_continuous(expand = c(0,0),limits=c(0,15))+
       #   theme_new()+
       #   labs(title="The Density of Power",y="Density")
-      
+
       Gene_Arc_1 <- c(mmEinP,qunatEinP)
       Gene_Arc_2 <- c(mmBinP,qunatBinP)
       Gene_Arc_3 <- c(mmBrelP,qunatBrelP)
@@ -1093,22 +1092,22 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       return (list(combind.result,p=p))
     }else if(TEST=='Burden Test'&(length(EV)>1)){
       Power= NULL
-      
+
       n = CASE*CONTROL/Total
       if (QT == 'QT'){
         n = Total # sample size
       }
       #ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
-      
-      
+
+
       MAFL = 1/Total
       MAFU = 0.01
       g = (2*MAFU*(1-MAFU)*log10(MAFU)^2 - 2*MAFL*(1-MAFL)*log10(MAFL)^2)/(MAFU - MAFL)
       a = 2*MAFU*(1-MAFU)*log10(MAFU)^2 - MAFU*g
-      
-      
-      
+
+
+
       VPNames = Obj$Names
       TJ = Obj$SizeGene
       TJJ = Obj$SizeGeneV
@@ -1116,18 +1115,18 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       meanP = Obj$mean
       MAF = Obj$maf
       LL = length(EV)
-      
-      
-      
+
+
+
       for (j in 1:LL){
         E  = EV[j]
-        
+
         Pow =NULL
-        
-        
+
+
         for (i in 1:1000){
           #cat(i,'\n')
-          
+
           if (is.na(JJ)){
             if (is.null(nameEsseble)){
               #
@@ -1135,7 +1134,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
               #
               #cat('Gene is not  Present','\n')
               J = as.numeric(sampleD(DJ,names(TJ),1))
-              
+
             }else{
               kkk = which(VPNames==nameEsseble)
               if (length(kkk)==0){
@@ -1158,24 +1157,24 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           # Draw MAF
           #
-          
+
           SC = ceiling(J*PC)
           SP = ceiling(PRC*SC)
           pEP = calcPowerL(J,SC,SP,E,n,alpha)
-          
+
           Pow = c(Pow,pEP)
         }
         Power = rbind(Power,Pow)
-        
+
       }
-      
+
       PowerRelBandP <- PowerBindP <- PowerEindP <- Power
       BrelMean <- apply(PowerRelBandP,1,mean)
       BinMean <- apply(PowerBindP,1,mean)
       EinMean <- apply(PowerEindP,1,mean)
-      
+
       EV.Length <- length(EV)
-      
+
       EV_x <- rep(EV*100,3)
       group <- c(rep("Genetic Arc I",EV.Length),rep("Genetic Arc II",EV.Length),
                  rep("Genetic Arc III",EV.Length))
@@ -1200,13 +1199,13 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
     }
   }
 }
-
-calcPowerL =function(J,SC,SP,E,n,alpha){
-  nc1 = n*E*abs(SC-2*SP)^2/J/SC
-  ctt = qchisq(1-alpha,df=1)
-  power = 1 - pchisq(ctt,df=1,nc=nc1)
-  return (power) 
-}
+  
+  calcPowerL =function(J,SC,SP,E,n,alpha){
+    nc1 = n*E*abs(SC-2*SP)^2/J/SC
+    ctt = qchisq(1-alpha,df=1)
+    power = 1 - pchisq(ctt,df=1,nc=nc1)
+    return (power) 
+  }
 
 
 

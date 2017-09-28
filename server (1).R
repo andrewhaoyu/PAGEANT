@@ -8,7 +8,7 @@ library(gridExtra)
 
 source('PowerCalc_Rare.r')
 source('calc_whole.r')
-source('PowerCal_RareSample_A.R')
+#source('PowerCalc_RareSample_A.R')
 
 grid_transform = function(grid){
   if(grid=="Quick"){
@@ -64,8 +64,8 @@ function(input, output) {
                              PC=input$PC_s,
                              JJ=input$JJ_s,
                              PRC=input$PRC_s)
-            
-            
+          
+      
             
           }
           else if((input$method_s)=='Burden Test'){
@@ -207,188 +207,115 @@ function(input, output) {
       }
       
     }
-    
-  })
+   
+    })
   
   
+  data1result <- function(){
+    result <- data1()
+    if(is.null(data1[[2]])==T){
+      
+    }
+  }
+
   
-  
-  
+ 
   
   data2 <- eventReactive(input$update2,{
-    if(input$TypeofCalculation2=='Sample Size Calculation'){
-      if(input$SNPoption2_s=="Single SNP"){
-        if(input$evoption2_s=='Single EV'){
-          get_Aprox_Sample(EV=(input$EV2_s)/100,
-                           PowerThr=input$PowerThreshold2_s,
-                           alpha = input$Alpha2_s,
-                           QT='QT',
-                           ONESNP=T)
-        }else{
-          EV_new2 <- seq(input$EV_range2_s[1],input$EV_range2_s[2],(input$EV_range2[2]-input$EV_range2_s[1])/10)
-          get_Aprox_Sample(EV=(EV_new2)/100,
-                           PowerThr=input$PowerThreshold2_s,
-                           alpha = input$Alpha2_s,
-                           ONESNP=T,
-                           QT='QT')
-        }
-        
+    
+    if(input$SNPoption2=="Single SNP"){
+      if(input$evoption2=='Single EV'){
+        get_Aprox((input$EV2)/100,
+                  input$Alpha2,
+                  (input$total2),
+                  QT='QT',
+                  ONESNP=T)
       }else{
-        if(input$evoption2_s=='Single EV'){
-          if((input$method2_s)!='Burden Test'){
-            get_Aprox_Sample(EV=(input$EV2_s)/100,
-                             PowerThr=input$PowerThreshold2_s,
-                             alpha = input$Alpha2_s,
-                             TEST=input$method2_s,
-                             QT='QT',
-                             PC=input$PC2_s,
-                             JJ=input$JJ2_s,
-                             PRC=input$PRC2_s)
-            
-            
-          }
-          else if((input$method2_s)=='Burden Test'){
-            get_Aprox_Sample(EV=(input$EV2_s)/100,
-                             PowerThr=input$PowerThreshold2_s,
-                             alpha = input$Alpha2_s,
-                             TEST=input$method2_s,
-                             PC=input$PC_new2_s,
-                             JJ=input$JJ2_s,
-                             PRC=input$PRC2_s,
-                             QT = 'QT')
-            
-            
-          }
-          
-        }else if(input$evoption2_s=='Range of EV'){
-          if(input$method2_s!='Burden Test'){
-            EV_new2 <- seq(input$EV_range2_s[1],input$EV_range2_s[2],(input$EV_range2_s[2]-input$EV_range2_s[1])/10)
-            get_Aprox_Sample(EV=(EV_new2)/100,
-                             PowerThr=input$PowerThreshold2_s,
-                             alpha = input$Alpha2_s,
-                             TEST=input$method2_s,
-                             PC=input$PC2_s,
-                             JJ=input$JJ2_s,
-                             QT='QT')
-            
-          }
-          else if(input$method2_s=='Burden Test'){
-            EV_new2 <- seq(input$EV_range2_s[1],input$EV_range2_s[2],(input$EV_range2_s[2]-input$EV_range2_s[1])/10)
-            get_Aprox_Sample(EV=(EV_new2)/100,
-                             PowerThr=input$PowerThreshold2_s,
-                             alpha = input$Alpha2_s,
-                             TEST=input$method2_s,
-                             PC=input$PC_new2_s,
-                             JJ=input$JJ2_s,
-                             PRC=input$PRC2_s,
-                             QT='QT')
-          
-          }
-        }
-        
-        
+        EV_new2 <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+        get_Aprox((EV_new2)/100,
+                  input$Alpha2,
+                  (input$total2),
+                  QT='QT',
+                  ONESNP=T)
       }
       
-      
-      
-      
+    }else if(input$SNPoption2=='Whole Genome'){
+      calcGenomeLevel(K=input$K2,
+                      m=input$m2,
+                      grid=grid_transform(input$grid2),
+                      epr=(input$GEV2/(input$K2*100)),
+                      alphaT=input$Alpha_whole2,
+                      Total=input$total2,
+                      TEST = input$method_whole2,
+                      QT='QT',
+                      PC=input$PC_whole2,
+                      JJ=input$JJ_whole2)
     }else{
-      if(input$SNPoption2=="Single SNP"){
-        if(input$evoption2=='Single EV'){
-          get_Aprox((input$EV2)/100,
-                    input$Alpha2,
-                    (input$total2),
-                    QT='QT',
-                    ONESNP=T)
-        }else{
-          EV_new2 <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
-          get_Aprox((EV_new2)/100,
-                    input$Alpha2,
-                    (input$total2),
-                    QT='QT',
-                    ONESNP=T)
-        }
-        
-      }else if(input$SNPoption2=='Whole Genome'){
-        calcGenomeLevel(K=input$K2,
-                        m=input$m2,
-                        grid=grid_transform(input$grid2),
-                        epr=(input$GEV2/(input$K2*100)),
-                        alphaT=input$Alpha_whole2,
-                        Total=input$total2,
-                        TEST = input$method_whole2,
-                        QT='QT',
-                        PC=input$PC_whole2,
-                        JJ=input$JJ_whole2)
-      }else{
-        if(input$evoption2=='Single EV'){
-          if((input$method2)!='Burden Test'){
-            
-            get_Aprox(EV=(input$EV2)/100,
-                      alpha=input$Alpha2,
-                      Total=input$total2,
-                      PC=input$PC2,
-                      TEST=input$method2, 
-                      JJ=input$JJ2,
-                      PRC=input$PRC2,
-                      QT='QT')
-            
-          }
-          else if((input$method2)=='Burden Test'){
-            get_Aprox(EV=(input$EV2)/100,
-                      alpha=input$Alpha2,
-                      Total=(input$total2),
-                      PC=input$PC_new2,
-                      TEST=input$method2, 
-                      JJ=input$JJ2,
-                      PRC=input$PRC2,
-                      QT='QT')
-            
-          }
+      if(input$evoption2=='Single EV'){
+        if((input$method2)!='Burden Test'){
           
-        }else if(input$evoption2=='Range of EV'){
-          if(input$method2!='Burden Test'){
-            EV_new2 <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
-            
-            get_Aprox(EV=(EV_new2)/100,
-                      alpha=input$Alpha2,
-                      Total=input$total2,
-                      TEST=input$method2,
-                      PC=input$PC2,
-                      JJ=input$JJ2,
-                      QT='QT')
-          }
-          else if(input$method2=='Burden Test'){
-            EV_new2 <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
-            
-            get_Aprox(EV=(EV_new2)/100,
-                      alpha=input$Alpha2,
-                      Total=input$total2,
-                      TEST=input$method2,
-                      PC=input$PC_new2,
-                      JJ=input$JJ2,
-                      PRC=input$PRC2,
-                      QT='QT')
-          }
+          get_Aprox(EV=(input$EV2)/100,
+                    alpha=input$Alpha2,
+                    Total=input$total2,
+                    PC=input$PC2,
+                    TEST=input$method2, 
+                    JJ=input$JJ2,
+                    PRC=input$PRC2,
+                    QT='QT')
+   
+        }
+        else if((input$method2)=='Burden Test'){
+          get_Aprox(EV=(input$EV2)/100,
+                    alpha=input$Alpha2,
+                    Total=(input$total2),
+                    PC=input$PC_new2,
+                    TEST=input$method2, 
+                    JJ=input$JJ2,
+                    PRC=input$PRC2,
+                    QT='QT')
+          
         }
         
-        
+      }else if(input$evoption2=='Range of EV'){
+        if(input$method2!='Burden Test'){
+          EV_new2 <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+          
+          get_Aprox(EV=(EV_new2)/100,
+                    alpha=input$Alpha2,
+                    Total=input$total2,
+                    TEST=input$method2,
+                    PC=input$PC2,
+                    JJ=input$JJ2,
+                    QT='QT')
+        }
+        else if(input$method2=='Burden Test'){
+          EV_new2 <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+          
+          get_Aprox(EV=(EV_new2)/100,
+                    alpha=input$Alpha2,
+                    Total=input$total2,
+                    TEST=input$method2,
+                    PC=input$PC_new2,
+                    JJ=input$JJ2,
+                    PRC=input$PRC2,
+                    QT='QT')
+        }
       }
-      
-      
       
       
     }
     
     
-    
-  })
+
+   
+  
+})
   
   
+ 
   
   
-  
-  
+ 
   
   busyIndicator <- function (text = "Loading..", img = "busyIndicator/ajaxloaderq.gif", wait = 1000) {
     tagList(singleton(tags$head(tags$link(rel = "stylesheet", 
@@ -402,51 +329,45 @@ function(input, output) {
     }
   
   output$values <- DT::renderDataTable(
-    
+
     withProgress( message = "WE ARE COMPUTING..", value = 0.6,{
       data1()[[1]]
-      
+
     })
-    
+
     ,options=list(dom='t',autoWidth=F,columnDefs = list(list(width = "150", targets = "_all"))),rownames=F
   )
   output$plot = renderPlot(
-    {
-      grid.arrange(data1()[[5]],data1()[[2]],
-                   data1()[[3]],data1()[[4]],ncol=2)
-    },
+{
+  grid.arrange(data1()[[5]],data1()[[2]],
+               data1()[[3]],data1()[[4]],ncol=2)
+},
     height=450,
     width=900)
-  
-  
-  
-  
-  
-  output$values2 <- DT::renderDataTable( 
     
-    withProgress( message = "WE ARE COMPUTING..", value = 0.9,{ 
-      data2()[[1]]
-    })  
     
-    ,options=list(dom='t',autoWidth=F,columnDefs = list(list(width = "150", targets = "_all"))),rownames=F
-  )
-  output$plot2 = renderPlot(
-    grid.arrange(data2()[[5]],data2()[[2]],
-                 data2()[[3]],data2()[[4]],ncol=2)
-,
-height=450,
-width=900
-    )
-  
-  # output$values2_r <- DT::renderDataTable( 
-  #   withProgress(message="We are computing based on different EV range",{ 
-  #     data2_r()[[1]]
-  #   })  
-  #   ,options=list(dom='t',autoWidth=T,columnDefs = list(list(width = '150px', targets = "_all"))),rownames=F
-  # )
-  # output$plot2_r <- renderPlot(data2_r()[[2]],height = 300,width = 600)
-  #  
-  
+   
+   
+     
+   output$values2 <- DT::renderDataTable( 
+   
+     withProgress( message = "WE ARE COMPUTING..", value = 0.9,{ 
+   data2()[[1]]
+        })  
+     
+     ,options=list(dom='t',autoWidth=F,columnDefs = list(list(width = "150", targets = "_all"))),rownames=F
+   )
+   output$plot2 = renderPlot(data2()[[2]],height=300,width=600)
+    
+   # output$values2_r <- DT::renderDataTable( 
+   #   withProgress(message="We are computing based on different EV range",{ 
+   #     data2_r()[[1]]
+   #   })  
+   #   ,options=list(dom='t',autoWidth=T,columnDefs = list(list(width = '150px', targets = "_all"))),rownames=F
+   # )
+   # output$plot2_r <- renderPlot(data2_r()[[2]],height = 300,width = 600)
+   #  
+ 
   
   
   

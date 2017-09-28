@@ -1,13 +1,12 @@
-mmEinP = ceilupto(mean(PowerEindP))
-qunatEinP = ceilupto(quantile(PowerEindP))[2:4] #25%, median, 75%
+mmEinP = round(mean(PowerEindP),4)
+qunatEinP = round(quantile(PowerEindP),4)[2:4] #25%, median, 75%
 
+mmBinP = round(mean(PowerBindP),4)
+qunatBinP = round(quantile(PowerBindP),4)[2:4] #25%, median, 75%
 
-mmBinP = ceilupto(mean(PowerBindP))
-qunatBinP = ceilupto(quantile(PowerBindP))[2:4] #25%, median, 75%
+mmBrelP = round(mean(PowerRelBandP),4)
 
-mmBrelP = ceilupto(mean(PowerRelBandP))
-
-qunatBrelP =  ceilupto(quantile(PowerRelBandP))[2:4]
+qunatBrelP =  round(quantile(PowerRelBandP),4)[2:4]
 
 data <- data.frame(PowerEindP=t(PowerEindP),
                    PowerBindP=t(PowerBindP),
@@ -23,7 +22,7 @@ p1 <- ggplot(data,aes(data$EindP))+
   )+
   theme_bw()+
   theme_new()+
-  labs(title="The Histogram of Sample Size of Senarario S1",x="Sample Size",y="Proportion")
+  labs(title="The Histogram of Power of Senarario S1",x="Power",y="Proportion")
 p2 <- ggplot(data,aes(data$BindP))+
   geom_histogram(aes(x=data$BindP,y=(..count..)/sum(..count..)),
                  fill="dodgerblue4",
@@ -31,7 +30,7 @@ p2 <- ggplot(data,aes(data$BindP))+
   )+
   theme_bw()+
   theme_new()+
-  labs(title="The Histogram of Sample Size of Senarario S2",x="Sample Size",y="Proportion")
+  labs(title="The Histogram of Power of Senarario S2",x="Power",y="Proportion")
 p3 <- ggplot(data,aes(data$ErelP))+
   geom_histogram(aes(x=data$ErelP,y=(..count..)/sum(..count..)),
                  fill="chartreuse4",
@@ -39,7 +38,7 @@ p3 <- ggplot(data,aes(data$ErelP))+
   )+
   theme_bw()+
   theme_new()+
-  labs(title="The Histogram of Sample Size of Senarario S3",x="Sample Size",y="Proportion")
+  labs(title="The Histogram of Power of Senarario S3",x="Power",y="Proportion")
 p4 <- ggplot(data,aes(data$JJ))+
   geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
                  fill="gray15",
@@ -53,10 +52,10 @@ Gene_Arc_1 <- c(mmEinP,qunatEinP)
 Gene_Arc_2 <- c(mmBinP,qunatBinP)
 Gene_Arc_3 <- c(mmBrelP,qunatBrelP)
 
-Power_Dist <- c("Mean Sample Size","25% Quantile of Sample Size","Medium of Sample Size",
-                "75% Quantile of Sample Size")
+Power_Dist <- c("Mean Power","25% Quantile of Power","Medium of Power",
+                "75% Quantile of Power")
 combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
-colnames(combind.result) <- c("Sample Size Distribution","Senarario S1","Senarario S2",
+colnames(combind.result) <- c("Power Distribution","Senarario S1","Senarario S2",
                               "Senarario S3")
 
 
