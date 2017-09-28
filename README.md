@@ -4,9 +4,9 @@
 
 ## Introduction
 
-The application allows rapid power analysis for a variety of genetic association tests by specification of a few key parameters [Derkach et al. 2017]. Power calculations can be done at the level of single variant for simple trend test, at the level of a genes/regions for various complex aggregated tests [Neale et al. 2011, Derkach et al. 2013, Wu et al. 2011, Madsen and Browning 2009] and at the level of the whole genome for the assessment of overall yield of a study. The calculations currently uses underlying distribution of gene size and minor allele frequencies of variants observed in the in the public data for 60,000 individuals from Exome Aggregation Consortium [Lek et al. 2016]
+The application allows rapid power and sample size analysis for a variety of genetic association tests by specification of a few key parameters [Derkach et al. 2017]. Power and sample size calculations can be done at the level of single variant for simple trend test, at the level of a genes/regions for various complex aggregated tests [Neale et al. 2011, Derkach et al. 2013, Wu et al. 2011, Madsen and Browning 2009] and at the level of the whole genome for the assessment of overall yield of a study. The calculations currently uses underlying distribution of gene size and minor allele frequencies of variants observed in the in the public data for 60,000 individuals from Exome Aggregation Consortium [Lek et al. 2016]
 
-## Power for association test at the level of a single variant or a single gene/region
+## Power and sample size for association test at the level of a single variant or a single gene/region
 
 ### Essential Input Parameters
 
@@ -15,8 +15,9 @@ The application allows rapid power analysis for a variety of genetic association
 
 2) alpha = level of the test;
 
-3) Sample size: Total sample size for a continuous trait or the number of cases and number of controls for a case-control study;
+3) Sample size: Total sample size for a continuous trait or the number of cases and number of controls for a case-control study; This parameter required in power calculations.
 
+4) Power target: targeted average power of the test
 
 
 ### Optional Input Parameters
@@ -29,7 +30,7 @@ The application allows rapid power analysis for a variety of genetic association
 
 ### Output
 
-The application conducts power analysis under three different models for genetic architecture assuming (I): MAF is independent of EV ;(II) MAF is independent of genetic effects measured in the unit of per copy of an allele (beta^2=EV/(2MAF(1-MAF))); and (III) MAF is negatively correlated with genetic effect through the function .  When a single EV is specified, for each genetic architecture, it returns a distribution of power and key summary measures (mean, median,  25th and 75th percentiles). This distribution corresponds to uncertainty association with various additional parameters, such as number of variants within a gene and minor allele frequencies. If a range of EV is specified, plots and table for average power over the range of specified EV is returned.
+The application conducts power analysis and sample size under three different models for genetic architecture assuming (S1): MAF is independent of EV ;(S2) MAF is independent of genetic effects measured in the unit of per copy of an allele (beta^2=EV/(2MAF(1-MAF))); and (S3) MAF is negatively correlated with genetic effect through the function .  When a single EV is specified, for each genetic architecture, it returns a distribution of power or sample size and key summary measures (mean, median,  25th and 75th percentiles). This distribution corresponds to uncertainty association with various additional parameters, such as number of variants within a gene and minor allele frequencies. Application returns distribution of the number of variants within a gene as it is one of essential parameters. If a range of EV is specified, plots and table for average power over the range of specified EV is returned.
 
 ## Genome-level power calculation
 
