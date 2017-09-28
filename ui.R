@@ -76,114 +76,181 @@ p("2) Computational Complexity: The number of  models and iterations used to est
                  ,width = 15)
              )),
     tabPanel("Case Control",
-            sidebarPanel( 
-              selectInput("SNPoption", 
-                          "Type of power calculation",
-                          c("Single Gene","Single SNP","Whole Genome")),
-             
-                numericInput("ncases", "Number of Cases:", 
-                             value=5000),
-                
-                numericInput("ncont", "Number of Controls:", 
-                             value = 5000),
-                
-                
-              
-                conditionalPanel(
-                  condition = "input.SNPoption=='Whole Genome'",
-                  numericInput("Alpha_whole",HTML("&alpha;:"), value=2.5e-06),
-                  numericInput("GEV", "GEV: Genome-wide Variance Explained(Percent)",
-                               value = 20),
-                  selectInput("grid",
-                              " Computational Complexity (optional)",
-                              c("Quick","Adequate","Complete")),
-              selectInput(
-                "method_whole", "Method",
-                c("SKAT","Calpha","Hotelling","Burden Test")
-              ),
-              numericInput("K","Number of causal loci",value=1000),
-              numericInput("m","Number of discoveries",value=0),
-              numericInput("PC_whole","Proportion of Causal Variants (Optional)",value=NA),
-              numericInput("JJ_whole","Number of Variants (Optional)",value=NA)
-                ),
-                conditionalPanel(
-                  condition = "input.SNPoption!='Whole Genome'",
-                  numericInput("Alpha",HTML("&alpha;:"), value=0.0001),
-                  selectInput("evoption", 
-                              "Fixed single EV or Range of EV",
-                              c("Single EV","Range of EV")),
-                  conditionalPanel(
-                    condition = "input.evoption == 'Single EV'",
-                    numericInput("EV", "EV: Variance Explained(Percent)",
-                                 value = 1)),
-                  conditionalPanel(
-                    condition = "input.evoption == 'Range of EV'",
-                    sliderInput("EV_range","Variance Explained Range(Percent)",
-                                min=0.01,max=1,value = c(0.05,0.60),step=0.01)),
-                  
-                  conditionalPanel(
-                    condition="input.SNPoption=='Single Gene'",
-                    
-                    selectInput(
-                      "method", "Method",
-                      c("SKAT","Calpha","Hotelling","Burden Test")
-                    ),
-                    
-                    # Only show this panel if the plot type is a histogram
-                    
-                    conditionalPanel(
-                      condition="input.method!='Burden Test'",
-                      numericInput("PC","Proportion of Causal Variants (Optional)",value=NA)
-                    ),   
-                    conditionalPanel(
-                      condition="input.method=='Burden Test'",
-                      numericInput("PC_new","Proportion of Causal Variants",value=0.2),
-                      numericInput("PRC","Proportion of Protective",value=0)
-                    ),
-                    
-                    # textInput("nameEsseble","Specify Single Gene(Optional)"),
-                    numericInput("JJ","Number of Variants (Optional)",value=NA)
-                    
-                  )
-                ),
-                
+             sidebarPanel(
+               selectInput("TypeofCalculation", 
+                           "Type of calculation",
+                           c("Power Calculation","Sample Size Calculation")),
                
-              actionButton("update","Update")
+               conditionalPanel(
+                 condition = "input.TypeofCalculation=='Power Calculation'",
+                 selectInput("SNPoption", 
+                             "Type of power calculation",
+                             c("Single Gene","Single SNP","Whole Genome")),
+                 
+                 numericInput("ncases", "Number of Cases:", 
+                              value=5000),
+                 
+                 numericInput("ncont", "Number of Controls:", 
+                              value = 5000),
+                 
+                 
+                 
+                 conditionalPanel(
+                   condition = "input.SNPoption=='Whole Genome'",
+                   numericInput("Alpha_whole",HTML("&alpha;:"), value=2.5e-06),
+                   numericInput("GEV", "GEV: Genome-wide Variance Explained(Percent)",
+                                value = 20),
+                   selectInput("grid",
+                               " Computational Complexity (optional)",
+                               c("Quick","Adequate","Complete")),
+                   selectInput(
+                     "method_whole", "Method",
+                     c("SKAT","Calpha","Hotelling","Burden Test")
+                   ),
+                   numericInput("K","Number of causal loci",value=1000),
+                   numericInput("m","Number of discoveries",value=0),
+                   numericInput("PC_whole","Proportion of Causal Variants (Optional)",value=NA),
+                   numericInput("JJ_whole","Number of Variants (Optional)",value=NA)
+                 ),
+                 conditionalPanel(
+                   condition = "input.SNPoption!='Whole Genome'",
+                   numericInput("Alpha",HTML("&alpha;:"), value=0.0001),
+                   selectInput("evoption", 
+                               "Fixed single EV or Range of EV",
+                               c("Single EV","Range of EV")),
+                   conditionalPanel(
+                     condition = "input.evoption == 'Single EV'",
+                     numericInput("EV", "EV: Variance Explained(Percent)",
+                                  value = 1)),
+                   conditionalPanel(
+                     condition = "input.evoption == 'Range of EV'",
+                     sliderInput("EV_range","Variance Explained Range(Percent)",
+                                 min=0.01,max=1,value = c(0.05,0.60),step=0.01)),
+                   
+                   conditionalPanel(
+                     condition="input.SNPoption=='Single Gene'",
+                     
+                     selectInput(
+                       "method", "Method",
+                       c("SKAT","Calpha","Hotelling","Burden Test")
+                     ),
+                     
+                     # Only show this panel if the plot type is a histogram
+                     
+                     conditionalPanel(
+                       condition="input.method!='Burden Test'",
+                       numericInput("PC","Proportion of Causal Variants (Optional)",value=NA)
+                     ),   
+                     conditionalPanel(
+                       condition="input.method=='Burden Test'",
+                       numericInput("PC_new","Proportion of Causal Variants",value=0.2),
+                       numericInput("PRC","Proportion of Protective",value=0)
+                     ),
+                     
+                     # textInput("nameEsseble","Specify Single Gene(Optional)"),
+                     numericInput("JJ","Number of Variants (Optional)",value=NA)
+                     
+                   )
+                 )
+                 
+                 
+               ),
+               conditionalPanel(
+                 condition = "input.TypeofCalculation=='Sample Size Calculation'",
+                 selectInput("SNPoption_s", 
+                             "Type of power calculation",
+                             c("Single Gene","Single SNP")),
+                 
+                 numericInput("PowerThreshold_s", "PowerThreshold", 
+                              value=0.8),
+    
+                 conditionalPanel(
+                   condition = "input.SNPoption_s!='Whole Genome'",
+                   numericInput("Alpha_s",HTML("&alpha;:"), value=0.0001),
+                   selectInput("evoption_s", 
+                               "Fixed single EV or Range of EV",
+                               c("Single EV","Range of EV")),
+                   conditionalPanel(
+                     condition = "input.evoption_s == 'Single EV'",
+                     numericInput("EV_s", "EV: Variance Explained(Percent)",
+                                  value = 1)),
+                   conditionalPanel(
+                     condition = "input.evoption_s == 'Range of EV'",
+                     sliderInput("EV_range_s","Variance Explained Range(Percent)",
+                                 min=0.01,max=1,value = c(0.05,0.60),step=0.01)),
+                   
+                   conditionalPanel(
+                     condition="input.SNPoption=='Single Gene'",
+                     
+                     selectInput(
+                       "method_s", "Method",
+                       c("SKAT","Calpha","Hotelling","Burden Test")
+                     ),
+                     
+                     # Only show this panel if the plot type is a histogram
+                     
+                     conditionalPanel(
+                       condition="input.method_s!='Burden Test'",
+                       numericInput("PC_s","Proportion of Causal Variants (Optional)",value=NA)
+                     ),   
+                     conditionalPanel(
+                       condition="input.method_s=='Burden Test'",
+                       numericInput("PC_new_s","Proportion of Causal Variants",value=0.2),
+                       numericInput("PRC_s","Proportion of Protective",value=0)
+                     ),
+                     
+                     # textInput("nameEsseble","Specify Single Gene(Optional)"),
+                     numericInput("JJ_s","Number of Variants (Optional)",value=NA)
+                     
+                   )
+                 )
+                 
+                 
+                 
+               ),
+               
+               
+               actionButton("update","Update")
+               
+               
+               
+             ),
+            
+          
+          
            
-         
-            ),
              # Show a table summarizing the values entered
              mainPanel(
                #tabsetPanel(
                #  tabPanel("Power Density",
-             
-                         # p(HTML("Genetic Architecture I: &beta; independent of MAF"),style = "font-family: 'times'; font-si20pt"),
-                        #  p("Geneic Architecture II : EV independent of MAF",style = "font-family: 'times'; font-si20pt"), 
-                         # p(HTML("Genetic Architecture III: &beta;~log_10(MAF);"),style = "font-family: 'times'; font-si20pt"),
+               
+               # p(HTML("Genetic Architecture I: &beta; independent of MAF"),style = "font-family: 'times'; font-si20pt"),
+               #  p("Geneic Architecture II : EV independent of MAF",style = "font-family: 'times'; font-si20pt"), 
+               # p(HTML("Genetic Architecture III: &beta;~log_10(MAF);"),style = "font-family: 'times'; font-si20pt"),
                conditionalPanel(
                  condition = "input.SNPoption=='Whole Genome'",
-               h5(" For whole genome power calculation, quick option runs genome-wide calculations  within 3 minutes and  provides rough estimates. Adequate option runs genome-wide calculations  within 6 minutes and provides more accurate estimates. Lastly, Complete option runs genome-wide calculations  within 15 minutes and  provides very accurate estimates.")),
-                p("Genetic Arc I: MAF is independent of EV;",style = "font-family: 'times'; font-si20pt"),
-                 p("Geneic Arc II : MAF is independent of genetic effects measured in the unit of per copy of an allele;",style = "font-family: 'times'; font-si20pt"), 
-                p("Genetic Arc III: MAF is negatively correlated with genetic effect through the function ;",style = "font-family: 'times'; font-si20pt"),
-                          theme = "bootstrap1.css",
-                          busyIndicator(text = "Loading..", img = "busyIndicator/ajaxloaderq.gif", wait = 1),
-                          DT::dataTableOutput("values"),
-                           plotOutput("plot")
-                        #   ),
-              # tabPanel("Mean Power Distribution based on different EV",
-                       # h4("The result in this page will show up if you choose to specify a range of EV"),
-                       #    p(HTML("Genetic Architecture I: &beta; independent of MAF"),style = "font-family: 'times'; font-si20pt"),
-                        #   p("Geneic Architecture II : EV independent of MAF",style = "font-family: 'times'; font-si20pt"), 
-                          # p(HTML("Genetic Architecture III: &beta;~log_10(MAF);"),style = "font-family: 'times'; font-si20pt"),
-                       
-                          # dataTableOutput("values"),
-                        #dataTableOutput("values_r"),
-                        #dataTableOutput("values_r"),
-                          #plotOutput("plot_r")
-            # )
-    #)
-    )
+                 h5(" For whole genome power calculation, quick option runs genome-wide calculations  within 3 minutes and  provides rough estimates. Adequate option runs genome-wide calculations  within 6 minutes and provides more accurate estimates. Lastly, Complete option runs genome-wide calculations  within 15 minutes and  provides very accurate estimates.")),
+               p("Senarario S1: MAF is independent of EV;",style = "font-family: 'times'; font-si20pt"),
+               p("Senarario S2 : MAF is independent of genetic effects measured in the unit of per copy of an allele;",style = "font-family: 'times'; font-si20pt"), 
+               p("Senarario S3: MAF is negatively correlated with genetic effect through the function ;",style = "font-family: 'times'; font-si20pt"),
+               theme = "bootstrap1.css",
+               busyIndicator(text = "Loading..", img = "busyIndicator/ajaxloaderq.gif", wait = 1),
+              # DT::dataTableOutput("values"),
+               plotOutput("plot")
+               #   ),
+               # tabPanel("Mean Power Distribution based on different EV",
+               # h4("The result in this page will show up if you choose to specify a range of EV"),
+               #    p(HTML("Genetic Architecture I: &beta; independent of MAF"),style = "font-family: 'times'; font-si20pt"),
+               #   p("Geneic Architecture II : EV independent of MAF",style = "font-family: 'times'; font-si20pt"), 
+               # p(HTML("Genetic Architecture III: &beta;~log_10(MAF);"),style = "font-family: 'times'; font-si20pt"),
+               
+               # dataTableOutput("values"),
+               #dataTableOutput("values_r"),
+               #dataTableOutput("values_r"),
+               #plotOutput("plot_r")
+               # )
+               #)
+             )
     ),
     tabPanel("Quantitative Trait",
              
@@ -270,9 +337,9 @@ p("2) Computational Complexity: The number of  models and iterations used to est
                conditionalPanel(
                  condition = "input.SNPoption2=='Whole Genome'",
                  h5(" For whole genome power calculation, quick option runs genome-wide calculations  within 3 minutes and  provides rough estimates. Adequate option runs genome-wide calculations  within 6 minutes and provides more accurate estimates. Lastly, Complete option runs genome-wide calculations  within 15 minutes and  provides very accurate estimates.")),
-               p("Genetic Arc I: MAF is independent of EV;",style = "font-family: 'times'; font-si20pt"),
-               p("Geneic Arc II : MAF is independent of genetic effects measured in the unit of per copy of an allele;",style = "font-family: 'times'; font-si20pt"), 
-               p("Genetic Arc III: MAF is negatively correlated with genetic effect through the function ;",style = "font-family: 'times'; font-si20pt"),
+               p("Senarario S1: MAF is independent of EV;",style = "font-family: 'times'; font-si20pt"),
+               p("Senarario S2 : MAF is independent of genetic effects measured in the unit of per copy of an allele;",style = "font-family: 'times'; font-si20pt"), 
+               p("Senarario S3: MAF is negatively correlated with genetic effect through the function ;",style = "font-family: 'times'; font-si20pt"),
                theme = "bootstrap2.css",
                busyIndicator(text = "Loading..", img = "busyIndicator/ajaxloaderq.gif", wait = 1),
                           DT::dataTableOutput("values2"),
@@ -290,6 +357,113 @@ p("2) Computational Complexity: The number of  models and iterations used to est
              )
             
     ),
+
+# tabPanel("Quantitative Trait Sample Size Calculation",
+#          
+#          sidebarPanel( 
+#            selectInput("SNPoption2_s", 
+#                        "Type of power calculation",
+#                        c("Single Gene","Single SNP","Whole Genome")),
+#            
+#            numericInput("powerthreshold2_s", "Power Threshold:", 
+#                         value=0.8),
+#            
+#            
+#            
+#            conditionalPanel(
+#              condition = "input.SNPoption2_s=='Whole Genome'",
+#              numericInput("Alpha_whole2_s",HTML("&alpha;:"), value=2.5e-06),
+#              numericInput("GEV2_s", "GEV: Genome-wide Variance Explained(Percent)",
+#                           value = 20),
+#              
+#              selectInput(
+#                "method_whole2_s", "Method",
+#                c("SKAT","Calpha","Hotelling","Burden Test")
+#              ),
+#              selectInput("grid2_s",
+#                          "Computational Complexity(Optional)",
+#                          c("Quick","Adequate","Complete")),
+#              numericInput("K2_s","Number of causal loci",value=1000),
+#              numericInput("m2_s","Number of discoveries",value=0),
+#              numericInput("PC_whole2_s","Proportion of Causal Variants (Optional)",value=NA),
+#              numericInput("JJ_whole2_s","Number of Variants (Optional)",value=NA)
+#            ),
+#            conditionalPanel(
+#              condition = "input.SNPoption2!='Whole Genome'",
+#              numericInput("Alpha2_s",HTML("&alpha;:"), value=0.0001),
+#              selectInput("evoption2_s", 
+#                          "Fixed single EV or Range of EV",
+#                          c("Single EV","Range of EV")),
+#              conditionalPanel(
+#                condition = "input.evoption2_s == 'Single EV'",
+#                numericInput("EV2_s", "EV: Variance Explained(Percent)",
+#                             value = 1)),
+#              conditionalPanel(
+#                condition = "input.evoption2_s == 'Range of EV'",
+#                sliderInput("EV_range2_s","Variance Explained Range(Percent)",
+#                            min=0.01,max=1,value = c(0.05,0.60),step=0.01)),
+#              
+#              conditionalPanel(
+#                condition="input.SNPoption2_s=='Single Gene'",
+#                
+#                selectInput(
+#                  "method2_s", "Method",
+#                  c("SKAT","Calpha","Hotelling","Burden Test")
+#                ),
+#                
+#                # Only show this panel if the plot type is a histogram
+#                
+#                conditionalPanel(
+#                  condition="input.method2_s!='Burden Test'",
+#                  numericInput("PC2_s","Proportion of Causal Variants (Optional)",value=NA)
+#                ),   
+#                conditionalPanel(
+#                  condition="input.method2_s=='Burden Test'",
+#                  numericInput("PC_new2_s","Proportion of Causal Variants",value=0.2),
+#                  numericInput("PRC2_s","Proportion of Protective",value=0)
+#                ),
+#                
+#                # textInput("nameEsseble","Specify Single Gene(Optional)"),
+#                numericInput("JJ2_s","Number of Variants (Optional)",value=NA)
+#                
+#              )
+#            ),
+#            
+#            
+#            actionButton("update2_s","Update")
+#            
+#            
+#            
+#            
+#          ),
+#          mainPanel(
+#            
+#            #tabsetPanel(
+#            # tabPanel("Power Density",
+#            conditionalPanel(
+#              condition = "input.SNPoption2_s=='Whole Genome'",
+#              h5(" For whole genome power calculation, quick option runs genome-wide calculations  within 3 minutes and  provides rough estimates. Adequate option runs genome-wide calculations  within 6 minutes and provides more accurate estimates. Lastly, Complete option runs genome-wide calculations  within 15 minutes and  provides very accurate estimates.")),
+#            p("Senarario S1: MAF is independent of EV;",style = "font-family: 'times'; font-si20pt"),
+#            p("Senarario S2 : MAF is independent of genetic effects measured in the unit of per copy of an allele;",style = "font-family: 'times'; font-si20pt"), 
+#            p("Senarario S3: MAF is negatively correlated with genetic effect through the function ;",style = "font-family: 'times'; font-si20pt"),
+#            theme = "bootstrap2.css",
+#            busyIndicator(text = "Loading..", img = "busyIndicator/ajaxloaderq.gif", wait = 1),
+#            DT::dataTableOutput("values2"),
+#            plotOutput("plot2")
+#            #  ),
+#            #tabPanel("Mean Power Distribution based on different EV",
+#            # h4("The result in this page will show up if you choose to specify a range of EV"),
+#            # p(HTML("Genetic Architecture I: &beta; independent of MAF"),style = "font-family: 'times'; font-si20pt"),
+#            # p("Geneic Architecture II : EV independent of MAF",style = "font-family: 'times'; font-si20pt"), 
+#            # p(HTML("Genetic Architecture III: &beta;~log_10(MAF);"),style = "font-family: 'times'; font-si20pt"),
+#            # dataTableOutput("values2_r"),
+#            # plotOutput("plot2_r")
+#            #)
+#            # )
+#          )
+#          
+# ),
+
     tabPanel("Citation",
              wellPanel(p("Derkach A., Zhang H. Chatterjee N. (2016)",a(href="http://biorxiv.org/content/early/2017/01/16/100891","Simplified Power Calculations for Aggregate-level Association Tests Provide Insights to Challenges for Rare Variant Association Studies.", "bioRxiv, 100891."))),            
     wellPanel(HTML('<a href="https://github.com/andrewhaoyu/ATTAP"><img src="img/githublogo.png" width=50 /> </a>')),

@@ -452,7 +452,7 @@ calcPowerSampleL=function(J,PC,PRC,E,Pthr,alpha,Ratio){
           SP = ceiling(PRC*SC)
 S1 = calcPowerL(J,SC,SP,E,n1,alpha)
 S2 = calcPowerL(J,SC,SP,E,n2,alpha)
-#cat(S1,S2,'\n')	
+
 if (S2<Pthr){
 n1=10^6
 n2 = 10^7
