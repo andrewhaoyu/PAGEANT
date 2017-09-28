@@ -5,8 +5,8 @@ account: andrewhaoyu
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 219969
-bundleId: 1002057
+bundleId: 1002472
 url: https://andrewhaoyu.shinyapps.io/PAGEANT_code/
-when: 1506618261.89275
+when: 1506634589.66829
 asMultiple: FALSE
 asStatic: FALSE

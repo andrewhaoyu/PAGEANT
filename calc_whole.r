@@ -225,33 +225,13 @@ S2 <- round(as.numeric(c(Obj[[2]][1],Obj[[2]][2],Obj[[5]][1],Obj[[5]][2])),place
 S3 <- round(as.numeric(c(Obj[[3]][1],Obj[[3]][2],Obj[[6]][1],Obj[[6]][2])),places)
 Item <- c("Min expected number of discoveries ","Max expected number of discoveries",paste0("min probability of ",m," or less discoveries"),paste0("max probability of ",m," or less discoveries"))
 result <- data.frame(Item=Item,S1=S1,S2=S2,S3=S3)
- colnames(result) <- c("","Genetic Arc I","Genetic Arc II","Genetic Arc III")
- return (list(result,NULL))
+ colnames(result) <- c("","Scenario S1","Scenario S2","Scenario S3")
+ 
+ p4 <- p3 <- p2<- p1 <- ggplot()+geom_blank()+
+   theme_bw()+
+   theme(
+     panel.border = element_blank()
+   )
+ return (list(result,p1,p2,p3,p4))
 }
-
-# Obj <- list(modelS1_E=modelS1_E,modelS2_E=modelS2_E,modelS3_E=modelS3_E,PrbMax1=apply(Prb1,2,max),PrbMax2=apply(Prb2,2,max),PrbMax3=apply(Prb3,2,max),
-#             PrbMin1=apply(Prb1,2,min),PrbMin2=apply(Prb2,2,min),PrbMin3=apply(Prb3,2,min),
-#             PrbMax1_m=(apply(Prb1,2,max))[m+1],PrbMax2_m=(apply(Prb2,2,max))[m+1],PrbMax3_m=(apply(Prb3,2,max))[m+1],
-#             PrbMin1_m=(apply(Prb1,2,min))[m+1],PrbMin2_m=(apply(Prb2,2,min))[m+1],PrbMin3_m=(apply(Prb3,2,min))[m+1]
-# )
-# places <- 2
-# S1 <- round(as.numeric(c(Obj[[1]][1],Obj[[1]][2],Obj[[10]],Obj[[13]])),places)
-# S2 <- round(as.numeric(c(Obj[[2]][1],Obj[[2]][2],Obj[[11]],Obj[[14]])),places)
-# S3 <- round(as.numeric(c(Obj[[3]][1],Obj[[3]][2],Obj[[12]],Obj[[15]])),places)
-# Item <- c("Min expected number of discoveries ","Max expected number of discoveries",paste0("max probability of ",m,"-discoveries"),paste0("min probability of ",m,"-discoveries"))
-# result <- data.frame(Item=Item,S1=S1,S2=S2,S3=S3)
-# colnames(result) <- c("","Genetic Arc I","Genetic Arc II","Genetic Arc III")
-# return (list(result,NULL))
-#}
-#return (list(Prb1=Prb1,E1=E1,Prb2=Prb2,E2=E2,Prb3=Prb3,E3=E3))
-
-
-
-
-
-
-
-
-
-
 

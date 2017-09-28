@@ -144,6 +144,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
             pBinP = calcPowerBPindSample(pj,PC,n*E,PowerThr,aa,bb,alpha,Ratio)
             ErelP = c(ErelP,calcPowerDSample(pj,PC,n*E,PowerThr,gm,aa,bb,alpha,Ratio))
           }
+          
 
 
           BindP = c(BindP,pBinP)
@@ -186,7 +187,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Sample Size of Senarario S1",x="Sample Size",y="Proportion")
+        labs(title="The Histogram of Sample Size of Scenario S1",x="Sample Size",y="Proportion")
       p2 <- ggplot(data,aes(data$BindP))+
         geom_histogram(aes(x=data$BindP,y=(..count..)/sum(..count..)),
                        fill="dodgerblue4",
@@ -194,7 +195,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Sample Size of Senarario S2",x="Sample Size",y="Proportion")
+        labs(title="The Histogram of Sample Size of Scenario S2",x="Sample Size",y="Proportion")
       p3 <- ggplot(data,aes(data$ErelP))+
         geom_histogram(aes(x=data$ErelP,y=(..count..)/sum(..count..)),
                        fill="chartreuse4",
@@ -202,7 +203,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Sample Size of Senarario S3",x="Sample Size",y="Proportion")
+        labs(title="The Histogram of Sample Size of Scenario S3",x="Sample Size",y="Proportion")
       p4 <- ggplot(data,aes(data$JJ))+
         geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
                        fill="gray15",
@@ -219,8 +220,8 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       Power_Dist <- c("Mean Sample Size","25% Quantile of Sample Size","Medium of Sample Size",
                       "75% Quantile of Sample Size")
       combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
-      colnames(combind.result) <- c("Sample Size Distribution","Senarario S1","Senarario S2",
-                                    "Senarario S3")
+      colnames(combind.result) <- c("Sample Size Distribution","Scenario S1","Scenario S2",
+                                    "Scenario S3")
       
       
       #return (list(combind.result,p1=NULL,p2=NULL,p3=NULL,p4=p4))
@@ -353,8 +354,8 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       EV.Length <- length(EV)
       
       # EV_x <- rep(EV*100,3)
-      # group <- c(rep("Senarario 1",EV.Length),rep("Senarario 2",EV.Length),
-      #            rep("Senarario 3",EV.Length))
+      # group <- c(rep("Scenario 1",EV.Length),rep("Scenario 2",EV.Length),
+      #            rep("Scenario 3",EV.Length))
       # Power <- c(EinMean,BinMean,BrelMean)
       # data <- data.frame(EV_x,group,Power)
       data <- data.frame(EV*100,EinMean,BinMean,BrelMean)
@@ -363,15 +364,15 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       p1 <- ggplot(data)+geom_line(aes(x=EV,y=EindP), colour="#c0392b")+
         theme_bw()+
         theme_new()+
-        labs(title="The Mean Sample Size Distribution of Senarario 1",y="Mean Sample Size",x="Variance Explained (Percent)",y="Proportion")
+        labs(title="The Mean Sample Size Distribution of Scenario 1",y="Mean Sample Size",x="Variance Explained (Percent)",y="Proportion")
       p2 <- ggplot(data)+geom_line(aes(x=EV,y=BindP), colour="dodgerblue4")+
         theme_bw()+
         theme_new()+
-        labs(title="The Mean Sample Size Distribution of Senarario 2",y="Mean Sample Size",x="Variance Explained (Percent)")
+        labs(title="The Mean Sample Size Distribution of Scenario 2",y="Mean Sample Size",x="Variance Explained (Percent)")
       p3 <- ggplot(data)+geom_line(aes(x=EV,y=ErelP), colour="chartreuse4")+
         theme_bw()+
         theme_new()+
-        labs(title="The Mean Sample Size Distribution of Senarario 3",y="Mean Sample Size",x="Variance Explained (Percent)")
+        labs(title="The Mean Sample Size Distribution of Scenario 3",y="Mean Sample Size",x="Variance Explained (Percent)")
       data <- data.frame(JJ=JJ.vec)
       p4 <- ggplot(data,aes(data$JJ))+
         geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
@@ -387,9 +388,9 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Senarario 1 Mean Sample Size",
-                                       "Senarario 2 Mean Sample Size",
-                                       "Senarario 3 Mean Sample Size"
+                                       "Scenario 1 Mean Sample Size",
+                                       "Scenario 2 Mean Sample Size",
+                                       "Scenario 3 Mean Sample Size"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
       MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]
@@ -540,7 +541,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       qunatBrelP =  ceilupto(quantile(PowerRelBandP))[2:4]
      
       # Power <- c(PowerEindP,PowerBindP,PowerRelBandP)
-      # Method <- c(rep("Senarario S1",length(PowerEindP)),rep("Senarario S2",length(PowerBindP)),rep("Senarario S3",length(PowerRelBandP)))
+      # Method <- c(rep("Scenario S1",length(PowerEindP)),rep("Scenario S2",length(PowerBindP)),rep("Scenario S3",length(PowerRelBandP)))
       # data <- data.frame(Power,Method)
       # 
       data <- data.frame(PowerEindP=t(PowerEindP),
@@ -557,7 +558,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
                        )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Sample Size of Senarario S1",x="Sample Size",y="Proportion")
+        labs(title="The Histogram of Sample Size of Scenario S1",x="Sample Size",y="Proportion")
       p2 <- ggplot(data,aes(data$BindP))+
         geom_histogram(aes(x=data$BindP,y=..count../(sum(..count..))),
                        fill="dodgerblue4",
@@ -565,7 +566,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Sample Size of Senarario S2",x="Sample Size",y="Proportion")
+        labs(title="The Histogram of Sample Size of Scenario S2",x="Sample Size",y="Proportion")
       p3 <- ggplot(data,aes(data$ErelP))+
         geom_histogram(aes(x=data$ErelP,y=..count../(sum(..count..))),
                        fill="chartreuse4",
@@ -573,7 +574,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Sample Size of Senarario S3",x="Sample Size",y="Proportion")
+        labs(title="The Histogram of Sample Size of Scenario S3",x="Sample Size",y="Proportion")
       p4 <- ggplot(data,aes(data$JJ))+
         geom_histogram(aes(x=data$JJ,y=..count../(sum(..count..))),
                        fill="gray15",
@@ -604,8 +605,8 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       Power_Dist <- c("Mean Sample Size","25% Quantile of Sample Size","Medium of Sample Size",
                       "75% Quantile of Sample Size")
       combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
-      colnames(combind.result) <- c("Sample Size Distribution","Senarario S1","Senarario S2",
-                                    "Senarario S3")
+      colnames(combind.result) <- c("Sample Size Distribution","Scenario S1","Scenario S2",
+                                    "Scenario S3")
 
         
       return (list(combind.result,p1=p1,p2=p2,p3=p3,p4=p4))
@@ -738,8 +739,8 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       EV.Length <- length(EV)
 
       # EV_x <- rep(EV*100,3)
-      # group <- c(rep("Senarario S1",EV.Length),rep("Senarario S2",EV.Length),
-      #            rep("Senarario S3",EV.Length))
+      # group <- c(rep("Scenario S1",EV.Length),rep("Scenario S2",EV.Length),
+      #            rep("Scenario S3",EV.Length))
       # Power <- c(EinMean,BinMean,BrelMean)
       # data <- data.frame(EV_x,group,Power)
       BrelMean <- ceilupto(apply(PowerRelBandP,1,mean))
@@ -749,8 +750,8 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       EV.Length <- length(EV)
       
       # EV_x <- rep(EV*100,3)
-      # group <- c(rep("Senarario 1",EV.Length),rep("Senarario 2",EV.Length),
-      #            rep("Senarario 3",EV.Length))
+      # group <- c(rep("Scenario 1",EV.Length),rep("Scenario 2",EV.Length),
+      #            rep("Scenario 3",EV.Length))
       # Power <- c(EinMean,BinMean,BrelMean)
       # data <- data.frame(EV_x,group,Power)
       data <- data.frame(EV*100,EinMean,BinMean,BrelMean)
@@ -759,15 +760,15 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       p1 <- ggplot(data)+geom_line(aes(x=EV,y=EindP), colour="#c0392b")+
         theme_bw()+
         theme_new()+
-        labs(title="The Mean Sample Size Distribution of Senarario 1",y="Mean Sample Size",x="Variance Explained (Percent)",y="Proportion")
+        labs(title="The Mean Sample Size Distribution of Scenario 1",y="Mean Sample Size",x="Variance Explained (Percent)",y="Proportion")
       p2 <- ggplot(data)+geom_line(aes(x=EV,y=BindP), colour="dodgerblue4")+
         theme_bw()+
         theme_new()+
-        labs(title="The Mean Sample Size Distribution of Senarario 2",y="Mean Sample Size",x="Variance Explained (Percent)")
+        labs(title="The Mean Sample Size Distribution of Scenario 2",y="Mean Sample Size",x="Variance Explained (Percent)")
       p3 <- ggplot(data)+geom_line(aes(x=EV,y=ErelP), colour="chartreuse4")+
         theme_bw()+
         theme_new()+
-        labs(title="The Mean Sample Size Distribution of Senarario 3",y="Mean Sample Size",x="Variance Explained (Percent)")
+        labs(title="The Mean Sample Size Distribution of Scenario 3",y="Mean Sample Size",x="Variance Explained (Percent)")
       data <- data.frame(JJ=JJ.vec)
       p4 <- ggplot(data,aes(data$JJ))+
         geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
@@ -783,9 +784,9 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
       
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Senarario 1 Mean Sample Size",
-                                       "Senarario 2 Mean Sample Size",
-                                       "Senarario 3 Mean Sample Size"
+                                       "Scenario 1 Mean Sample Size",
+                                       "Scenario 2 Mean Sample Size",
+                                       "Scenario 3 Mean Sample Size"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
       MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]
@@ -899,7 +900,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
 		  )+
 		  theme_bw()+
 		  theme_new()+
-		  labs(title="The Histogram of Sample Size of Senarario S1",x="Sample Size",y="Proportion")
+		  labs(title="The Histogram of Sample Size of Scenario S1",x="Sample Size",y="Proportion")
 		p2 <- ggplot(data,aes(data$BindP))+
 		  geom_histogram(aes(x=data$BindP,y=..count../(sum(..count..))),
 		                 fill="dodgerblue4",
@@ -907,7 +908,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
 		  )+
 		  theme_bw()+
 		  theme_new()+
-		  labs(title="The Histogram of Sample Size of Senarario S2",x="Sample Size",y="Proportion")
+		  labs(title="The Histogram of Sample Size of Scenario S2",x="Sample Size",y="Proportion")
 		p3 <- ggplot(data,aes(data$ErelP))+
 		  geom_histogram(aes(x=data$ErelP,y=..count../(sum(..count..))),
 		                 fill="chartreuse4",
@@ -915,7 +916,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
 		  )+
 		  theme_bw()+
 		  theme_new()+
-		  labs(title="The Histogram of Sample Size of Senarario S3",x="Sample Size",y="Proportion")
+		  labs(title="The Histogram of Sample Size of Scenario S3",x="Sample Size",y="Proportion")
 		p4 <- ggplot(data,aes(data$JJ))+
 		  geom_histogram(aes(x=data$JJ,y=..count../(sum(..count..))),
 		                 fill="gray15",
@@ -932,8 +933,8 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
 		Power_Dist <- c("Mean Sample Size","25% Quantile of Sample Size","Medium of Sample Size",
 		                "75% Quantile of Sample Size")
 		combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
-		colnames(combind.result) <- c("Sample Size Distribution","Senarario S1","Senarario S2",
-		                              "Senarario S3")
+		colnames(combind.result) <- c("Sample Size Distribution","Scenario S1","Scenario S2",
+		                              "Scenario S3")
 		
 		
 		return (list(combind.result,p1=p1,p2=p2,p3=p3,p4=p4))
@@ -1029,8 +1030,8 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
 	  EV.Length <- length(EV)
 	  
 	  # EV_x <- rep(EV*100,3)
-	  # group <- c(rep("Senarario S1",EV.Length),rep("Senarario S2",EV.Length),
-	  #            rep("Senarario S3",EV.Length))
+	  # group <- c(rep("Scenario S1",EV.Length),rep("Scenario S2",EV.Length),
+	  #            rep("Scenario S3",EV.Length))
 	  # Power <- c(EinMean,BinMean,BrelMean)
 	  # data <- data.frame(EV_x,group,Power)
 	  data <- data.frame(EV*100,EinMean,BinMean,BrelMean)
@@ -1039,15 +1040,15 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
 	  p1 <- ggplot(data)+geom_line(aes(x=EV,y=EindP), colour="#c0392b")+
 	    theme_bw()+
 	    theme_new()+
-	    labs(title="The Mean Sample Size Distribution of Senarario S1",y="Mean Sample Size",x="Variance Explained (Percent)")
+	    labs(title="The Mean Sample Size Distribution of Scenario S1",y="Mean Sample Size",x="Variance Explained (Percent)")
 	  p2 <- ggplot(data)+geom_line(aes(x=EV,y=BindP), colour="dodgerblue4")+
 	    theme_bw()+
 	    theme_new()+
-	    labs(title="The Mean Sample Size Distribution of Senarario S2",y="Mean Sample Size",x="Variance Explained (Percent)")
+	    labs(title="The Mean Sample Size Distribution of Scenario S2",y="Mean Sample Size",x="Variance Explained (Percent)")
 	  p3 <- ggplot(data)+geom_line(aes(x=EV,y=ErelP), colour="chartreuse4")+
 	    theme_bw()+
 	    theme_new()+
-	    labs(title="The Mean Sample Size Distribution of Senarario S3",y="Mean Sample Size",x="Variance Explained (Percent)")
+	    labs(title="The Mean Sample Size Distribution of Scenario S3",y="Mean Sample Size",x="Variance Explained (Percent)")
 	  data <- data.frame(JJ=JJ.vec)
 	  p4 <- ggplot(data,aes(data$JJ))+
 	    geom_histogram(aes(x=data$JJ,y=..count../(sum(..count..))),
@@ -1063,9 +1064,9 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
 	  
 	  MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
 	  colnames(MeanPower.combine) <- c("EV(Percent)",
-	                                   "Senarario S1 Mean Sample Size",
-	                                   "Senarario S2 Mean Sample Size",
-	                                   "Senarario S3 Mean Sample Size"
+	                                   "Scenario S1 Mean Sample Size",
+	                                   "Scenario S2 Mean Sample Size",
+	                                   "Scenario S3 Mean Sample Size"
 	  )
 	  MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
 	  MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]

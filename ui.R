@@ -37,14 +37,15 @@ tagList(
                mainPanel(
                  h3("PAGEANT: Power Analysis for GEnetic AssociatioN Tests"),
                  h3("Introduction"),
-                 p("The application allows rapid power analysis for a variety of genetic association tests by specification of a few key parameters [Derkach et al. 2017]. Power calculations can be done at the level of a single variant for simple trend test, at the level of a genes/regions for various complex aggregated tests [Neale et al. 2011, Derkach et al. 2013, Wu et al. 2011, Madsen and Browning 2009] and at the level of the whole genome for the assessment of overall yield of a study. The calculations currently uses underlying distribution of gene sizes and minor allele frequencies of variants observed in the in the public data for 60,000 individuals from Exome Aggregation Consortium [Lek et al. 2016] 
+                 p("The application allows rapid power and sample size analysis for a variety of genetic association tests by specification of a few key parameters [Derkach et al. 2017]. Power and sample size calculations can be done at the level of a single variant for simple trend test, at the level of a genes/regions for various complex aggregated tests [Neale et al. 2011, Derkach et al. 2013, Wu et al. 2011, Madsen and Browning 2009] and at the level of the whole genome for the assessment of overall yield of a study. The calculations currently uses underlying distribution of gene sizes and minor allele frequencies of variants observed in the in the public data for 60,000 individuals from Exome Aggregation Consortium [Lek et al. 2016] 
                    ", style = "font-family: 'times'; font-si20pt"),
-                 h3("Power for association test at the level of a single variant or a single gene/region
+                 h3("Power and sample size for association test at the level of a single variant or a single gene/region
                     "),
                  h4("Essential Input Parameters "),
                  p("1)	EV: For continuous trait, EV represents % of phenotypic variance explained the variants in a gene (or by a single variant for single-variant tests). For binary trait, EV represents sum of squares of log-odds-ratios (in standardized unit) associated with the variants in a gene (or that for a single variant). For example, if power calculation is desired for a locus which may have 5 causal variants each with an OR=1.2, then EV should be set to \\(5× (ln(1.2)^2)=0.17\\);", style = "font-family: 'times'; font-si20pt"),
                  p("2) \\(\\alpha\\) = level of the test;", style = "font-family: 'times'; font-si20pt"),
-                 p("3) Sample size: Total sample size for a continuous trait or the number of cases and number of controls for a case-control study;", style = "font-family: 'times'; font-si20pt"),
+                 p("3) Sample size: Total sample size for a continuous trait or the number of cases and number of controls for a case-control study; This parameter required in power calculations", style = "font-family: 'times'; font-si20pt"),
+                 p("4) Power target: targeted average power of the test;", style = "font-family: 'times'; font-si20pt"),
                  h4("Optional Parameters
                     "),
                  p("1)	Total number of variants (\\(J\\)): The total number of variants under study within a gene/region. This is a key parameter in power calculation for the gene-level tests and when it’s not specified the application evaluates distribution of power according to distribution observed for in the ExAC database.With J=1, gene based power calculation simplifies that for a single variant.", style = "font-family: 'times'; font-si20pt"),
@@ -53,7 +54,7 @@ tagList(
                  p("3)Range of EV: Instead of a single EV, the user can specify a range of EV over which power calculation is desired 
                    ", style = "font-family: 'times'; font-si20pt"),
                  h4("Output"),
-                 p("The application conducts power analysis under three different models for genetic architecture assuming (I) MAF is independent of EV (II) MAF is independent of genetic effects measured in the unit of per copy of an allele (\\(\\beta^2\\)=EV/(2MAF(1-MAF)) and (III) MAF is negatively correlated with genetic effect through the function \\(\\beta=-\\log_{10}\\)(MAF).  When a single EV is specified, for each genetic architecture, it returns a distribution of power and key summary measures (mean, median,  25th and 75th percentiles). This distribution corresponds to uncertainty association with various additional parameters, such as the number of variants within a gene and minor allele frequencies. If a range of EV is specified, plots and table for average power over the range of specified EV is returned.
+                 p("The application conducts power and sample size analysis under three different models for genetic architecture assuming (S1) MAF is independent of EV (S2) MAF is independent of genetic effects measured in the unit of per copy of an allele (\\(\\beta^2\\)=EV/(2MAF(1-MAF)) and (S3) MAF is negatively correlated with genetic effect through the function \\(\\beta=-\\log_{10}\\)(MAF).  When a single EV is specified, for each genetic architecture, it returns a distribution of power or sample size and key summary measures (mean, median,  25th and 75th percentiles). This distribution corresponds to uncertainty association with various additional parameters, such as the number of variants within a gene and minor allele frequencies. Application returns distribution of  the number of variants within a gene as it is one of essential parameters. If a range of EV is specified, plots and table for average power over the range of specified EV is returned.
                    
                    ", style = "font-family: 'times'; font-si20pt"),
                  h3("Genome-level power calculation"),
@@ -230,9 +231,9 @@ tagList(
                conditionalPanel(
                  condition = "input.SNPoption=='Whole Genome'",
                  h5(" For whole genome power calculation, quick option runs genome-wide calculations  within 3 minutes and  provides rough estimates. Adequate option runs genome-wide calculations  within 6 minutes and provides more accurate estimates. Lastly, Complete option runs genome-wide calculations  within 15 minutes and  provides very accurate estimates.")),
-               p("Senarario S1: MAF is independent of EV;",style = "font-family: 'times'; font-si20pt"),
-               p("Senarario S2 : MAF is independent of genetic effects measured in the unit of per copy of an allele;",style = "font-family: 'times'; font-si20pt"), 
-               p("Senarario S3: MAF is negatively correlated with genetic effect through the function ;",style = "font-family: 'times'; font-si20pt"),
+               p("Scenario S1: MAF is independent of EV;",style = "font-family: 'times'; font-si20pt"),
+               p("Scenario S2 : MAF is independent of genetic effects measured in the unit of per copy of an allele;",style = "font-family: 'times'; font-si20pt"), 
+               p("Scenario S3: MAF is negatively correlated with genetic effect through the function ;",style = "font-family: 'times'; font-si20pt"),
                theme = "bootstrap1.css",
                busyIndicator(text = "Loading..", img = "busyIndicator/ajaxloaderq.gif", wait = 1),
                DT::dataTableOutput("values"),
@@ -401,9 +402,9 @@ tagList(
                conditionalPanel(
                  condition = "input.SNPoption2=='Whole Genome'",
                  h5(" For whole genome power calculation, quick option runs genome-wide calculations  within 3 minutes and  provides rough estimates. Adequate option runs genome-wide calculations  within 6 minutes and provides more accurate estimates. Lastly, Complete option runs genome-wide calculations  within 15 minutes and  provides very accurate estimates.")),
-               p("Senarario S1: MAF is independent of EV;",style = "font-family: 'times'; font-si20pt"),
-               p("Senarario S2 : MAF is independent of genetic effects measured in the unit of per copy of an allele;",style = "font-family: 'times'; font-si20pt"), 
-               p("Senarario S3: MAF is negatively correlated with genetic effect through the function ;",style = "font-family: 'times'; font-si20pt"),
+               p("Scenario S1: MAF is independent of EV;",style = "font-family: 'times'; font-si20pt"),
+               p("Scenario S2 : MAF is independent of genetic effects measured in the unit of per copy of an allele;",style = "font-family: 'times'; font-si20pt"), 
+               p("Scenario S3: MAF is negatively correlated with genetic effect through the function ;",style = "font-family: 'times'; font-si20pt"),
                theme = "bootstrap2.css",
                busyIndicator(text = "Loading..", img = "busyIndicator/ajaxloaderq.gif", wait = 1),
                DT::dataTableOutput("values2"),
