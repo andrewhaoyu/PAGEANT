@@ -54,7 +54,7 @@ tagList(
                  p("3)Range of EV: Instead of a single EV, the user can specify a range of EV over which power calculation is desired 
                    ", style = "font-family: 'times'; font-si20pt"),
                  h4("Output"),
-                 p("The application conducts power and sample size analysis under three different models for genetic architecture assuming (S1) MAF is independent of EV (S2) MAF is independent of genetic effects measured in the unit of per copy of an allele (\\(\\beta^2\\)=EV/(2MAF(1-MAF)) and (S3) MAF is negatively correlated with genetic effect through the function \\(\\beta=-\\log_{10}\\)(MAF).  When a single EV is specified, for each genetic architecture, it returns a distribution of power or sample size and key summary measures (mean, median,  25th and 75th percentiles). This distribution corresponds to uncertainty association with various additional parameters, such as the number of variants within a gene and minor allele frequencies. Application returns distribution of  the number of variants within a gene as it is one of essential parameters. If a range of EV is specified, plots and table for average power over the range of specified EV is returned.
+                 p("The application conducts power and sample size analysis under three different models for genetic architecture assuming (S1) MAF is independent of EV; (S2) MAF is independent of genetic effects measured in the unit of per copy of an allele (\\(\\beta^2\\)=EV/(2MAF(1-MAF)) and (S3) MAF is negatively correlated with genetic effect through the function \\(\\beta=-\\log_{10}\\)(MAF).  When a single EV is specified, for each genetic architecture, it returns a distribution of power or sample size and key summary measures (mean, median,  25th and 75th percentiles). This distribution corresponds to uncertainty association with various additional parameters, such as the number of variants within a gene and minor allele frequencies. Application returns distribution of  the number of variants within a gene as it is one of essential parameters. If a range of EV is specified, plots and table for average power over the range of specified EV is returned.
                    
                    ", style = "font-family: 'times'; font-si20pt"),
                  h3("Genome-level power calculation"),
@@ -162,7 +162,7 @@ tagList(
                              "Type of power calculation",
                              c("Single Gene","Single SNP")),
                  
-                 numericInput("PowerThreshold_s", "PowerThreshold", 
+                 numericInput("PowerThreshold_s", "Power Target", 
                               value=0.8),
                  
                  conditionalPanel(
@@ -340,7 +340,7 @@ tagList(
                              c("Single Gene","Single SNP")),
                  
                  
-                 numericInput("PowerThreshold2_s", "PowerThreshold", 
+                 numericInput("PowerThreshold2_s", "Power Target", 
                               value=0.8),
                  
                  
