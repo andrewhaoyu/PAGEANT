@@ -65,7 +65,7 @@ tagList(
                  
                  h4("Optional Input Parameter"),
                  p(" 1) m: The number of causal loci for which probability of discovery to be calculated (see output).For example if it is assumed M=100, then a user may want to find out what is the probability of discovery of m=5 or less number of loci from a given study of a specific sample size.", style = "font-family: 'times'; font-si20pt"),
-                 p("2) Level of complexity: The number of  models and iterations used to estimate range of expected number of discoveries and probabilities (see output). There are three options: Fast, Intermediate and Most accurate.  Fast option runs genome-wide calculations  within 3 minutes and  provides rough estimates. Intermediate option runs genome-wide calculations  within 6 minutes and provides more accurate estimates. Lastly, most accurate option runs genome-wide calculations  within 15 minutes and  provides very accurate estimates. ", style = "font-family: 'times'; font-si20pt"),
+                 p("2) Level of complexity: The number of  models and iterations used to estimate range of expected number of discoveries and probabilities (see output). There are three options: fast, intermediate and most accurate.  Fast option runs genome-wide calculations  within 3 minutes and  provides rough estimates. Intermediate option runs genome-wide calculations  within 6 minutes and provides more accurate estimates. Lastly, most accurate option runs genome-wide calculations  within 15 minutes and  provides very accurate estimates. ", style = "font-family: 'times'; font-si20pt"),
                  h4("Output"),
                  p("Expected number of discoveries: The application returns expected number of discoveries where the expectation is calculated across the M loci accounting for uncertainty associated with distribution of number of variants per locus (J), allele frequencies and the distributions of EVs the loci explains. Currently, the distribution of J and MAF in these calculations are obtained from those observed in the ExAC database. In addition, it is assumed the effect size distribution follows a L-shaped gamma distribution with mean specified as \\(\\mu=\\)GEV/M.  The application calculates a range of expected number of discoveries based on the range of the dispersion parameter of the underlying gamma distribution for the effect size distribution and the corresponding maximum and minimum values are returned.  
                    Probability of discoveries: This returns maximum and minimum probability of a certain number of discoveries (m) for values of specified by the user. ", style = "font-family: 'times'; font-si20pt"),
@@ -89,7 +89,7 @@ tagList(
                              c("Single Gene","Single SNP","Whole Genome")),
                  
                  numericInput("ncases", "Number of Cases:", 
-                              value=5000),
+                              value=5000,min=1,step=1),
                  
                  numericInput("ncont", "Number of Controls:", 
                               value = 5000),

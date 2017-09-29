@@ -111,7 +111,7 @@ if(S2<Pthr){
 return(Ratio*n1)
 }	
 		
-while (abs(n1-n2)>1){
+while (abs(n1-n2)>50){
 nx = (n1+n2)/2
 Sx = get_powersc(MAFCausal,PC,EVC,nx,aa,bb,level,Ratio)
 if (Sx<Pthr){n1=nx}
@@ -246,7 +246,7 @@ if(S2<Pthr){
 return(Ratio*n1)
 }	
 		
-while (abs(n1-n2)>1){
+while (abs(n1-n2)>50){
 nx = (n1+n2)/2
 Sx = get_powerIndsc(MAFCausal,PC,EVC,nx,aa,bb,level,Ratio)
 if (Sx<Pthr){n1=nx}
@@ -396,7 +396,7 @@ if(S2<Pthr){
 return(Ratio*n1)
 }	
 		
-while (abs(n1-n2)>1){
+while (abs(n1-n2)>50){
 nx = (n1+n2)/2
 Sx = get_powerDsc(MAFCausal,PC,EVC,nx,gm,aa,bb,level,Ratio)
 if (Sx<Pthr){n1=nx}
@@ -433,7 +433,7 @@ n1=10000
 return(Ratio*n1)
 }	
 		
-while (abs(n1-n2)>1){
+while (abs(n1-n2)>50){
 nx = (n1+n2)/2
 Sx = calcPowerL(J,SC,SP,E,nx,alpha)
 if (Sx<Pthr){n1=nx}
@@ -470,7 +470,7 @@ n1=10000
 return(Ratio*n1)
 }	
 		
-while (abs(n1-n2)>1){
+while (abs(n1-n2)>50){
 nx = (n1+n2)/2
 Sx = calcPowerL(J,SC,SP,E,nx,alpha)
 if (Sx<Pthr){n1=nx}
