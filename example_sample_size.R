@@ -1,5 +1,5 @@
-source('PowerCal_RareSample_A.R')
-source('PowerCalc_RareSample_original.r')
+source('PowerCalc_RareSample_A.R')
+#source('PowerCalc_RareSample_original.r')
 
 # Total = 10000
 # ncase = 5000
