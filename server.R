@@ -39,10 +39,32 @@ function(input, output) {
     if(input$TypeofCalculation=='Sample Size Calculation'){
       if(input$SNPoption_s=="Single SNP"){
         if(input$evoption_s=='Single EV'){
-          get_Aprox_Sample(EV=(input$EV_s)/100,
+          result <- get_Aprox_Sample(EV=(input$EV_s)/100,
                            PowerThr=input$PowerThreshold_s,
                            alpha = input$Alpha_s,
                            ONESNP=T)
+          
+          
+          output$values <- DT::renderDataTable(
+            
+            withProgress( message = "WE ARE COMPUTING..", value = 0.6,{
+              data1()[[1]]
+              
+            })
+            
+            ,options=list(dom='t',autoWidth=F,columnDefs = list(list(width = "150", targets = "_all"))),rownames=F
+          )
+          output$plot = renderPlot(
+            {
+              grid.arrange(result()[[5]],result()[[2]],
+                           result()[[3]],result()[[4]],ncol=2)
+            },
+            height=450,
+            width=900)
+          
+          
+          
+          
         }else{
           EV_new <- seq(input$EV_range_s[1],input$EV_range_s[2],(input$EV_range_s[2]-input$EV_range_s[1])/10)
           get_Aprox_Sample(EV=(EV_new)/100,
@@ -401,22 +423,7 @@ function(input, output) {
                                 wait)))
     }
   
-  output$values <- DT::renderDataTable(
-    
-    withProgress( message = "WE ARE COMPUTING..", value = 0.6,{
-      data1()[[1]]
-      
-    })
-    
-    ,options=list(dom='t',autoWidth=F,columnDefs = list(list(width = "150", targets = "_all"))),rownames=F
-  )
-  output$plot = renderPlot(
-    {
-      grid.arrange(data1()[[5]],data1()[[2]],
-                   data1()[[3]],data1()[[4]],ncol=2)
-    },
-    height=450,
-    width=900)
+  
   
   
   

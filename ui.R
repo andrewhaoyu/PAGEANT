@@ -65,7 +65,7 @@ tagList(
                  
                  h4("Optional Input Parameter"),
                  p(" 1) m: The number of causal loci for which probability of discovery to be calculated (see output).For example if it is assumed M=100, then a user may want to find out what is the probability of discovery of m=5 or less number of loci from a given study of a specific sample size.", style = "font-family: 'times'; font-si20pt"),
-                 p("2) Computational Complexity: The number of  models and iterations used to estimate range of expected number of discoveries and probabilities (see output). There are three options: Quick, Adequate and Complete.  Quick option runs genome-wide calculations  within 3 minutes and  provides rough estimates. Adequate option runs genome-wide calculations  within 6 minutes and provides more accurate estimates. Lastly, Complete option runs genome-wide calculations  within 15 minutes and  provides very accurate estimates. ", style = "font-family: 'times'; font-si20pt"),
+                 p("2) Level of complexity: The number of  models and iterations used to estimate range of expected number of discoveries and probabilities (see output). There are three options: Fast, Intermediate and Most accurate.  Fast option runs genome-wide calculations  within 3 minutes and  provides rough estimates. Intermediate option runs genome-wide calculations  within 6 minutes and provides more accurate estimates. Lastly, most accurate option runs genome-wide calculations  within 15 minutes and  provides very accurate estimates. ", style = "font-family: 'times'; font-si20pt"),
                  h4("Output"),
                  p("Expected number of discoveries: The application returns expected number of discoveries where the expectation is calculated across the M loci accounting for uncertainty associated with distribution of number of variants per locus (J), allele frequencies and the distributions of EVs the loci explains. Currently, the distribution of J and MAF in these calculations are obtained from those observed in the ExAC database. In addition, it is assumed the effect size distribution follows a L-shaped gamma distribution with mean specified as \\(\\mu=\\)GEV/M.  The application calculates a range of expected number of discoveries based on the range of the dispersion parameter of the underlying gamma distribution for the effect size distribution and the corresponding maximum and minimum values are returned.  
                    Probability of discoveries: This returns maximum and minimum probability of a certain number of discoveries (m) for values of specified by the user. ", style = "font-family: 'times'; font-si20pt"),
@@ -102,8 +102,8 @@ tagList(
                    numericInput("GEV", "GEV: Genome-wide Variance Explained(Percent)",
                                 value = 20),
                    selectInput("grid",
-                               " Computational Complexity (optional)",
-                               c("Quick","Adequate","Complete")),
+                               " Level of complexity (optional)",
+                               c("Fast","Intermediate","Most accurate")),
                    selectInput(
                      "method_whole", "Method",
                      c("SKAT","Calpha","Hotelling","Burden Test")
@@ -230,10 +230,10 @@ tagList(
                # p(HTML("Genetic Architecture III: &beta;~log_10(MAF);"),style = "font-family: 'times'; font-si20pt"),
                conditionalPanel(
                  condition = "input.SNPoption=='Whole Genome'",
-                 h5(" For whole genome power calculation, quick option runs genome-wide calculations  within 3 minutes and  provides rough estimates. Adequate option runs genome-wide calculations  within 6 minutes and provides more accurate estimates. Lastly, Complete option runs genome-wide calculations  within 15 minutes and  provides very accurate estimates.")),
+                 h5(" For whole genome power calculation, fast option runs genome-wide calculations  within 3 minutes and  provides rough estimates. Intermediate option runs genome-wide calculations  within 6 minutes and provides more accurate estimates. Lastly, most accurate option runs genome-wide calculations  within 15 minutes and  provides very accurate estimates.")),
                p("Scenario S1: MAF is independent of EV;",style = "font-family: 'times'; font-si20pt"),
-               p("Scenario S2 : MAF is independent of genetic effects measured in the unit of per copy of an allele;",style = "font-family: 'times'; font-si20pt"), 
-               p("Scenario S3: MAF is negatively correlated with genetic effect through the function ;",style = "font-family: 'times'; font-si20pt"),
+               p("Scenario S2 : MAF is independent of genetic effects measured in the unit of per copy of an allele \\(\\beta^2\\)=EV/(2MAF(1-MAF);",style = "font-family: 'times'; font-si20pt"), 
+               p("Scenario S3: MAF is negatively correlated with genetic effect through the function \\(\\beta=-\\log_{10}\\)(MAF);",style = "font-family: 'times'; font-si20pt"),
                theme = "bootstrap1.css",
                busyIndicator(text = "Loading..", img = "busyIndicator/ajaxloaderq.gif", wait = 1),
                DT::dataTableOutput("values"),
@@ -284,7 +284,7 @@ tagList(
                    ),
                    selectInput("grid2",
                                "Computational Complexity(Optional)",
-                               c("Quick","Adequate","Complete")),
+                               c("Fast","Intermediate","Most accurate")),
                    numericInput("K2","Number of causal loci",value=1000),
                    numericInput("m2","Number of discoveries",value=0),
                    numericInput("PC_whole2","Proportion of Causal Variants (Optional)",value=NA),
@@ -403,8 +403,8 @@ tagList(
                  condition = "input.SNPoption2=='Whole Genome'",
                  h5(" For whole genome power calculation, quick option runs genome-wide calculations  within 3 minutes and  provides rough estimates. Adequate option runs genome-wide calculations  within 6 minutes and provides more accurate estimates. Lastly, Complete option runs genome-wide calculations  within 15 minutes and  provides very accurate estimates.")),
                p("Scenario S1: MAF is independent of EV;",style = "font-family: 'times'; font-si20pt"),
-               p("Scenario S2 : MAF is independent of genetic effects measured in the unit of per copy of an allele;",style = "font-family: 'times'; font-si20pt"), 
-               p("Scenario S3: MAF is negatively correlated with genetic effect through the function ;",style = "font-family: 'times'; font-si20pt"),
+               p("Scenario S2 : MAF is independent of genetic effects measured in the unit of per copy of an allele \\(\\beta^2\\)=EV/(2MAF(1-MAF);",style = "font-family: 'times'; font-si20pt"), 
+               p("Scenario S3: MAF is negatively correlated with genetic effect through the function \\(\\beta=-\\log_{10}\\)(MAF);",style = "font-family: 'times'; font-si20pt"),
                theme = "bootstrap2.css",
                busyIndicator(text = "Loading..", img = "busyIndicator/ajaxloaderq.gif", wait = 1),
                DT::dataTableOutput("values2"),
