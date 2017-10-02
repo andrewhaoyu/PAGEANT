@@ -158,7 +158,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
         PowerRelBandP = rbind(PowerRelBandP,ErelP)
         PowerBindP = rbind(PowerBindP,BindP)
         PowerEindP = rbind(PowerEindP,EindP)
-        save(PowerRelBandP,PowerBindP,PowerEindP,file='1')
+        #save(PowerRelBandP,PowerBindP,PowerEindP,file='1')
       }
       
       mmEinP = ceilupto(mean(PowerEindP))
@@ -344,7 +344,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
         PowerRelBandP = rbind(PowerRelBandP,ErelP)
         PowerBindP = rbind(PowerBindP,BindP)
         PowerEindP = rbind(PowerEindP,EindP)
-        save(PowerRelBandP,PowerBindP,PowerEindP,file='2')
+        #save(PowerRelBandP,PowerBindP,PowerEindP,file='2')
       }
       BrelMean <- ceilupto(apply(PowerRelBandP,1,mean))
       BinMean <- ceilupto(apply(PowerBindP,1,mean))
@@ -513,7 +513,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
         PowerRelBandP = rbind(PowerRelBandP,ErelP)
         PowerBindP = rbind(PowerBindP,BindP)
         PowerEindP = rbind(PowerEindP,EindP)
-        save(PowerRelBandP,PowerBindP,PowerEindP,file='4')
+        #save(PowerRelBandP,PowerBindP,PowerEindP,file='4')
       }
       #cat(sdd,'\n')
       #ptm1 <- proc.time()

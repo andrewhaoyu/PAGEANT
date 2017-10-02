@@ -424,6 +424,21 @@ function(input, output) {
     }
   
   
+  output$values <- DT::renderDataTable( 
+    
+    withProgress( message = "WE ARE COMPUTING..", value = 0.9,{ 
+      data1()[[1]]
+    })  
+    
+    ,options=list(dom='t',autoWidth=F,columnDefs = list(list(width = "150", targets = "_all"))),rownames=F
+  )
+  output$plot = renderPlot(
+    grid.arrange(data1()[[5]],data1()[[2]],
+                 data1()[[3]],data1()[[4]],ncol=2)
+    ,
+    height=450,
+    width=900
+  )
   
   
   
