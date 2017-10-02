@@ -25,6 +25,7 @@ theme_new <- function(base_size = 12, base_family = "Helvetica"){
 
 get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',QT='CC',nameEsseble=NULL,JJ=NA,PRC=NA,ONESNP=F){
   JJ.vec <- rep(0,1000)
+  pj.vec <- rep(0,1000)
   if(ONESNP==T){
     JJ=1
     if(length(EV)==1&TEST!='Burden Test'){
@@ -114,6 +115,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           JJ.vec[i] <- J
           pj = as.numeric(sample(MAF,J,replace=TRUE))
+          pj.vec[i] <- pj[1]
           #pj =runif(J)*0.1
           m = E*n/J/(a+g*mean(pj))
           gm = g*m
@@ -159,52 +161,47 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       colnames(data) <- c("EindP","BindP","ErelP","JJ")
       
       
-      p1 <- ggplot(data,aes(data$EindP))+
-        geom_histogram(aes(x=data$EindP,y=(..count..)/sum(..count..)),
-                       fill="#c0392b",
-                       alpha=0.75
-        )+
-        theme_bw()+
-        theme_new()+
-        labs(title="The Histogram of Power of Scenario S1",x="Power",y="Proportion")
-      p2 <- ggplot(data,aes(data$BindP))+
-        geom_histogram(aes(x=data$BindP,y=(..count..)/sum(..count..)),
+      data <- data.frame(JJ.vec = JJ.vec,
+                         pj.vec = pj.vec)
+      colnames(data) <- c("JJ","pj")
+      p1 <- ggplot(data,aes(data$JJ))+
+        geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
                        fill="dodgerblue4",
                        alpha=0.75
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Power of Scenario S2",x="Power",y="Proportion")
-      p3 <- ggplot(data,aes(data$ErelP))+
-        geom_histogram(aes(x=data$ErelP,y=(..count..)/sum(..count..)),
-                       fill="chartreuse4",
-                       alpha=0.75
-        )+
-        theme_bw()+
-        theme_new()+
-        labs(title="The Histogram of Power of Scenario S3",x="Power",y="Proportion")
-      p4 <- ggplot(data,aes(data$JJ))+
-        geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
-                       fill="gray15",
-                       alpha=0.75
-        )+
-        theme_bw()+
-        theme_new()+
         labs(title="The Histogram of Total number of variants (J)",x="Total number of variants (J)",y="Proportion")
+      p2 <- ggplot(data,aes(pj))+
+        geom_histogram(aes(x=data$pj,y=(..count..)/sum(..count..)),
+                       fill="#c0392b",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Minor Allele Frequency (MAF)",x="Minor Allele Frequency (MAF)",y="Proportion")
+      
+      p3 <- ggplot()+geom_blank()+
+        theme_bw()+
+        theme(
+          panel.border = element_blank()
+        )
+      
+      
       
       Gene_Arc_1 <- c(mmEinP,qunatEinP)
       Gene_Arc_2 <- c(mmBinP,qunatBinP)
       Gene_Arc_3 <- c(mmBrelP,qunatBrelP)
       
-      Power_Dist <- c("Mean Power","25% Quantile of Power","Medium of Power",
-                      "75% Quantile of Power")
+      Power_Dist <- c("Mean Sample Size","25% Quantile of Sample Size","Medium of Sample Size",
+                      "75% Quantile of Sample Size")
       combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
-      colnames(combind.result) <- c("Power Distribution","Scenario S1","Scenario S2",
+      colnames(combind.result) <- c("Sample Size Distribution","Scenario S1","Scenario S2",
                                     "Scenario S3")
       
       
       #return (list(combind.result,p1=NULL,p2=NULL,p3=NULL,p4=p4))
-      return (list(combind.result,p1=p1,p2=p2,p3=p3,p4=p4))
+      return (list(combind.result,p1=p1,p2=p2,p3=p3))
     }
     else if(length(EV)>1&TEST!='Burden Test'){
       PowerEindP = NULL
@@ -293,6 +290,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           JJ.vec[i] <- J
           pj = as.numeric(sample(MAF,J,replace=TRUE))
+          pj.vec[i] <- pj[1]
           #pj =runif(J)*0.1
           m = E*n/J/(a+g*mean(pj))
           gm = g*m
@@ -329,43 +327,42 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       EV.Length <- length(EV)
       
-      data <- data.frame(EV*100,EinMean,BinMean,BrelMean)
-      colnames(data) <- c("EV","EindP","BindP","ErelP")
-      #y.up <- min(1,(max(Power)+0.1))
-      p1 <- ggplot(data)+geom_line(aes(x=EV,y=EindP), colour="#c0392b")+
-        theme_bw()+
-        theme_new()+
-        labs(title="The Mean Power Distribution of Scenario 1",y="Mean Power",x="Variance Explained (Percent)",y="Proportion")
-      p2 <- ggplot(data)+geom_line(aes(x=EV,y=BindP), colour="dodgerblue4")+
-        theme_bw()+
-        theme_new()+
-        labs(title="The Mean Power Distribution of Scenario 2",y="Mean Power",x="Variance Explained (Percent)")
-      p3 <- ggplot(data)+geom_line(aes(x=EV,y=ErelP), colour="chartreuse4")+
-        theme_bw()+
-        theme_new()+
-        labs(title="The Mean Power Distribution of Scenario 3",y="Mean Power",x="Variance Explained (Percent)")
-      data <- data.frame(JJ=JJ.vec)
-      p4 <- ggplot(data,aes(data$JJ))+
+      data <- data.frame(JJ=JJ.vec,pj.vec =pj.vec)
+      colnames(data) <- c("JJ","pj")
+      p1 <- ggplot(data,aes(data$JJ))+
         geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
-                       fill="gray15",
+                       fill="dodgerblue4",
                        alpha=0.75
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)",y="Proportion")
+        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)")
+      p2 <- ggplot(data,aes(pj))+
+        geom_histogram(aes(x=data$pj,y=(..count..)/sum(..count..)),
+                       fill="#c0392b",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Minor Allele Frequency (MAF)",x="Minor Allele Frequency (MAF)",y="Proportion")
+      p3 <- ggplot()+geom_blank()+
+        theme_bw()+
+        theme(
+          panel.border = element_blank()
+        )
       
       
       
       
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Scenario 1 Mean Power",
-                                       "Scenario 2 Mean Power",
-                                       "Scenario 3 Mean Power"
+                                       "Scenario 1 Mean Sample Size",
+                                       "Scenario 2 Mean Sample Size",
+                                       "Scenario 3 Mean Sample Size"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
-      MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]
-      return(list(MeanPower.combine,p1=p1,p2=p2,p3=p3,p4=p4))
+      MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9,10),]
+      return(list(MeanPower.combine,p1=p1,p2=p2,p3=p3))
     }
     }else{
     if(length(EV)==1&TEST!='Burden Test'){
@@ -455,6 +452,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           JJ.vec[i] <- J
           pj = as.numeric(sample(MAF,J,replace=TRUE))
+          pj.vec[i] <- pj[1]
           #pj =runif(J)*0.1
           m = E*n/J/(a+g*mean(pj))
           gm = g*m
@@ -492,59 +490,47 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       qunatBrelP =  round(quantile(PowerRelBandP),4)[2:4]
       
-      data <- data.frame(PowerEindP=t(PowerEindP),
-                         PowerBindP=t(PowerBindP),
-                         PowerRelBandP=t(PowerRelBandP),
-                         JJ.vec = JJ.vec)
-      colnames(data) <- c("EindP","BindP","ErelP","JJ")
-      
-      
-      p1 <- ggplot(data,aes(data$EindP))+
-        geom_histogram(aes(x=data$EindP,y=(..count..)/sum(..count..)),
-                       fill="#c0392b",
-                       alpha=0.75
-        )+
-        theme_bw()+
-        theme_new()+
-        labs(title="The Histogram of Power of Scenario S1",x="Power",y="Proportion")
-      p2 <- ggplot(data,aes(data$BindP))+
-        geom_histogram(aes(x=data$BindP,y=(..count..)/sum(..count..)),
+      data <- data.frame(JJ.vec = JJ.vec,
+                         pj.vec = pj.vec)
+      colnames(data) <- c("JJ","pj")
+      p1 <- ggplot(data,aes(data$JJ))+
+        geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
                        fill="dodgerblue4",
                        alpha=0.75
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Power of Scenario S2",x="Power",y="Proportion")
-      p3 <- ggplot(data,aes(data$ErelP))+
-        geom_histogram(aes(x=data$ErelP,y=(..count..)/sum(..count..)),
-                       fill="chartreuse4",
-                       alpha=0.75
-        )+
-        theme_bw()+
-        theme_new()+
-        labs(title="The Histogram of Power of Scenario S3",x="Power",y="Proportion")
-      p4 <- ggplot(data,aes(data$JJ))+
-        geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
-                       fill="gray15",
-                       alpha=0.75
-        )+
-        theme_bw()+
-        theme_new()+
         labs(title="The Histogram of Total number of variants (J)",x="Total number of variants (J)",y="Proportion")
+      p2 <- ggplot(data,aes(pj))+
+        geom_histogram(aes(x=data$pj,y=(..count..)/sum(..count..)),
+                       fill="#c0392b",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Minor Allele Frequency (MAF)",x="Minor Allele Frequency (MAF)",y="Proportion")
+      
+      p3 <- ggplot()+geom_blank()+
+        theme_bw()+
+        theme(
+          panel.border = element_blank()
+        )
+      
+      
       
       Gene_Arc_1 <- c(mmEinP,qunatEinP)
       Gene_Arc_2 <- c(mmBinP,qunatBinP)
       Gene_Arc_3 <- c(mmBrelP,qunatBrelP)
       
-      Power_Dist <- c("Mean Power","25% Quantile of Power","Medium of Power",
-                      "75% Quantile of Power")
+      Power_Dist <- c("Mean Sample Size","25% Quantile of Sample Size","Medium of Sample Size",
+                      "75% Quantile of Sample Size")
       combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
-      colnames(combind.result) <- c("Power Distribution","Scenario S1","Scenario S2",
+      colnames(combind.result) <- c("Sample Size Distribution","Scenario S1","Scenario S2",
                                     "Scenario S3")
       
       
       #return (list(combind.result,p1=NULL,p2=NULL,p3=NULL,p4=p4))
-      return (list(combind.result,p1=p1,p2=p2,p3=p3,p4=p4))
+      return (list(combind.result,p1=p1,p2=p2,p3=p3))
     }
     else if(length(EV)>1&TEST!='Burden Test'){
       PowerEindP = NULL
@@ -633,6 +619,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           JJ.vec[i] <- J
           pj = as.numeric(sample(MAF,J,replace=TRUE))
+          pj.vec[i] <- pj[1]
           #pj =runif(J)*0.1
           m = E*n/J/(a+g*mean(pj))
           gm = g*m
@@ -671,43 +658,42 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       EV.Length <- length(EV)
       
-      data <- data.frame(EV*100,EinMean,BinMean,BrelMean)
-      colnames(data) <- c("EV","EindP","BindP","ErelP")
-      #y.up <- min(1,(max(Power)+0.1))
-      p1 <- ggplot(data)+geom_line(aes(x=EV,y=EindP), colour="#c0392b")+
-        theme_bw()+
-        theme_new()+
-        labs(title="The Mean Power Distribution of Scenario 1",y="Mean Power",x="Variance Explained (Percent)",y="Proportion")
-      p2 <- ggplot(data)+geom_line(aes(x=EV,y=BindP), colour="dodgerblue4")+
-        theme_bw()+
-        theme_new()+
-        labs(title="The Mean Power Distribution of Scenario 2",y="Mean Power",x="Variance Explained (Percent)")
-      p3 <- ggplot(data)+geom_line(aes(x=EV,y=ErelP), colour="chartreuse4")+
-        theme_bw()+
-        theme_new()+
-        labs(title="The Mean Power Distribution of Scenario 3",y="Mean Power",x="Variance Explained (Percent)")
-      data <- data.frame(JJ=JJ.vec)
-      p4 <- ggplot(data,aes(data$JJ))+
+      data <- data.frame(JJ=JJ.vec,pj.vec =pj.vec)
+      colnames(data) <- c("JJ","pj")
+      p1 <- ggplot(data,aes(data$JJ))+
         geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
-                       fill="gray15",
+                       fill="dodgerblue4",
                        alpha=0.75
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)",y="Proportion")
+        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)")
+      p2 <- ggplot(data,aes(pj))+
+        geom_histogram(aes(x=data$pj,y=(..count..)/sum(..count..)),
+                       fill="#c0392b",
+                       alpha=0.75
+        )+
+        theme_bw()+
+        theme_new()+
+        labs(title="The Histogram of Minor Allele Frequency (MAF)",x="Minor Allele Frequency (MAF)",y="Proportion")
+      p3 <- ggplot()+geom_blank()+
+        theme_bw()+
+        theme(
+          panel.border = element_blank()
+        )
       
       
       
       
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Scenario 1 Mean Power",
-                                       "Scenario 2 Mean Power",
-                                       "Scenario 3 Mean Power"
+                                       "Scenario 1 Mean Sample Size",
+                                       "Scenario 2 Mean Sample Size",
+                                       "Scenario 3 Mean Sample Size"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
-      MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]
-      return(list(MeanPower.combine,p1=p1,p2=p2,p3=p3,p4=p4))
+      MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9,10),]
+      return(list(MeanPower.combine,p1=p1,p2=p2,p3=p3))
     }
     else if(TEST=='Burden Test'&length(EV)==1) {
       
@@ -799,59 +785,44 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       qunatBrelP =  round(quantile(PowerRelBandP),4)[2:4]
       
-      data <- data.frame(PowerEindP=t(PowerEindP),
-                         PowerBindP=t(PowerBindP),
-                         PowerRelBandP=t(PowerRelBandP),
-                         JJ.vec = JJ.vec)
-      colnames(data) <- c("EindP","BindP","ErelP","JJ")
-      
-      
-      p1 <- ggplot(data,aes(data$EindP))+
-        geom_histogram(aes(x=data$EindP,y=(..count..)/sum(..count..)),
-                       fill="#c0392b",
-                       alpha=0.75
-        )+
-        theme_bw()+
-        theme_new()+
-        labs(title="The Histogram of Power of Scenario S1",x="Power",y="Proportion")
-      p2 <- ggplot(data,aes(data$BindP))+
-        geom_histogram(aes(x=data$BindP,y=(..count..)/sum(..count..)),
+      data <- data.frame(JJ.vec = JJ.vec,
+                         pj.vec = pj.vec)
+      colnames(data) <- c("JJ","pj")
+      p1 <- ggplot(data,aes(data$JJ))+
+        geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
                        fill="dodgerblue4",
                        alpha=0.75
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of Power of Scenario S2",x="Power",y="Proportion")
-      p3 <- ggplot(data,aes(data$ErelP))+
-        geom_histogram(aes(x=data$ErelP,y=(..count..)/sum(..count..)),
-                       fill="chartreuse4",
-                       alpha=0.75
-        )+
-        theme_bw()+
-        theme_new()+
-        labs(title="The Histogram of Power of Scenario S3",x="Power",y="Proportion")
-      p4 <- ggplot(data,aes(data$JJ))+
-        geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
-                       fill="gray15",
-                       alpha=0.75
-        )+
-        theme_bw()+
-        theme_new()+
         labs(title="The Histogram of Total number of variants (J)",x="Total number of variants (J)",y="Proportion")
+      p2 <- ggplot()+geom_blank()+
+        theme_bw()+
+        theme(
+          panel.border = element_blank()
+        )
+      
+      p3 <- ggplot()+geom_blank()+
+        theme_bw()+
+        theme(
+          panel.border = element_blank()
+        )
+      
+      
       
       Gene_Arc_1 <- c(mmEinP,qunatEinP)
       Gene_Arc_2 <- c(mmBinP,qunatBinP)
       Gene_Arc_3 <- c(mmBrelP,qunatBrelP)
       
-      Power_Dist <- c("Mean Power","25% Quantile of Power","Medium of Power",
-                      "75% Quantile of Power")
+      Power_Dist <- c("Mean Sample Size","25% Quantile of Sample Size","Medium of Sample Size",
+                      "75% Quantile of Sample Size")
       combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
-      colnames(combind.result) <- c("Power Distribution","Scenario S1","Scenario S2",
+      colnames(combind.result) <- c("Sample Size Distribution","Scenario S1","Scenario S2",
                                     "Scenario S3")
       
       
       #return (list(combind.result,p1=NULL,p2=NULL,p3=NULL,p4=p4))
-      return (list(combind.result,p1=p1,p2=p2,p3=p3,p4=p4))
+      return (list(combind.result,p1=p1,p2=p2,p3=p3))
     }else if(TEST=='Burden Test'&(length(EV)>1)){
       Power= NULL
       
@@ -943,44 +914,39 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       EV.Length <- length(EV)
       
-      data <- data.frame(EV*100,EinMean,BinMean,BrelMean)
-      colnames(data) <- c("EV","EindP","BindP","ErelP")
-      #y.up <- min(1,(max(Power)+0.1))
-      p1 <- ggplot(data)+geom_line(aes(x=EV,y=EindP), colour="#c0392b")+
-        theme_bw()+
-        theme_new()+
-        labs(title="The Mean Power Distribution of Scenario 1",y="Mean Power",x="Variance Explained (Percent)",y="Proportion")
-      p2 <- ggplot(data)+geom_line(aes(x=EV,y=BindP), colour="dodgerblue4")+
-        theme_bw()+
-        theme_new()+
-        labs(title="The Mean Power Distribution of Scenario 2",y="Mean Power",x="Variance Explained (Percent)")
-      p3 <- ggplot(data)+geom_line(aes(x=EV,y=ErelP), colour="chartreuse4")+
-        theme_bw()+
-        theme_new()+
-        labs(title="The Mean Power Distribution of Scenario 3",y="Mean Power",x="Variance Explained (Percent)")
-      data <- data.frame(JJ=JJ.vec)
-      p4 <- ggplot(data,aes(data$JJ))+
+      data <- data.frame(JJ=JJ.vec,pj.vec =pj.vec)
+      colnames(data) <- c("JJ","pj")
+      p1 <- ggplot(data,aes(data$JJ))+
         geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
-                       fill="gray15",
+                       fill="dodgerblue4",
                        alpha=0.75
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)",y="Proportion")
-      
+        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)")
+      p2 <- ggplot()+geom_blank()+
+        theme_bw()+
+        theme(
+          panel.border = element_blank()
+        )
+      p3 <- ggplot()+geom_blank()+
+        theme_bw()+
+        theme(
+          panel.border = element_blank()
+        )
       
       
       
       
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Scenario 1 Mean Power",
-                                       "Scenario 2 Mean Power",
-                                       "Scenario 3 Mean Power"
+                                       "Scenario 1 Mean Sample Size",
+                                       "Scenario 2 Mean Sample Size",
+                                       "Scenario 3 Mean Sample Size"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
-      MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9),]
-      return(list(MeanPower.combine,p1=p1,p2=p2,p3=p3,p4=p4))
+      MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9,10),]
+      return(list(MeanPower.combine,p1=p1,p2=p2,p3=p3))
     }
   }
 }

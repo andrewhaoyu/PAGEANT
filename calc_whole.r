@@ -25,6 +25,12 @@ PL2 = NULL
 
 PM3 = NULL
 PL3 = NULL
+
+JV = NULL
+MAFV = NULL
+EffectV = NULL
+
+
 if (grid==20){perm=2500}
 if (grid==50){perm=5000}
 if (grid==100){perm=10000}
@@ -67,6 +73,12 @@ cat('Est',b2-b1,'\n')
 EVTV= c(EVTV,mean(kEV))
 a1=proc.time()
 result <- get_AproxQ2(alpha,beta,K,alphaT,Total,Obj,perm,CASE=CASE,CONTROL=CONTROL,PC=PC,TEST = TEST,QT=QT,nameEsseble=NULL,JJ=JJ) 
+
+JV = c(result$JV)
+MAFV = c(result$MAFV)
+EffectV = c(EffectV,mean(result$Effect>0.001)*K)
+
+
 result$a[result$a==0]=10^(-16)
 result$a[result$a==1]=1-10^(-16)
 PM1 = c(PM1,mean(result$a))
@@ -118,6 +130,10 @@ EVTV= c(EVTV,mean(kEV))
 a1=proc.time()
 result <- get_AproxQ2(alpha,beta,K,alphaT,Total,Obj,perm,CASE=CASE,CONTROL=CONTROL,PC=PC,TEST = TEST,QT=QT,nameEsseble=NULL,JJ=JJ) 
  
+JV = c(result$JV)
+MAFV = c(result$MAFV)
+EffectV = c(EffectV,mean(result$Effect>0.001)*K)
+ 
 result$a[result$a==0]=10^(-16)
 result$a[result$a==1]=1-10^(-16)
 PM1 = c(PM1,mean(result$a))
@@ -157,6 +173,11 @@ cat('Est',b2-b1,'\n')
 EVTV= c(EVTV,mean(kEV))
 a1=proc.time()
 result <- get_AproxQ2(alpha,beta,K,alphaT,Total,Obj,perm,CASE=CASE,CONTROL=CONTROL,PC=PC,TEST = TEST,QT=QT,nameEsseble=NULL,JJ=JJ) 
+
+JV = c(result$JV)
+MAFV = c(result$MAFV)
+EffectV = c(EffectV,mean(result$Effect>0.001)*K)
+
 result$a[result$a==0]=10^(-16)
 result$a[result$a==1]=1-10^(-16)
 PM1 = c(PM1,mean(result$a))
@@ -214,7 +235,13 @@ if(m==0){
   Prb3M = rowSums(Prb3[,1:(m+1)])
 }
 
-
+#
+# USE FOLOWING VARIABLES FOR HISTOGRAM !!!
+# USE FOLOWING VARIABLES FOR HISTOGRAM !!!
+# USE FOLOWING VARIABLES FOR HISTOGRAM !!!
+# MAFV-  Empirical distibution of MAF
+# JV = Empirical distibution of Size of a Locus
+# EffectV - Empirical distibution for # Loci with EV>0.1%
 
 
 Obj = list(modelS1_E=modelS1_E,modelS2_E=modelS2_E,modelS3_E=modelS3_E,prb1M =list(min=min(Prb1M),max=max(Prb1M)),prb2M =list(min=min(Prb2M),max=max(Prb2M)),prb3M =list(min=min(Prb3M),max=max(Prb3M))) 
@@ -227,11 +254,34 @@ Item <- c("Min expected number of discoveries ","Max expected number of discover
 result <- data.frame(Item=Item,S1=S1,S2=S2,S3=S3)
  colnames(result) <- c("","Scenario S1","Scenario S2","Scenario S3")
  
- p4 <- p3 <- p2<- p1 <- ggplot()+geom_blank()+
+ data1 <- data.frame(MAFV=MAFV)
+ p1 <- ggplot(data1,aes(MAFV))+
+   geom_histogram(aes(x=data1$MAFV,y=(..count..)/sum(..count..)),
+                  fill="dodgerblue4",
+                  alpha=0.75
+   )+
    theme_bw()+
-   theme(
-     panel.border = element_blank()
-   )
- return (list(result,p1,p2,p3,p4))
+   theme_new()+
+   labs(title="The Histogram of Minor Allele Frequency (MAF)",x="Empirical distibution of Minor Allele Frequency (MAF)")
+ data2 <- data.frame(JV =JV)
+ p2 <- ggplot(data2,aes(JV))+
+   geom_histogram(aes(x=data2$JV,y=(..count..)/sum(..count..)),
+                  fill="#c0392b",
+                  alpha=0.75
+   )+
+   theme_bw()+
+   theme_new()+
+   labs(title="The Histogram of Size of a Locus",x="Size of a Locus",y="Proportion")
+ data3 <- data.frame(EffectV = EffectV)
+ p3 <- ggplot(data3,aes(EffectV))+
+   geom_histogram(aes(x=data3$EffectV,y=(..count..)/sum(..count..)),
+                  fill="gray15",
+                  alpha=0.75
+   )+
+   theme_bw()+
+   theme_new()+
+   labs(title="The Histogram of Size of a Locus",x="Size of a Locus",y="Proportion")
+ 
+ return (list(result,p1,p2,p3))
 }
 

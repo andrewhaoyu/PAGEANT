@@ -91,34 +91,35 @@ get_powersc = function(MAFCausal,PC,EVC,n,aa,bb,level,Ratio){
 
 	
 get_solutionsc = function(MAFCausal,PC,EVC,Pthr,aa,bb,level,Ratio){
-	n1=1000
-	n2=10^6
-S1 = get_powersc(MAFCausal,PC,EVC,n1,aa,bb,level,Ratio)
-S2 = get_powersc(MAFCausal,PC,EVC,n2,aa,bb,level,Ratio)
+	n1=log10(1000)
+	n2=log10(10^6)
+S1 = get_powersc(MAFCausal,PC,EVC,10^n1,aa,bb,level,Ratio)
+S2 = get_powersc(MAFCausal,PC,EVC,10^n2,aa,bb,level,Ratio)
 #cat(S1,S2,'\n')	
 if (S2<Pthr){
-n1=10^6
-n2 = 10^7
+n1=log10(10^6)
+n2 = log10(10^7)
 }	
-if (S1>1){n1=10000}
-S1 = get_powersc(MAFCausal,PC,EVC,n1,aa,bb,level,Ratio)
-S2 = get_powersc(MAFCausal,PC,EVC,n2,aa,bb,level,Ratio)
+if (S1>1){n1=log10(10000)}
+S1 = get_powersc(MAFCausal,PC,EVC,10^n1,aa,bb,level,Ratio)
+S2 = get_powersc(MAFCausal,PC,EVC,10^n2,aa,bb,level,Ratio)
 
 if(S1>Pthr){
-return(Ratio*n1)
+return(Ratio*10^n1)
 }
 if(S2<Pthr){
-return(Ratio*n1)
+return(Ratio*10^n1)
 }	
 		
-while (abs(n1-n2)>50){
+while (abs(n1-n2)>log(1.01)){
 nx = (n1+n2)/2
-Sx = get_powersc(MAFCausal,PC,EVC,nx,aa,bb,level,Ratio)
+Sx = get_powersc(MAFCausal,PC,EVC,10^nx,aa,bb,level,Ratio)
 if (Sx<Pthr){n1=nx}
 if (Sx>Pthr){n2=nx}
+if (Sx>1){break}
 }
 
-return (Ratio*nx)	
+return (Ratio*10^nx)	
 }	
 
 
@@ -226,34 +227,37 @@ get_powerIndsc = function(MAFCausal,PC,EVC,n,aa,bb,level,Ratio){
 
 	
 get_solutionIndsc = function(MAFCausal,PC,EVC,Pthr,aa,bb,level,Ratio){
-	n1=1000
-	n2=10^6
-S1 = get_powerIndsc(MAFCausal,PC,EVC,n1,aa,bb,level,Ratio)
-S2 = get_powerIndsc(MAFCausal,PC,EVC,n2,aa,bb,level,Ratio)
+
+	n1=log10(1000)
+	n2=log10(10^6)
+S1 = get_powerIndsc(MAFCausal,PC,EVC,10^n1,aa,bb,level,Ratio)
+S2 = get_powerIndsc(MAFCausal,PC,EVC,10^n2,aa,bb,level,Ratio)
 #cat(S1,S2,'\n')	
 if (S2<Pthr){
-n1=10^6
-n2 = 10^7
+n1=log10(10^6)
+n2 = log10(10^7)
 }	
-if (S1>1){n1=10000}
-S1 = get_powerIndsc(MAFCausal,PC,EVC,n1,aa,bb,level,Ratio)
-S2 = get_powerIndsc(MAFCausal,PC,EVC,n2,aa,bb,level,Ratio)
+if (S1>1){n1=log10(10000)}
+S1 = get_powerIndsc(MAFCausal,PC,EVC,10^n1,aa,bb,level,Ratio)
+S2 = get_powerIndsc(MAFCausal,PC,EVC,10^n2,aa,bb,level,Ratio)
 
 if(S1>Pthr){
-return(Ratio*n1)
+return(Ratio*10^n1)
 }
 if(S2<Pthr){
-return(Ratio*n1)
+return(Ratio*10^n1)
 }	
 		
-while (abs(n1-n2)>50){
+while (abs(n1-n2)>log(1.01)){
 nx = (n1+n2)/2
-Sx = get_powerIndsc(MAFCausal,PC,EVC,nx,aa,bb,level,Ratio)
+Sx = get_powerIndsc(MAFCausal,PC,EVC,10^nx,aa,bb,level,Ratio)
 if (Sx<Pthr){n1=nx}
 if (Sx>Pthr){n2=nx}
+if (Sx>1){break}
 }
 
-return (Ratio*nx)	
+
+return (Ratio*10^nx)	
 }	
 
 
@@ -376,34 +380,38 @@ get_powerDsc = function(MAFCausal,PC,EVC,n,gmx,aa,bb,level,Ratio){
 
 	
 get_solutionDindsc = function(MAFCausal,PC,EVC,Pthr,gm,aa,bb,level,Ratio){
-	n1=1000
-	n2=10^6
-S1 = get_powerDsc(MAFCausal,PC,EVC,n1,gm,aa,bb,level,Ratio)
-S2 = get_powerDsc(MAFCausal,PC,EVC,n2,gm,aa,bb,level,Ratio)
+
+	n1=log10(1000)
+	n2=log10(10^6)
+S1 = get_powerDsc(MAFCausal,PC,EVC,10^n1,gm,aa,bb,level,Ratio)
+S2 = get_powerDsc(MAFCausal,PC,EVC,10^n2,gm,aa,bb,level,Ratio)
 #cat(S1,S2,'\n')	
 if (S2<Pthr){
-n1=10^6
-n2 = 10^7
+n1=log10(10^6)
+n2 = log10(10^7)
 }	
-if (S1>1){n1=10000}
-S1 = get_powerDsc(MAFCausal,PC,EVC,n1,gm,aa,bb,level,Ratio)
-S2 = get_powerDsc(MAFCausal,PC,EVC,n2,gm,aa,bb,level,Ratio)
+if (S1>1){n1=log10(10000)}
+S1 = get_powerDsc(MAFCausal,PC,EVC,10^n1,gm,aa,bb,level,Ratio)
+S2 = get_powerDsc(MAFCausal,PC,EVC,10^n2,gm,aa,bb,level,Ratio)
 
 if(S1>Pthr){
-return(Ratio*n1)
+return(Ratio*10^n1)
 }
 if(S2<Pthr){
-return(Ratio*n1)
+return(Ratio*10^n1)
 }	
 		
-while (abs(n1-n2)>50){
+while (abs(n1-n2)>log(1.01)){
 nx = (n1+n2)/2
-Sx = get_powerDsc(MAFCausal,PC,EVC,nx,gm,aa,bb,level,Ratio)
+Sx = get_powerDsc(MAFCausal,PC,EVC,10^nx,gm,aa,bb,level,Ratio)
 if (Sx<Pthr){n1=nx}
 if (Sx>Pthr){n2=nx}
+if (Sx>1){break}
 }
 
-return (Ratio*nx)
+
+
+return (Ratio*10^nx)
 }	
 
 

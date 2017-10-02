@@ -30,7 +30,7 @@ The application allows rapid power and sample size analysis for a variety of gen
 
 ### Output
 
-The application conducts power analysis and sample size under three different models for genetic architecture assuming (S1): MAF is independent of EV ;(S2) MAF is independent of genetic effects measured in the unit of per copy of an allele (beta^2=EV/(2MAF(1-MAF))); and (S3) MAF is negatively correlated with genetic effect through the function .  When a single EV is specified, for each genetic architecture, it returns a distribution of power or sample size and key summary measures (mean, median,  25th and 75th percentiles). This distribution corresponds to uncertainty association with various additional parameters, such as number of variants within a gene and minor allele frequencies. Application returns distribution of the number of variants within a gene as it is one of essential parameters. If a range of EV is specified, plots and table for average power over the range of specified EV is returned.
+The application conducts power analysis and sample size under three different models for genetic architecture assuming (S1): MAF is independent of EV ;(S2) MAF is independent of genetic effects measured in the unit of per copy of an allele (beta^2=EV/(2MAF(1-MAF))); and (S3) MAF is negatively correlated with genetic effect through the function β=−log10(MAF). When a single EV is specified, for each genetic architecture, it returns a distribution of power or sample size and key summary measures (mean, median, 25th and 75th percentiles). This distribution corresponds to uncertainty association with various additional parameters, such as number of variants within a gene and minor allele frequencies. Empirical distributions for these two parameters are displayed. If a range of EV is specified, plots and table for average power or sample size over the range of specified EV is returned. Fast option runs genome-wide calculations within 3 minutes and provides rough estimates and . Intermediate option runs genome-wide calculations within 6 minutes and provides more accurate estimates over 50 possible effect size distributions. Lastly, most accurate option runs genome-wide calculations within 15 minutes and provides very accurate estimates over 100 possible effect size distributions.
 
 ## Genome-level power calculation
 
@@ -42,12 +42,15 @@ The application conducts power analysis and sample size under three different mo
 
 ### Optional Input Parameter
 
-m: The number of causal loci for which probability of discovery to be calculated (see output)
+1) m: The number of causal loci for which probability of discovery to be calculated (see output)
+2) Level of complexity: The number of models and iterations used to estimate range of expected number of discoveries and probabilities (see output). There are three options: fast, intermediate and most accurate. Fast option runs genome-wide calculations within 3 minutes and provides rough estimates. Intermediate option runs genome-wide calculations within 6 minutes and provides more accurate estimates. Lastly, most accurate option runs genome-wide calculations within 15 minutes and provides very accurate estimates.
+
+
 
 ### Output
 
 Expected number of discoveries: The application returns expected number of discoveries where the expectation is calculated across the M loci accounting for uncertainty associated with distribution of number of variants per locus (J), allele frequencies and the distributions of EVs the loci explains. Currently, the distribution of J and MAF in these calculations are obtained from those observed in the ExAC database. In addition, it is assumed the effect size distribution follows a L-shaped gamma distribution with mean specified as .  The application calculates a range of expected number of discoveries based on the range of the dispersion parameter of the underlying gamma distribution for the effect size distribution and the corresponding maximum and minimum values are returned.  
-           Probability of discoveries: This returns maximum and minimum probability of a certain number of discoveries (m) for values of specified by the user. 
+Probability of discoveries: This returns maximum and minimum probability of a certain number of discoveries (m) for values of specified by the user. 
            
  ## Additional notes
  

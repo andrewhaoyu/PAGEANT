@@ -3,6 +3,9 @@ PowerEindP = NULL
 PowerBindP = NULL
 PowerRelBandP = NULL
 EE = NULL
+JV = NULL
+MAFV = NULL
+EffectV = NULL
 n = CASE*CONTROL/Total
 
 if (TEST=='SKAT'){
@@ -111,6 +114,9 @@ ErelP = c(ErelP,calcPowerD_SC(pj,SC,n*E,n,gm,aa,bb,alpha))
 
 BindP = c(BindP,pBinP)
 EindP = c(EindP,pEinP)
+JV = c(JV,length(pj))
+MAFV = c(MAFV,pj)
+EffectV = c(EffectV,E)
 }
 PowerRelBandP = rbind(PowerRelBandP,ErelP)
 PowerBindP = rbind(PowerBindP,BindP)
@@ -119,7 +125,7 @@ PowerEindP = rbind(PowerEindP,EindP)
 
 ptm1 <- proc.time()
 cat('CPU time Total:',ptm1-ptm,'\n')
-return (list(a=PowerEindP,b=PowerBindP,c =PowerRelBandP,ee=EE)) 
+return (list(a=PowerEindP,b=PowerBindP,c =PowerRelBandP,ee=EE,JV=JV,MAFV=MAFV,Effect=EffectV)) 
 }
 
 

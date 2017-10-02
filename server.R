@@ -8,12 +8,12 @@ library(gridExtra)
 
 source('PowerCalc_Rare.r')
 source('calc_whole.r')
-source('PowerCal_RareSample_A.R')
+source('PowerCalc_RareSample_A.R')
 
 grid_transform = function(grid){
-  if(grid=="Quick"){
+  if(grid=="Fast"){
     return(20)
-  }else if(grid=="Adequate"){
+  }else if(grid=="Intermediate"){
     return(50)
   }else{
     return(100)
@@ -43,24 +43,7 @@ function(input, output) {
                            PowerThr=input$PowerThreshold_s,
                            alpha = input$Alpha_s,
                            ONESNP=T)
-          
-          
-          output$values <- DT::renderDataTable(
-            
-            withProgress( message = "WE ARE COMPUTING..", value = 0.6,{
-              data1()[[1]]
-              
-            })
-            
-            ,options=list(dom='t',autoWidth=F,columnDefs = list(list(width = "150", targets = "_all"))),rownames=F
-          )
-          output$plot = renderPlot(
-            {
-              grid.arrange(result()[[5]],result()[[2]],
-                           result()[[3]],result()[[4]],ncol=2)
-            },
-            height=450,
-            width=900)
+
           
           
           
@@ -433,11 +416,11 @@ function(input, output) {
     ,options=list(dom='t',autoWidth=F,columnDefs = list(list(width = "150", targets = "_all"))),rownames=F
   )
   output$plot = renderPlot(
-    grid.arrange(data1()[[5]],data1()[[2]],
-                 data1()[[3]],data1()[[4]],ncol=2)
+    grid.arrange(data1()[[2]],data1()[[3]],
+                 data1()[[4]],ncol=1)
     ,
-    height=450,
-    width=900
+    height=700,
+    width=566
   )
   
   
@@ -453,11 +436,11 @@ function(input, output) {
     ,options=list(dom='t',autoWidth=F,columnDefs = list(list(width = "150", targets = "_all"))),rownames=F
   )
   output$plot2 = renderPlot(
-    grid.arrange(data2()[[5]],data2()[[2]],
-                 data2()[[3]],data2()[[4]],ncol=2)
+    grid.arrange(data2()[[2]],data2()[[3]],
+                 data2()[[4]],ncol=1)
 ,
-height=450,
-width=900
+height=700,
+width=566
     )
   
   # output$values2_r <- DT::renderDataTable( 
