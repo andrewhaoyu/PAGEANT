@@ -406,7 +406,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
                                        "Scenario 3 Mean Sample Size"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
-      MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9,11),]
+      #MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9,11),]
       return(list(MeanPower.combine,p1=p1,p2=p2,p3=p3))
     }
     
@@ -778,7 +778,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
                                        "Scenario 3 Mean Sample Size"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
-      MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9,11),]
+      #MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9,11),]
       return(list(MeanPower.combine,p1=p1,p2=p2,p3=p3))
     }
     else if(TEST=='Burden Test'&length(EV)==1) {
@@ -1041,7 +1041,7 @@ get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameE
                                        "Scenario 3 Mean Sample Size"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
-      MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9,11),]
+      #MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9,11),]
       return(list(MeanPower.combine,p1=p1,p2=p2,p3=p3))
     }
   }
