@@ -262,7 +262,7 @@ result <- data.frame(Item=Item,S1=S1,S2=S2,S3=S3)
    )+
    theme_bw()+
    theme_new()+
-   labs(title="The Histogram of Minor Allele Frequency (MAF)",x="Empirical distibution of Minor Allele Frequency (MAF)")
+   labs(title="The Histogram of Minor Allele Frequency (MAF)",x="Empirical distibution of Minor Allele Frequency (MAF)",y="Proportion")
  data2 <- data.frame(JV =JV)
  p2 <- ggplot(data2,aes(JV))+
    geom_histogram(aes(x=data2$JV,y=(..count..)/sum(..count..)),
@@ -275,12 +275,15 @@ result <- data.frame(Item=Item,S1=S1,S2=S2,S3=S3)
  data3 <- data.frame(EffectV = EffectV)
  p3 <- ggplot(data3,aes(EffectV))+
    geom_histogram(aes(x=data3$EffectV,y=(..count..)/sum(..count..)),
+                  bins=5,
                   fill="gray15",
                   alpha=0.75
    )+
+   # stat_bin(breaks = seq(min(data3$EffectV),max(data3$EffectV),
+   #                       by=(max(data3$EffectV)-min(data3$EffectV))/5))+
    theme_bw()+
    theme_new()+
-   labs(title="The Histogram of # Loci with EV>0.1%",x="# of loci with EV greater than 0.1% main: Effect size distribution
+   labs(title="The Histogram of Effect Size Distributions",x="# of loci with EV greater than 0.1% main: Effect size distribution
 
         ",y="Proportion")
  

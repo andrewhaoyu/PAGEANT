@@ -93,15 +93,15 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                               value=5000,min=1,step=1),
                  
                  numericInput("ncont", "Number of Controls:", 
-                              value = 5000),
+                              value = 5000,min = 1,step = 1),
                  
                  
                  
                  conditionalPanel(
                    condition = "input.SNPoption=='Whole Genome'",
-                   numericInput("Alpha_whole",HTML("&alpha;:"), value=2.5e-06),
+                   numericInput("Alpha_whole",HTML("&alpha;:"), value=2.5e-06, min = 0),
                    numericInput("GEV", "GEV: Genome-wide Variance Explained(Percent)",
-                                value = 20),
+                                value = 20, min = 0),
                    selectInput("grid",
                                " Level of complexity (optional)",
                                c("Fast","Intermediate","Most accurate")),
@@ -109,21 +109,21 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                      "method_whole", "Method",
                      c("SKAT","Calpha","Hotelling","Burden Test")
                    ),
-                   numericInput("K","Number of causal loci",value=1000),
-                   numericInput("m","Number of discoveries",value=0),
+                   numericInput("K","Number of causal loci",value=1000, min=0,step=1),
+                   numericInput("m","Number of discoveries",value=0,min=0,step=1),
                    numericInput("PC_whole","Proportion of Causal Variants (Optional)",value=NA),
                    numericInput("JJ_whole","Number of Variants (Optional)",value=NA)
                  ),
                  conditionalPanel(
                    condition = "input.SNPoption!='Whole Genome'",
-                   numericInput("Alpha",HTML("&alpha;:"), value=0.0001),
+                   numericInput("Alpha",HTML("&alpha;:"), value=0.0001,min = 0),
                    selectInput("evoption", 
                                "Fixed single EV or Range of EV",
                                c("Single EV","Range of EV")),
                    conditionalPanel(
                      condition = "input.evoption == 'Single EV'",
                      numericInput("EV", "EV: Variance Explained(Percent)",
-                                  value = 1)),
+                                  value = 1,min=0)),
                    conditionalPanel(
                      condition = "input.evoption == 'Range of EV'",
                      sliderInput("EV_range","Variance Explained Range(Percent)",
@@ -145,12 +145,12 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                      ),   
                      conditionalPanel(
                        condition="input.method=='Burden Test'",
-                       numericInput("PC_new","Proportion of Causal Variants",value=0.2),
-                       numericInput("PRC","Proportion of Protective",value=0)
+                       numericInput("PC_new","Proportion of Causal Variants",value=0.2,min = 0),
+                       numericInput("PRC","Proportion of Protective",value=0, min = 0)
                      ),
                      
                      # textInput("nameEsseble","Specify Single Gene(Optional)"),
-                     numericInput("JJ","Number of Variants (Optional)",value=NA)
+                     numericInput("JJ","Number of Variants (Optional)",value=NA, min =0)
                      
                    )
                  )
@@ -164,18 +164,18 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                              c("Single Gene","Single SNP")),
                  
                  numericInput("PowerThreshold_s", "Power Target", 
-                              value=0.8),
+                              value=0.8, min = 0, max = 1, step = 0.01),
                  
                  conditionalPanel(
                    condition = "input.SNPoption_s!='Whole Genome'",
-                   numericInput("Alpha_s",HTML("&alpha;:"), value=0.0001),
+                   numericInput("Alpha_s",HTML("&alpha;:"), value=0.0001, min = 0),
                    selectInput("evoption_s", 
                                "Fixed single EV or Range of EV",
                                c("Single EV","Range of EV")),
                    conditionalPanel(
                      condition = "input.evoption_s == 'Single EV'",
                      numericInput("EV_s", "EV: Variance Explained(Percent)",
-                                  value = 1)),
+                                  value = 1, min = 0, max = 100)),
                    conditionalPanel(
                      condition = "input.evoption_s == 'Range of EV'",
                      sliderInput("EV_range_s","Variance Explained Range(Percent)",
@@ -197,12 +197,12 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                      ),   
                      conditionalPanel(
                        condition="input.method_s=='Burden Test'",
-                       numericInput("PC_new_s","Proportion of Causal Variants",value=0.2),
-                       numericInput("PRC_s","Proportion of Protective",value=0)
+                       numericInput("PC_new_s","Proportion of Causal Variants",value=0.2,min = 0),
+                       numericInput("PRC_s","Proportion of Protective",value=0, min = 0)
                      ),
                      
                      # textInput("nameEsseble","Specify Single Gene(Optional)"),
-                     numericInput("JJ_s","Number of Variants (Optional)",value=NA)
+                     numericInput("JJ_s","Number of Variants (Optional)",value=NA, min= 0)
                      
                    )
                  )
@@ -269,15 +269,15 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                              c("Single Gene","Single SNP","Whole Genome")),
                  
                  numericInput("total2", "Total Sample Size:", 
-                              value=10000),
+                              value=10000, min = 0, step =1 ),
                  
                  
                  
                  conditionalPanel(
                    condition = "input.SNPoption2=='Whole Genome'",
-                   numericInput("Alpha_whole2",HTML("&alpha;:"), value=2.5e-06),
+                   numericInput("Alpha_whole2",HTML("&alpha;:"), value=2.5e-06,min = 0),
                    numericInput("GEV2", "GEV: Genome-wide Variance Explained(Percent)",
-                                value = 20),
+                                value = 20, min = 0, max = 100),
                    
                    selectInput(
                      "method_whole2", "Method",
@@ -286,21 +286,21 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                    selectInput("grid2",
                                "Level of complexity (optional)",
                                c("Fast","Intermediate","Most accurate")),
-                   numericInput("K2","Number of causal loci",value=1000),
-                   numericInput("m2","Number of discoveries",value=0),
-                   numericInput("PC_whole2","Proportion of Causal Variants (Optional)",value=NA),
-                   numericInput("JJ_whole2","Number of Variants (Optional)",value=NA)
+                   numericInput("K2","Number of causal loci",value=1000,min = 0),
+                   numericInput("m2","Number of discoveries",value=0, min = 0),
+                   numericInput("PC_whole2","Proportion of Causal Variants (Optional)",value=NA, min = 0),
+                   numericInput("JJ_whole2","Number of Variants (Optional)",value=NA, min =0)
                  ),
                  conditionalPanel(
                    condition = "input.SNPoption2!='Whole Genome'",
-                   numericInput("Alpha2",HTML("&alpha;:"), value=0.0001),
+                   numericInput("Alpha2",HTML("&alpha;:"), value=0.0001, min =0),
                    selectInput("evoption2", 
                                "Fixed single EV or Range of EV",
                                c("Single EV","Range of EV")),
                    conditionalPanel(
                      condition = "input.evoption2 == 'Single EV'",
                      numericInput("EV2", "EV: Variance Explained(Percent)",
-                                  value = 1)),
+                                  value = 1, min = 0)),
                    conditionalPanel(
                      condition = "input.evoption2 == 'Range of EV'",
                      sliderInput("EV_range2","Variance Explained Range(Percent)",
@@ -322,12 +322,12 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                      ),   
                      conditionalPanel(
                        condition="input.method2=='Burden Test'",
-                       numericInput("PC_new2","Proportion of Causal Variants",value=0.2),
-                       numericInput("PRC2","Proportion of Protective",value=0)
+                       numericInput("PC_new2","Proportion of Causal Variants",value=0.2, min = 0),
+                       numericInput("PRC2","Proportion of Protective",value=0, min = 0)
                      ),
                      
                      # textInput("nameEsseble","Specify Single Gene(Optional)"),
-                     numericInput("JJ2","Number of Variants (Optional)",value=NA)
+                     numericInput("JJ2","Number of Variants (Optional)",value=NA, min = 0)
                      
                    )
                  )
@@ -342,19 +342,19 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                  
                  
                  numericInput("PowerThreshold2_s", "Power Target", 
-                              value=0.8),
+                              value=0.8, min = 0, max = 1, step =0.01),
                  
                  
                  conditionalPanel(
                    condition = "input.SNPoption2_s!='Whole Genome'",
-                   numericInput("Alpha2_s",HTML("&alpha;:"), value=0.0001),
+                   numericInput("Alpha2_s",HTML("&alpha;:"), value=0.0001, min = 0),
                    selectInput("evoption2_s", 
                                "Fixed single EV or Range of EV",
                                c("Single EV","Range of EV")),
                    conditionalPanel(
                      condition = "input.evoption2_s == 'Single EV'",
                      numericInput("EV2_s", "EV: Variance Explained(Percent)",
-                                  value = 1)),
+                                  value = 1, min = 0)),
                    conditionalPanel(
                      condition = "input.evoption2_s == 'Range of EV'",
                      sliderInput("EV_range2_s","Variance Explained Range(Percent)",
@@ -372,12 +372,12 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                      
                      conditionalPanel(
                        condition="input.method2_s!='Burden Test'",
-                       numericInput("PC2_s","Proportion of Causal Variants (Optional)",value=NA)
+                       numericInput("PC2_s","Proportion of Causal Variants (Optional)",value=NA, min = 0)
                      ),   
                      conditionalPanel(
                        condition="input.method2_s=='Burden Test'",
-                       numericInput("PC_new2_s","Proportion of Causal Variants",value=0.2),
-                       numericInput("PRC2_s","Proportion of Protective",value=0)
+                       numericInput("PC_new2_s","Proportion of Causal Variants",value=0.2, min = 0),
+                       numericInput("PRC2_s","Proportion of Protective",value=0, min = 0)
                      ),
                      
                      # textInput("nameEsseble","Specify Single Gene(Optional)"),
