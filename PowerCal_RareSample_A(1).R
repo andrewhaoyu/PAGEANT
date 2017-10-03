@@ -4,10 +4,15 @@
 ## Function of EV and J
 ##
 ##
-source('skat_calculator2.r')
-source('skat_calculator2sc.r')
 
+source('skat_sample_calculatorsc.r')
 source('sampler.r')
+
+
+###ceil a funciton up to a 10^places digit
+ceilupto <- function(number,places=2){
+  (ceiling(number/10^places))*10^places
+}
 
 theme_new <- function(base_size = 12, base_family = "Helvetica"){
   theme(
@@ -21,19 +26,29 @@ theme_new <- function(base_size = 12, base_family = "Helvetica"){
 }
 
 
+# QT indicator for quantative trait
 
 
-get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',QT='CC',nameEsseble=NULL,JJ=NA,PRC=NA,ONESNP=F){
+get_Aprox_Sample <- function(EV,PowerThr,alpha,PC=NA,TEST = 'SKAT',QT='CC',nameEsseble=NULL,JJ=NA,PRC=NA,ONESNP=F){
+  Ratio = 2
+  Total=10^7
+  CASE=10^7
+  CONTROL=1
   JJ.vec <- rep(0,1000)
   pj.vec <- rep(0,1000)
+  if (!is.na(JJ)){
+    if (JJ == 1){ONESNP=T}
+  }
   if(ONESNP==T){
     JJ=1
+    Total=10^3
+    CASE=10^3
     if(length(EV)==1&TEST!='Burden Test'){
       PowerEindP = NULL
       PowerBindP = NULL
       PowerRelBandP = NULL
       n = CASE*CONTROL/Total
-      
+      n=1
       if (TEST=='SKAT'){
         aa=1
         bb=25
@@ -50,7 +65,8 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       
       if (QT == 'QT'){
-        n = Total # sample size
+        n = 1 # sample size
+        Ratio=1
       }
       #ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
@@ -114,6 +130,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           # Draw MAF
           #
           JJ.vec[i] <- J
+          
           pj = as.numeric(sample(MAF,J,replace=TRUE))
           pj.vec[i] <- pj[1]
           #pj =runif(J)*0.1
@@ -121,45 +138,43 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           gm = g*m
           
           if (is.na(PC)){
-            pEinP = calcPower(pj,n*E,n,aa,bb,alpha)
-            pBinP = calcPowerBPind(pj,n*E,n,aa,bb,alpha)
-            ErelP = c(ErelP,calcPowerD(pj,n*E,n,gm,aa,bb,alpha))
+            pEinP = calcPowerSample(pj,1,n*E,PowerThr,aa,bb,alpha,Ratio)
+            pBinP = calcPowerBPindSample(pj,1,n*E,PowerThr,aa,bb,alpha,Ratio)
+            ErelP = c(ErelP,calcPowerDSample(pj,1,n*E,PowerThr,gm,aa,bb,alpha,Ratio))
           }else{
-            SC = ceiling(J*PC)
             
-            pEinP = calcPower_SC(pj,SC,n*E,n,aa,bb,alpha)
-            pBinP = calcPowerBPind_SC(pj,SC,n*E,n,aa,bb,alpha)
-            ErelP = c(ErelP,calcPowerD_SC(pj,SC,n*E,n,gm,aa,bb,alpha))
+            pEinP = calcPowerSample(pj,PC,n*E,PowerThr,aa,bb,alpha,Ratio)
+            pBinP = calcPowerBPindSample(pj,PC,n*E,PowerThr,aa,bb,alpha,Ratio)
+            ErelP = c(ErelP,calcPowerDSample(pj,PC,n*E,PowerThr,gm,aa,bb,alpha,Ratio))
           }
+          
           
           
           BindP = c(BindP,pBinP)
           EindP = c(EindP,pEinP)
         }
+        ErelPX = ErelP[ErelP!=Ratio*10^4]
+        ErelP[ErelP==Ratio*10^4]=mean(ErelPX)
+        ErelPX = EindP[EindP!=Ratio*10^4]
+        EindP[EindP==Ratio*10^4]=mean(ErelPX)
+        ErelPX = BindP[BindP!=Ratio*10^4]
+        BindP[BindP==Ratio*10^4]=mean(ErelPX)
         PowerRelBandP = rbind(PowerRelBandP,ErelP)
         PowerBindP = rbind(PowerBindP,BindP)
         PowerEindP = rbind(PowerEindP,EindP)
+        #save(PowerRelBandP,PowerBindP,PowerEindP,file='1')
       }
-      #cat(sdd,'\n')
-      #ptm1 <- proc.time()
-      #cat('CPU time Total:',ptm1-ptm,'\n')
       
-      mmEinP = round(mean(PowerEindP),4)
-      qunatEinP = round(quantile(PowerEindP),4)[2:4] #25%, median, 75%
+      mmEinP = ceilupto(mean(PowerEindP))
+      qunatEinP = ceilupto(quantile(PowerEindP))[2:4] #25%, median, 75%
       
-      mmBinP = round(mean(PowerBindP),4)
-      qunatBinP = round(quantile(PowerBindP),4)[2:4] #25%, median, 75%
       
-      mmBrelP = round(mean(PowerRelBandP),4)
+      mmBinP = ceilupto(mean(PowerBindP))
+      qunatBinP = ceilupto(quantile(PowerBindP))[2:4] #25%, median, 75%
       
-      qunatBrelP =  round(quantile(PowerRelBandP),4)[2:4]
+      mmBrelP = ceilupto(mean(PowerRelBandP))
       
-      data <- data.frame(PowerEindP=t(PowerEindP),
-                         PowerBindP=t(PowerBindP),
-                         PowerRelBandP=t(PowerRelBandP),
-                         JJ.vec = JJ.vec)
-      colnames(data) <- c("EindP","BindP","ErelP","JJ")
-      
+      qunatBrelP =  ceilupto(quantile(PowerRelBandP))[2:4]
       
       data <- data.frame(JJ.vec = JJ.vec,
                          pj.vec = pj.vec)
@@ -188,6 +203,31 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
         )
       
       
+      # p1 <- ggplot(data,aes(data$EindP))+
+      #   geom_histogram(aes(x=data$EindP,y=(..count..)/sum(..count..)),
+      #                  fill="#c0392b",
+      #                  alpha=0.75
+      #   )+
+      #   theme_bw()+
+      #   theme_new()+
+      #   labs(title="The Histogram of Sample Size of Scenario S1",x="Sample Size",y="Proportion")
+      # p2 <- ggplot(data,aes(data$BindP))+
+      #   geom_histogram(aes(x=data$BindP,y=(..count..)/sum(..count..)),
+      #                  fill="dodgerblue4",
+      #                  alpha=0.75
+      #   )+
+      #   theme_bw()+
+      #   theme_new()+
+      #   labs(title="The Histogram of Sample Size of Scenario S2",x="Sample Size",y="Proportion")
+      # p3 <- ggplot(data,aes(data$ErelP))+
+      #   geom_histogram(aes(x=data$ErelP,y=(..count..)/sum(..count..)),
+      #                  fill="chartreuse4",
+      #                  alpha=0.75
+      #   )+
+      #   theme_bw()+
+      #   theme_new()+
+      #   labs(title="The Histogram of Sample Size of Scenario S3",x="Sample Size",y="Proportion")
+      
       
       Gene_Arc_1 <- c(mmEinP,qunatEinP)
       Gene_Arc_2 <- c(mmBinP,qunatBinP)
@@ -202,6 +242,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       #return (list(combind.result,p1=NULL,p2=NULL,p3=NULL,p4=p4))
       return (list(combind.result,p1=p1,p2=p2,p3=p3))
+      
     }
     else if(length(EV)>1&TEST!='Burden Test'){
       PowerEindP = NULL
@@ -225,7 +266,8 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       
       if (QT == 'QT'){
-        n = Total # sample size
+        n = 1 # sample size
+        Ratio=1
       }
       # ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
@@ -290,43 +332,64 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           JJ.vec[i] <- J
           pj = as.numeric(sample(MAF,J,replace=TRUE))
-          pj.vec[i] <- pj[1]
           #pj =runif(J)*0.1
+          pj.vec[i] <- pj[1]
           m = E*n/J/(a+g*mean(pj))
           gm = g*m
           
           if (is.na(PC)){
-            pEinP = calcPower(pj,n*E,n,aa,bb,alpha)
-            pBinP = calcPowerBPind(pj,n*E,n,aa,bb,alpha)
-            ErelP = c(ErelP,calcPowerD(pj,n*E,n,gm,aa,bb,alpha))
+            pEinP = calcPowerSample(pj,1,n*E,PowerThr,aa,bb,alpha,Ratio)
+            pBinP = calcPowerBPindSample(pj,1,n*E,PowerThr,aa,bb,alpha,Ratio)
+            ErelP = c(ErelP,calcPowerDSample(pj,1,n*E,PowerThr,gm,aa,bb,alpha,Ratio))
           }else{
             SC = ceiling(J*PC)
             
-            pEinP = calcPower_SC(pj,SC,n*E,n,aa,bb,alpha)
-            pBinP = calcPowerBPind_SC(pj,SC,n*E,n,aa,bb,alpha)
-            ErelP = c(ErelP,calcPowerD_SC(pj,SC,n*E,n,gm,aa,bb,alpha))
+            pEinP = calcPowerSample(pj,PC,n*E,PowerThr,aa,bb,alpha,Ratio)
+            pBinP = calcPowerBPindSample(pj,PC,n*E,PowerThr,aa,bb,alpha,Ratio)
+            ErelP = c(ErelP,calcPowerDSample(pj,PC,n*E,PowerThr,gm,aa,bb,alpha,Ratio))
           }
           
           
           BindP = c(BindP,pBinP)
           EindP = c(EindP,pEinP)
         }
+        ErelPX = ErelP[ErelP!=Ratio*10^4]
+        ErelP[ErelP==Ratio*10^4]=mean(ErelPX)
+        ErelPX = EindP[EindP!=Ratio*10^4]
+        EindP[EindP==Ratio*10^4]=mean(ErelPX)
+        ErelPX = BindP[BindP!=Ratio*10^4]
+        BindP[BindP==Ratio*10^4]=mean(ErelPX)
         PowerRelBandP = rbind(PowerRelBandP,ErelP)
         PowerBindP = rbind(PowerBindP,BindP)
         PowerEindP = rbind(PowerEindP,EindP)
+        #save(PowerRelBandP,PowerBindP,PowerEindP,file='2')
       }
-      #cat(sdd,'\n')
-      #ptm1 <- proc.time()
-      #cat('CPU time Total:',ptm1-ptm,'\n')
-      BrelMean <- apply(PowerRelBandP,1,mean)
-      BinMean <- apply(PowerBindP,1,mean)
-      EinMean <- apply(PowerEindP,1,mean)
+      BrelMean <- ceilupto(apply(PowerRelBandP,1,mean))
+      BinMean <- ceilupto(apply(PowerBindP,1,mean))
+      EinMean <- ceilupto(apply(PowerEindP,1,mean))
       
       EV.Length <- length(EV)
       
-      
-      EV.Length <- length(EV)
-      
+      # EV_x <- rep(EV*100,3)
+      # group <- c(rep("Scenario 1",EV.Length),rep("Scenario 2",EV.Length),
+      #            rep("Scenario 3",EV.Length))
+      # Power <- c(EinMean,BinMean,BrelMean)
+      # data <- data.frame(EV_x,group,Power)
+      # data <- data.frame(EV*100,EinMean,BinMean,BrelMean)
+      # colnames(data) <- c("EV","EindP","BindP","ErelP")
+      #y.up <- min(1,(max(Power)+0.1))
+      # p1 <- ggplot(data)+geom_line(aes(x=EV,y=EindP), colour="#c0392b")+
+      #   theme_bw()+
+      #   theme_new()+
+      #   labs(title="The Mean Sample Size Distribution of Scenario 1",y="Mean Sample Size",x="Variance Explained (Percent)",y="Proportion")
+      # p2 <- ggplot(data)+geom_line(aes(x=EV,y=BindP), colour="dodgerblue4")+
+      #   theme_bw()+
+      #   theme_new()+
+      #   labs(title="The Mean Sample Size Distribution of Scenario 2",y="Mean Sample Size",x="Variance Explained (Percent)")
+      # p3 <- ggplot(data)+geom_line(aes(x=EV,y=ErelP), colour="chartreuse4")+
+      #   theme_bw()+
+      #   theme_new()+
+      #   labs(title="The Mean Sample Size Distribution of Scenario 3",y="Mean Sample Size",x="Variance Explained (Percent)")
       data <- data.frame(JJ=JJ.vec,pj.vec =pj.vec)
       colnames(data) <- c("JJ","pj")
       p1 <- ggplot(data,aes(data$JJ))+
@@ -364,7 +427,8 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9,11),]
       return(list(MeanPower.combine,p1=p1,p2=p2,p3=p3))
     }
-    }else{
+    
+  }else{
     if(length(EV)==1&TEST!='Burden Test'){
       PowerEindP = NULL
       PowerBindP = NULL
@@ -387,8 +451,10 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       
       if (QT == 'QT'){
-        n = Total # sample size
+        n = 1 # sample size
+        Ratio=1
       }
+      n=1
       #ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
       
@@ -412,7 +478,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       for (j in 1:LL){
         E  = EV[j]
-        
+        #cat('E',E,'\n')
         EindP =NULL
         BindP = NULL
         ErelP = NULL
@@ -458,38 +524,58 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           gm = g*m
           
           if (is.na(PC)){
-            pEinP = calcPower(pj,n*E,n,aa,bb,alpha)
-            pBinP = calcPowerBPind(pj,n*E,n,aa,bb,alpha)
-            ErelP = c(ErelP,calcPowerD(pj,n*E,n,gm,aa,bb,alpha))
+            pEinP = calcPowerSample(pj,1,n*E,PowerThr,aa,bb,alpha,Ratio)
+            pBinP = calcPowerBPindSample(pj,1,n*E,PowerThr,aa,bb,alpha,Ratio)
+            ErelP = c(ErelP,calcPowerDSample(pj,1,n*E,PowerThr,gm,aa,bb,alpha,Ratio))
           }else{
-            SC = ceiling(J*PC)
             
-            pEinP = calcPower_SC(pj,SC,n*E,n,aa,bb,alpha)
-            pBinP = calcPowerBPind_SC(pj,SC,n*E,n,aa,bb,alpha)
-            ErelP = c(ErelP,calcPowerD_SC(pj,SC,n*E,n,gm,aa,bb,alpha))
+            pEinP = calcPowerSample(pj,PC,n*E,PowerThr,aa,bb,alpha,Ratio)
+            pBinP = calcPowerBPindSample(pj,PC,n*E,PowerThr,aa,bb,alpha,Ratio)
+            ErelP = c(ErelP,calcPowerDSample(pj,PC,n*E,PowerThr,gm,aa,bb,alpha,Ratio))
           }
-          
           
           BindP = c(BindP,pBinP)
           EindP = c(EindP,pEinP)
         }
+        ErelPX = ErelP[ErelP!=Ratio*10^4]
+        ErelP[ErelP==Ratio*10^4]=mean(ErelPX)
+        ErelPX = EindP[EindP!=Ratio*10^4]
+        EindP[EindP==Ratio*10^4]=mean(ErelPX)
+        ErelPX = BindP[BindP!=Ratio*10^4]
+        BindP[BindP==Ratio*10^4]=mean(ErelPX)
         PowerRelBandP = rbind(PowerRelBandP,ErelP)
         PowerBindP = rbind(PowerBindP,BindP)
         PowerEindP = rbind(PowerEindP,EindP)
+        #save(PowerRelBandP,PowerBindP,PowerEindP,file='4')
       }
       #cat(sdd,'\n')
       #ptm1 <- proc.time()
       #cat('CPU time Total:',ptm1-ptm,'\n')
-      mmEinP = round(mean(PowerEindP),4)
-      qunatEinP = round(quantile(PowerEindP),4)[2:4] #25%, median, 75%
       
-      mmBinP = round(mean(PowerBindP),4)
-      qunatBinP = round(quantile(PowerBindP),4)[2:4] #25%, median, 75%
+      # mmEinP = round(mean(PowerEindP),4)
+      # qunatEinP = round(quantile(PowerEindP),4)[2:4] #25%, median, 75%
+      # 
+      # mmBinP = round(mean(PowerBindP),4)
+      # qunatBinP = round(quantile(PowerBindP),4)[2:4] #25%, median, 75%
+      # 
+      # mmBrelP = round(mean(PowerRelBandP),4)
       
-      mmBrelP = round(mean(PowerRelBandP),4)
+      # qunatBrelP =  round(quantile(PowerRelBandP),4)[2:4]
+      mmEinP = ceilupto(mean(PowerEindP))
+      qunatEinP = ceilupto(quantile(PowerEindP))[2:4] #25%, median, 75%
       
-      qunatBrelP =  round(quantile(PowerRelBandP),4)[2:4]
+      #mmBinP = round(mean(PowerBindP),4)
+      mmBinP = ceilupto(mean(PowerBindP))
+      qunatBinP = ceilupto(quantile(PowerBindP))[2:4] #25%, median, 75%
       
+      mmBrelP = ceilupto(mean(PowerRelBandP))
+      
+      qunatBrelP =  ceilupto(quantile(PowerRelBandP))[2:4]
+      
+      # Power <- c(PowerEindP,PowerBindP,PowerRelBandP)
+      # Method <- c(rep("Scenario S1",length(PowerEindP)),rep("Scenario S2",length(PowerBindP)),rep("Scenario S3",length(PowerRelBandP)))
+      # data <- data.frame(Power,Method)
+      # 
       data <- data.frame(JJ.vec = JJ.vec,
                          pj.vec = pj.vec)
       colnames(data) <- c("JJ","pj")
@@ -554,7 +640,8 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       
       if (QT == 'QT'){
-        n = Total # sample size
+        n = 1 # sample size
+        Ratio=1
       }
       # ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
@@ -617,47 +704,63 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           #
           # Draw MAF
           #
-          JJ.vec[i] <- J
+          JJ.vec[i] <- JJ
           pj = as.numeric(sample(MAF,J,replace=TRUE))
-          pj.vec[i] <- pj[1]
           #pj =runif(J)*0.1
+          pj.vec[i] <- pj[1]
           m = E*n/J/(a+g*mean(pj))
           gm = g*m
           
           if (is.na(PC)){
-            pEinP = calcPower(pj,n*E,n,aa,bb,alpha)
-            pBinP = calcPowerBPind(pj,n*E,n,aa,bb,alpha)
-            ErelP = c(ErelP,calcPowerD(pj,n*E,n,gm,aa,bb,alpha))
+            pEinP = calcPowerSample(pj,1,n*E,PowerThr,aa,bb,alpha,Ratio)
+            pBinP = calcPowerBPindSample(pj,1,n*E,PowerThr,aa,bb,alpha,Ratio)
+            ErelP = c(ErelP,calcPowerDSample(pj,1,n*E,PowerThr,gm,aa,bb,alpha,Ratio))
           }else{
-            SC = ceiling(J*PC)
             
-            pEinP = calcPower_SC(pj,SC,n*E,n,aa,bb,alpha)
-            pBinP = calcPowerBPind_SC(pj,SC,n*E,n,aa,bb,alpha)
-            ErelP = c(ErelP,calcPowerD_SC(pj,SC,n*E,n,gm,aa,bb,alpha))
+            pEinP = calcPowerSample(pj,PC,n*E,PowerThr,aa,bb,alpha,Ratio)
+            pBinP = calcPowerBPindSample(pj,PC,n*E,PowerThr,aa,bb,alpha,Ratio)
+            ErelP = c(ErelP,calcPowerDSample(pj,PC,n*E,PowerThr,gm,aa,bb,alpha,Ratio))
           }
-          
           
           BindP = c(BindP,pBinP)
           EindP = c(EindP,pEinP)
         }
+        ErelPX = ErelP[ErelP!=Ratio*10^4]
+        ErelP[ErelP==Ratio*10^4]=mean(ErelPX)
+        ErelPX = EindP[EindP!=Ratio*10^4]
+        EindP[EindP==Ratio*10^4]=mean(ErelPX)
+        ErelPX = BindP[BindP!=Ratio*10^4]
+        BindP[BindP==Ratio*10^4]=mean(ErelPX)
         PowerRelBandP = rbind(PowerRelBandP,ErelP)
         PowerBindP = rbind(PowerBindP,BindP)
         PowerEindP = rbind(PowerEindP,EindP)
+        #save(PowerRelBandP,PowerBindP,PowerEindP,file='5')
       }
       #cat(sdd,'\n')
       #ptm1 <- proc.time()
       #cat('CPU time Total:',ptm1-ptm,'\n')
-      
-      
       BrelMean <- apply(PowerRelBandP,1,mean)
       BinMean <- apply(PowerBindP,1,mean)
       EinMean <- apply(PowerEindP,1,mean)
       
       EV.Length <- length(EV)
       
+      # EV_x <- rep(EV*100,3)
+      # group <- c(rep("Scenario S1",EV.Length),rep("Scenario S2",EV.Length),
+      #            rep("Scenario S3",EV.Length))
+      # Power <- c(EinMean,BinMean,BrelMean)
+      # data <- data.frame(EV_x,group,Power)
+      BrelMean <- ceilupto(apply(PowerRelBandP,1,mean))
+      BinMean <- ceilupto(apply(PowerBindP,1,mean))
+      EinMean <- ceilupto(apply(PowerEindP,1,mean))
       
       EV.Length <- length(EV)
       
+      # EV_x <- rep(EV*100,3)
+      # group <- c(rep("Scenario 1",EV.Length),rep("Scenario 2",EV.Length),
+      #            rep("Scenario 3",EV.Length))
+      # Power <- c(EinMean,BinMean,BrelMean)
+      # data <- data.frame(EV_x,group,Power)
       data <- data.frame(JJ=JJ.vec,pj.vec =pj.vec)
       colnames(data) <- c("JJ","pj")
       p1 <- ggplot(data,aes(data$JJ))+
@@ -701,7 +804,8 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       n = CASE*CONTROL/Total
       if (QT == 'QT'){
-        n = Total # sample size
+        n = 1 # sample size
+        Ratio=1
       }
       #ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
@@ -766,24 +870,27 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           JJ.vec[i] <- J
           SC = ceiling(J*PC)
           SP = ceiling(PRC*SC)
-          pEP = calcPowerL(J,SC,SP,E,n,alpha)
+          pEP = calcPowerLSample(J,PC,PRC,E,PowerThr,alpha,Ratio)
           
           Pow = c(Pow,pEP)
         }
+        PowerX = Pow[Pow!=Ratio*10^4]
+        Pow[Pow==Ratio*10^4]=mean(PowerX)
         Power = rbind(Power,Pow)
       }
       
       PowerBindP <- PowerEindP <- PowerRelBandP <- Power
+      #save(PowerRelBandP,PowerBindP,PowerEindP,file='6')
+      mmEinP = ceilupto(mean(PowerEindP))
+      qunatEinP = ceilupto(quantile(PowerEindP))[2:4] #25%, median, 75%
       
-      mmEinP = round(mean(PowerEindP),4)
-      qunatEinP = round(quantile(PowerEindP),4)[2:4] #25%, median, 75%
       
-      mmBinP = round(mean(PowerBindP),4)
-      qunatBinP = round(quantile(PowerBindP),4)[2:4] #25%, median, 75%
+      mmBinP = ceilupto(mean(PowerBindP))
+      qunatBinP = ceilupto(quantile(PowerBindP))[2:4] #25%, median, 75%
       
-      mmBrelP = round(mean(PowerRelBandP),4)
+      mmBrelP = ceilupto(mean(PowerRelBandP))
       
-      qunatBrelP =  round(quantile(PowerRelBandP),4)[2:4]
+      qunatBrelP =  ceilupto(quantile(PowerRelBandP))[2:4]
       
       data <- data.frame(JJ.vec = JJ.vec,
                          pj.vec = pj.vec)
@@ -801,6 +908,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
         theme(
           panel.border = element_blank()
         )
+      
       
       p3 <- ggplot()+geom_blank()+
         theme_bw()+
@@ -828,7 +936,8 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       n = CASE*CONTROL/Total
       if (QT == 'QT'){
-        n = Total # sample size
+        n = 1 # sample size
+        Ratio=1
       }
       #ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
@@ -893,29 +1002,33 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
           JJ.vec[i] <- J
           SC = ceiling(J*PC)
           SP = ceiling(PRC*SC)
-          pEP = calcPowerL(J,SC,SP,E,n,alpha)
+          pEP = calcPowerLSample(J,SC,SP,E,PowerThr,alpha,Ratio)
           
           Pow = c(Pow,pEP)
+          
         }
+        PowerX = Pow[Pow!=Ratio*10^4]
+        Pow[Pow==Ratio*10^4]=mean(PowerX)
+        Power = rbind(Power,Pow)
         Power = rbind(Power,Pow)
         
       }
       
       PowerRelBandP <- PowerBindP <- PowerEindP <- Power
-      
-      
-      
+      #save(PowerRelBandP,PowerBindP,PowerEindP,file='6')
       BrelMean <- apply(PowerRelBandP,1,mean)
       BinMean <- apply(PowerBindP,1,mean)
       EinMean <- apply(PowerEindP,1,mean)
       
       EV.Length <- length(EV)
       
-      
-      EV.Length <- length(EV)
-      
+      # EV_x <- rep(EV*100,3)
+      # group <- c(rep("Scenario S1",EV.Length),rep("Scenario S2",EV.Length),
+      #            rep("Scenario S3",EV.Length))
+      # Power <- c(EinMean,BinMean,BrelMean)
+      # data <- data.frame(EV_x,group,Power)
       data <- data.frame(JJ=JJ.vec,pj.vec =pj.vec)
-      colnames(data) <- c("JJ","pj")
+      colnames(data) <- c("JJ","PJ")
       p1 <- ggplot(data,aes(data$JJ))+
         geom_histogram(aes(x=data$JJ,y=(..count..)/sum(..count..)),
                        fill="dodgerblue4",
@@ -924,7 +1037,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
         theme_bw()+
         theme_new()+
         labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)")
-      p2 <- ggplot()+geom_blank()+
+      p2 <-  ggplot()+geom_blank()+
         theme_bw()+
         theme(
           panel.border = element_blank()

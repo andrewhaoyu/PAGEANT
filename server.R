@@ -49,7 +49,7 @@ function(input, output) {
           
           
         }else{
-          EV_new <- seq(input$EV_range_s[1],input$EV_range_s[2],(input$EV_range_s[2]-input$EV_range_s[1])/10)
+          EV_new <- c(seq(input$EV_range_s[1],input$EV_range_s[2],(input$EV_range_s[2]-input$EV_range_s[1])/10),input$EV_range_s[2])
           get_Aprox_Sample(EV=(EV_new)/100,
                            PowerThr=input$PowerThreshold_s,
                            alpha = input$Alpha_s,
@@ -89,9 +89,10 @@ function(input, output) {
           
         }else if(input$evoption_s=='Range of EV'){
           if(input$method_s!='Burden Test'){
-            EV_new <- seq(input$EV_range_s[1],
+            EV_new <- c(seq(input$EV_range_s[1],
                           input$EV_range_s[2],
-                          (input$EV_range_s[2]-input$EV_range_s[1])/10)
+                          (input$EV_range_s[2]-input$EV_range_s[1])/10),
+                        input$EV_range_s[2])
             
             get_Aprox_Sample(EV=(EV_new)/100,
                              PowerThr=input$PowerThreshold_s,
@@ -102,7 +103,7 @@ function(input, output) {
             
           }
           else if(input$method_s=='Burden Test'){
-            EV_new <- seq(input$EV_range_s[1],input$EV_range_s[2],(input$EV_range_s[2]-input$EV_range_s[1])/10)
+            EV_new <- c(seq(input$EV_range_s[1],input$EV_range_s[2],(input$EV_range_s[2]-input$EV_range_s[1])/10),input$EV_range_s[2])
             get_Aprox_Sample(EV=(EV_new)/100,
                              PowerThr=input$PowerThreshold_s,
                              alpha = input$Alpha_s,
@@ -126,7 +127,7 @@ function(input, output) {
                     input$ncases,input$ncont,
                     ONESNP=T)
         }else{
-          EV_new <- seq(input$EV_range[1],input$EV_range[2],(input$EV_range[2]-input$EV_range[1])/10)
+          EV_new <- c(seq(input$EV_range[1],input$EV_range[2],(input$EV_range[2]-input$EV_range[1])/10),input$EV_range[2])
           get_Aprox((EV_new)/100,
                     input$Alpha,
                     (input$ncases+input$ncont),
@@ -182,7 +183,7 @@ function(input, output) {
           
         }else if(input$evoption=='Range of EV'){
           if(input$method!='Burden Test'){
-            EV_new <- seq(input$EV_range[1],input$EV_range[2],(input$EV_range[2]-input$EV_range[1])/10)
+            EV_new <- c(seq(input$EV_range[1],input$EV_range[2],(input$EV_range[2]-input$EV_range[1])/10),input$EV_range[2])
             
             get_Aprox(EV=(EV_new)/100,
                       alpha=input$Alpha,
@@ -194,7 +195,7 @@ function(input, output) {
                       JJ=input$JJ)
           }
           else if(input$method=='Burden Test'){
-            EV_new <- seq(input$EV_range[1],input$EV_range[2],(input$EV_range[2]-input$EV_range[1])/10)
+            EV_new <- c(seq(input$EV_range[1],input$EV_range[2],(input$EV_range[2]-input$EV_range[1])/10),input$EV_range[2])
             
             get_Aprox(EV=(EV_new)/100,
                       alpha=input$Alpha,
@@ -230,7 +231,7 @@ function(input, output) {
                            QT='QT',
                            ONESNP=T)
         }else{
-          EV_new2 <- seq(input$EV_range2_s[1],input$EV_range2_s[2],(input$EV_range2[2]-input$EV_range2_s[1])/10)
+          EV_new2 <- c(seq(input$EV_range2_s[1],input$EV_range2_s[2],(input$EV_range2[2]-input$EV_range2_s[1])/10),input$EV_range2_s[2])
           get_Aprox_Sample(EV=(EV_new2)/100,
                            PowerThr=input$PowerThreshold2_s,
                            alpha = input$Alpha2_s,
@@ -267,7 +268,7 @@ function(input, output) {
           
         }else if(input$evoption2_s=='Range of EV'){
           if(input$method2_s!='Burden Test'){
-            EV_new2 <- seq(input$EV_range2_s[1],input$EV_range2_s[2],(input$EV_range2_s[2]-input$EV_range2_s[1])/10)
+            EV_new2 <- c(seq(input$EV_range2_s[1],input$EV_range2_s[2],(input$EV_range2_s[2]-input$EV_range2_s[1])/10),input$EV_range2_s[2])
             get_Aprox_Sample(EV=(EV_new2)/100,
                              PowerThr=input$PowerThreshold2_s,
                              alpha = input$Alpha2_s,
@@ -278,7 +279,7 @@ function(input, output) {
             
           }
           else if(input$method2_s=='Burden Test'){
-            EV_new2 <- seq(input$EV_range2_s[1],input$EV_range2_s[2],(input$EV_range2_s[2]-input$EV_range2_s[1])/10)
+            EV_new2 <- c(seq(input$EV_range2_s[1],input$EV_range2_s[2],(input$EV_range2_s[2]-input$EV_range2_s[1])/10),input$EV_range2_s[2])
             get_Aprox_Sample(EV=(EV_new2)/100,
                              PowerThr=input$PowerThreshold2_s,
                              alpha = input$Alpha2_s,
@@ -306,7 +307,7 @@ function(input, output) {
                     QT='QT',
                     ONESNP=T)
         }else{
-          EV_new2 <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+          EV_new2 <- c(seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10),input$EV_range2[2])
           get_Aprox((EV_new2)/100,
                     input$Alpha2,
                     (input$total2),
@@ -353,7 +354,7 @@ function(input, output) {
           
         }else if(input$evoption2=='Range of EV'){
           if(input$method2!='Burden Test'){
-            EV_new2 <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+            EV_new2 <- c(seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10),input$EV_range2[2])
             
             get_Aprox(EV=(EV_new2)/100,
                       alpha=input$Alpha2,
@@ -364,7 +365,7 @@ function(input, output) {
                       QT='QT')
           }
           else if(input$method2=='Burden Test'){
-            EV_new2 <- seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10)
+            EV_new2 <- c(seq(input$EV_range2[1],input$EV_range2[2],(input$EV_range2[2]-input$EV_range2[1])/10),input$EV_range2[2])
             
             get_Aprox(EV=(EV_new2)/100,
                       alpha=input$Alpha2,
