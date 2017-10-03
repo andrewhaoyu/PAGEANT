@@ -271,7 +271,7 @@ result <- data.frame(Item=Item,S1=S1,S2=S2,S3=S3)
    )+
    theme_bw()+
    theme_new()+
-   labs(title="The Histogram of Size of a Locus",x="Size of a Locus",y="Proportion")
+   labs(title="The Histogram of Size of a Locus",x="Size of A locus: Number of Variants (J) ",y="Proportion")
  data3 <- data.frame(EffectV = EffectV)
  p3 <- ggplot(data3,aes(EffectV))+
    geom_histogram(aes(x=data3$EffectV,y=(..count..)/sum(..count..)),
@@ -280,7 +280,9 @@ result <- data.frame(Item=Item,S1=S1,S2=S2,S3=S3)
    )+
    theme_bw()+
    theme_new()+
-   labs(title="The Histogram of Size of a Locus",x="Size of a Locus",y="Proportion")
+   labs(title="The Histogram of # Loci with EV>0.1%",x="# of loci with EV greater than 0.1% main: Effect size distribution
+
+        ",y="Proportion")
  
  return (list(result,p1,p2,p3))
 }

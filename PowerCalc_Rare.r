@@ -336,7 +336,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)")
+        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)",y="Proportion")
       p2 <- ggplot(data,aes(pj))+
         geom_histogram(aes(x=data$pj,y=(..count..)/sum(..count..)),
                        fill="#c0392b",
@@ -667,7 +667,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)")
+        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)",y="Proportion")
       p2 <- ggplot(data,aes(pj))+
         geom_histogram(aes(x=data$pj,y=(..count..)/sum(..count..)),
                        fill="#c0392b",
@@ -923,7 +923,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
         )+
         theme_bw()+
         theme_new()+
-        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)")
+        labs(title="The Histogram of total number of variants (J)",x="total number of variants (J)",y="Proportion")
       p2 <- ggplot()+geom_blank()+
         theme_bw()+
         theme(
