@@ -50,7 +50,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       
       if (QT == 'QT'){
-        n = Total # sample size
+        n = Total # Power
       }
       #ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
@@ -193,10 +193,10 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       Gene_Arc_2 <- c(mmBinP,qunatBinP)
       Gene_Arc_3 <- c(mmBrelP,qunatBrelP)
       
-      Power_Dist <- c("Mean Sample Size","25% Quantile of Sample Size","Medium of Sample Size",
-                      "75% Quantile of Sample Size")
+      Power_Dist <- c("Mean Power","25% Quantile of Power","Medium of Power",
+                      "75% Quantile of Power")
       combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
-      colnames(combind.result) <- c("Sample Size Distribution","Scenario S1","Scenario S2",
+      colnames(combind.result) <- c("Power Distribution","Scenario S1","Scenario S2",
                                     "Scenario S3")
       
       
@@ -225,7 +225,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       
       if (QT == 'QT'){
-        n = Total # sample size
+        n = Total # Power
       }
       # ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
@@ -356,9 +356,9 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Scenario 1 Mean Sample Size",
-                                       "Scenario 2 Mean Sample Size",
-                                       "Scenario 3 Mean Sample Size"
+                                       "Scenario 1 Mean Power",
+                                       "Scenario 2 Mean Power",
+                                       "Scenario 3 Mean Power"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
       #MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9,11),]
@@ -387,7 +387,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       
       if (QT == 'QT'){
-        n = Total # sample size
+        n = Total # Power
       }
       #ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
@@ -522,10 +522,10 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       Gene_Arc_2 <- c(mmBinP,qunatBinP)
       Gene_Arc_3 <- c(mmBrelP,qunatBrelP)
       
-      Power_Dist <- c("Mean Sample Size","25% Quantile of Sample Size","Medium of Sample Size",
-                      "75% Quantile of Sample Size")
+      Power_Dist <- c("Mean Power","25% Quantile of Power","Medium of Power",
+                      "75% Quantile of Power")
       combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
-      colnames(combind.result) <- c("Sample Size Distribution","Scenario S1","Scenario S2",
+      colnames(combind.result) <- c("Power Distribution","Scenario S1","Scenario S2",
                                     "Scenario S3")
       
       
@@ -554,7 +554,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       
       if (QT == 'QT'){
-        n = Total # sample size
+        n = Total # Power
       }
       # ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
@@ -687,9 +687,9 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Scenario 1 Mean Sample Size",
-                                       "Scenario 2 Mean Sample Size",
-                                       "Scenario 3 Mean Sample Size"
+                                       "Scenario 1 Mean Power",
+                                       "Scenario 2 Mean Power",
+                                       "Scenario 3 Mean Power"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
       #MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9,11),]
@@ -701,7 +701,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       n = CASE*CONTROL/Total
       if (QT == 'QT'){
-        n = Total # sample size
+        n = Total # Power
       }
       #ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
@@ -814,10 +814,10 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       Gene_Arc_2 <- c(mmBinP,qunatBinP)
       Gene_Arc_3 <- c(mmBrelP,qunatBrelP)
       
-      Power_Dist <- c("Mean Sample Size","25% Quantile of Sample Size","Medium of Sample Size",
-                      "75% Quantile of Sample Size")
+      Power_Dist <- c("Mean Power","25% Quantile of Power","Medium of Power",
+                      "75% Quantile of Power")
       combind.result <- data.frame(Power_Dist,Gene_Arc_1,Gene_Arc_2,Gene_Arc_3)
-      colnames(combind.result) <- c("Sample Size Distribution","Scenario S1","Scenario S2",
+      colnames(combind.result) <- c("Power Distribution","Scenario S1","Scenario S2",
                                     "Scenario S3")
       
       
@@ -828,7 +828,7 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       n = CASE*CONTROL/Total
       if (QT == 'QT'){
-        n = Total # sample size
+        n = Total # Power
       }
       #ptm <- proc.time()
       Obj = transform(Total) #Get appropriate MAF distribution of J and MAF
@@ -940,9 +940,9 @@ get_Aprox <- function(EV,alpha,Total,CASE=NULL,CONTROL=NULL,PC=NA,TEST = 'SKAT',
       
       MeanPower.combine <- data.frame(EV=EV*100,GeneI =EinMean,GeneII = BinMean,GeneIII=BrelMean)
       colnames(MeanPower.combine) <- c("EV(Percent)",
-                                       "Scenario 1 Mean Sample Size",
-                                       "Scenario 2 Mean Sample Size",
-                                       "Scenario 3 Mean Sample Size"
+                                       "Scenario 1 Mean Power",
+                                       "Scenario 2 Mean Power",
+                                       "Scenario 3 Mean Power"
       )
       MeanPower.combine[,2:4] <- round(MeanPower.combine[,2:4],3)
       #MeanPower.combine <- MeanPower.combine[c(1,3,5,7,9,11),]
