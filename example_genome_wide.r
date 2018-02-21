@@ -12,9 +12,9 @@
 # Outcome: QT ,CC
 # jj - numbrt variants per gene (optional)
 
-K = 1000 
-m =2
-GEV = 0.2
+K = 500
+m = 1
+GEV = 0.4
 grid=20 # effects speed number of models  20 quick, 50 adequate, 100 complete  
 epr = GEV/K
 Total = 10000
