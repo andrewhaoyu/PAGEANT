@@ -111,7 +111,7 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                    ),
                    numericInput("K","Number of causal loci",value=1000, min=0,step=1),
                    numericInput("m","Number of discoveries",value=0,min=0,step=1),
-                   numericInput("PC_whole","Proportion of Causal Variants (Optional)",value=NA),
+                   numericInput("PC_whole","Proportion of Causal Variants (Optional)",value=NA,step = 0.1),
                    numericInput("JJ_whole","Number of Variants (Optional)",value=NA)
                  ),
                  conditionalPanel(
@@ -141,7 +141,7 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                      
                      conditionalPanel(
                        condition="input.method!='Burden Test'",
-                       numericInput("PC","Proportion of Causal Variants (Optional)",value=NA)
+                       numericInput("PC","Proportion of Causal Variants (Optional)",value=NA,step = 0.1)
                      ),   
                      conditionalPanel(
                        condition="input.method=='Burden Test'",
@@ -193,11 +193,11 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                      
                      conditionalPanel(
                        condition="input.method_s!='Burden Test'",
-                       numericInput("PC_s","Proportion of Causal Variants (Optional)",value=NA)
+                       numericInput("PC_s","Proportion of Causal Variants (Optional)",value=NA,step = 0.1)
                      ),   
                      conditionalPanel(
                        condition="input.method_s=='Burden Test'",
-                       numericInput("PC_new_s","Proportion of Causal Variants",value=0.2,min = 0),
+                       numericInput("PC_new_s","Proportion of Causal Variants",value=0.2,min = 0, step = 0.1),
                        numericInput("PRC_s","Proportion of Protective",value=0, min = 0)
                      ),
                      
@@ -289,7 +289,7 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                                c("Fast","Intermediate","Most accurate")),
                    numericInput("K2","Number of causal loci",value=1000,min = 0),
                    numericInput("m2","Number of discoveries",value=0, min = 0),
-                   numericInput("PC_whole2","Proportion of Causal Variants (Optional)",value=NA, min = 0),
+                   numericInput("PC_whole2","Proportion of Causal Variants (Optional)",value=NA, min = 0, step =0.1),
                    numericInput("JJ_whole2","Number of Variants (Optional)",value=NA, min =0)
                  ),
                  conditionalPanel(
@@ -319,11 +319,11 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                      
                      conditionalPanel(
                        condition="input.method2!='Burden Test'",
-                       numericInput("PC2","Proportion of Causal Variants (Optional)",value=NA)
+                       numericInput("PC2","Proportion of Causal Variants (Optional)",value=NA,step =0.1)
                      ),   
                      conditionalPanel(
                        condition="input.method2=='Burden Test'",
-                       numericInput("PC_new2","Proportion of Causal Variants",value=0.2, min = 0),
+                       numericInput("PC_new2","Proportion of Causal Variants",value=0.2, min = 0,step =0.1),
                        numericInput("PRC2","Proportion of Protective",value=0, min = 0)
                      ),
                      
@@ -373,11 +373,11 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                      
                      conditionalPanel(
                        condition="input.method2_s!='Burden Test'",
-                       numericInput("PC2_s","Proportion of Causal Variants (Optional)",value=NA, min = 0)
+                       numericInput("PC2_s","Proportion of Causal Variants (Optional)",value=NA, min = 0,step =0.1)
                      ),   
                      conditionalPanel(
                        condition="input.method2_s=='Burden Test'",
-                       numericInput("PC_new2_s","Proportion of Causal Variants",value=0.2, min = 0),
+                       numericInput("PC_new2_s","Proportion of Causal Variants",value=0.2, min = 0,step =0.1),
                        numericInput("PRC2_s","Proportion of Protective",value=0, min = 0)
                      ),
                      
