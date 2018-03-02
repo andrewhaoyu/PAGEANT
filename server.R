@@ -132,16 +132,16 @@ function(input, output) {
         if(input$evoption=='Single EV'){
           get_Aprox((input$EV)/100,
                     input$Alpha,
-                    (input$ncases+input$ncont),
-                    input$ncases,input$ncont,
+                    as.numeric(input$ncases+input$ncont),
+                    as.numeric(input$ncases),as.numeric(input$ncont),
                     ONESNP=T)
         }else{
           EV_new <- cutrange(input$EV_range[1],input$EV_range[2],5)
         
           get_Aprox((EV_new)/100,
                     input$Alpha,
-                    (input$ncases+input$ncont),
-                    input$ncases,input$ncont,
+                    as.numeric(input$ncases+input$ncont),
+                    as.numeric(input$ncases),as.numeric(input$ncont),
                     ONESNP=T)
         }
         
@@ -152,7 +152,7 @@ function(input, output) {
                         grid=grid_transform(input$grid),
                         epr=(input$GEV/(input$K*100)),
                         alphaT=input$Alpha_whole,
-                        Total=as.numeric((input$ncases+input$ncont)),
+                        Total=as.numeric(input$ncases+input$ncont),
                         CASE=as.numeric(input$ncases),
                         CONTROL=as.numeric(input$ncont),
                         TEST = input$method_whole,
@@ -166,9 +166,9 @@ function(input, output) {
             
             get_Aprox(EV=(input$EV)/100,
                       alpha=input$Alpha,
-                      Total=(input$ncases+input$ncont),
-                      CASE=input$ncases,
-                      CONTROL=input$ncont,
+                      Total=as.numeric(input$ncases+input$ncont),
+                      CASE=as.numeric(input$ncases),
+                      CONTROL=as.numeric(input$ncont),
                       TEST=input$method,
                       QT='CC',
                       PC=input$PC,
@@ -183,9 +183,9 @@ function(input, output) {
           else if((input$method)=='Burden Test'){
             get_Aprox(EV=(input$EV)/100,
                       alpha=input$Alpha,
-                      Total=(input$ncases+input$ncont),
-                      CASE=input$ncases,
-                      CONTROL=input$ncont,
+                      Total=as.numeric(input$ncases+input$ncont),
+                      CASE=as.numeric(input$ncases),
+                      CONTROL=as.numeric(input$ncont),
                       PC=input$PC_new,
                       TEST=input$method, JJ=input$JJ,PRC=input$PRC)
             
@@ -197,9 +197,9 @@ function(input, output) {
             
             get_Aprox(EV=(EV_new)/100,
                       alpha=input$Alpha,
-                      Total=(input$ncases+input$ncont),
-                      CASE=input$ncases,
-                      CONTROL=input$ncont,
+                      Total=as.numeric(input$ncases+input$ncont),
+                      CASE=as.numeric(input$ncases),
+                      CONTROL=as.numeric(input$ncont),
                       TEST=input$method,
                       PC=input$PC,
                       JJ=input$JJ)
@@ -209,9 +209,9 @@ function(input, output) {
             
             get_Aprox(EV=(EV_new)/100,
                       alpha=input$Alpha,
-                      Total=(input$ncases+input$ncont),
-                      CASE=input$ncases,
-                      CONTROL=input$ncont,
+                      Total=as.numeric(input$ncases+input$ncont),
+                      CASE=as.numeric(input$ncases),
+                      CONTROL=as.numeric(input$ncont),
                       TEST=input$method,
                       PC=input$PC_new,
                       JJ=input$JJ,
