@@ -418,7 +418,7 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
     
     
     tabPanel("Citation",
-             wellPanel(p("Derkach A., Zhang H. Chatterjee N. (2016)",a(href="https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btx770/4670682","Power Analysis for Genetic Association Test (PAGEANT) provides insights to challenges for rare variant association studies.", "bioRxiv, 100891."))),            
+             wellPanel(p("Derkach A., Zhang H. Chatterjee N. (2016)",a(href="https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btx770/4670682","Power Analysis for Genetic Association Test (PAGEANT) provides insights to challenges for rare variant association studies.", "Bioinformatics (2017): btx770."))),            
              wellPanel(HTML('<a href="https://github.com/andrewhaoyu/ATTAP"><img src="img/githublogo.png" width=50 /> </a>')),
              h3("References"),
              p("Lek, M., Karczewski, K.J., Minikel, E.V., Samocha, K.E., Banks, E., Fennell, T., O'Donnell-Luria, A.H., Ware, J.S., Hill, A.J., Cummings, B.B., et al. (2016). Analysis of protein-coding genetic variation in 60,706 humans. Nature 536, 285-291.", style = "font-family: 'times'; font-si20pt"),
