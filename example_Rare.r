@@ -19,8 +19,7 @@
 # Under assumption #1
 # No Gene Specification
 source('PowerCalc_Rare.r')
-source('PowerCalc_Rare_mine.r')
-
+#source('PowerCalc_Rare_mine.r')
 Total = 10000
 ncase = 5000
 ncont = 5000
@@ -31,8 +30,8 @@ EV <- seq(EV_low,EV_high,(EV_high-EV_low)/10)
 EV <- 0.5/100
 
 #EV  =c(0.01,0.05) # 1%
-
-result <- get_Aprox2(EV,alpha,Total,CASE=ncase,CONTROL=ncont) #case control
+library(ggplot2)
+#result <- get_Aprox2(EV,alpha,Total,CASE=ncase,CONTROL=ncont) #case control
 EV <- 0.01
 result <- get_Aprox(EV,alpha,Total,CASE=ncase,CONTROL=ncont) #case control
 result <- get_Aprox(EV,alpha,Total,CASE=ncase,CONTROL=ncont,ONESNP=T)
@@ -53,14 +52,14 @@ result <- get_Aprox(EV,
 
 
 
-mytable <- data.frame(
-  Name = c("meanPower",
-           "sd"),
-  Value = c(
-            round(get_Aprox(EV,alpha,Total,ncase,ncont)[1],
-            get_Aprox(EV,alpha,Total,ncase,ncont)[2])
-)
-)
+# mytable <- data.frame(
+#   Name = c("meanPower",
+#            "sd"),
+#   Value = c(
+#             round(get_Aprox(EV,alpha,Total,ncase,ncont)[1],
+#             get_Aprox(EV,alpha,Total,ncase,ncont)[2])
+# )
+# )
 
 # Gene AKT1:  ENSG00000142208.
 
