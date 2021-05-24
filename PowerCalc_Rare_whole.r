@@ -7,7 +7,6 @@ JV = NULL
 MAFV = NULL
 EffectV = NULL
 n = CASE*CONTROL/Total
-
 if (TEST=='SKAT'){
 aa=1
 bb=25

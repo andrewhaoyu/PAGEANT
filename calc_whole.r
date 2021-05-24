@@ -230,9 +230,16 @@ if(m==0){
   Prb2M = Prb2[,1]
   Prb3M = Prb3[,1]
 }else{
-  Prb1M = rowSums(Prb1[,1:(m+1)])
-  Prb2M = rowSums(Prb2[,1:(m+1)])
-  Prb3M = rowSums(Prb3[,1:(m+1)])
+   if(nrow(Prb1)==1){
+      Prb1M = sum(Prb1[,1:(m+1)])
+      Prb2M = sum(Prb2[,1:(m+1)])
+      Prb3M = sum(Prb3[,1:(m+1)])    
+   }else{
+      Prb1M = rowSums(Prb1[,1:(m+1)])
+      Prb2M = rowSums(Prb2[,1:(m+1)])
+      Prb3M = rowSums(Prb3[,1:(m+1)])    
+   }
+  
 }
 
 #
