@@ -55,6 +55,10 @@ Probability of discoveries: This returns maximum and minimum probability of a ce
  ## Additional notes
  
  Currently power calculations are based on distribution of number of variants per gene and minor allele frequencies observed in the public data for 60,000 individuals from Exome Aggregation Consortium [Lek et al. 2016]. It will underestimate the total number of variants per gene/region for whole-genome study and may overestimate power for gene-level tests. 
+ 
+## Shiny app link
+ 
+https://andrewhaoyu.shinyapps.io/PAGEANT/
 
 Contributor
 ===========
