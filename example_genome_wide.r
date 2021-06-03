@@ -57,10 +57,63 @@ calcGenomeLevel(K=K,
                 nameEsseble=NULL,
                 JJ=NA)
 
+K = 1000
 
+m = 0
 
+GEV = 0.02
 
+grid=20 # effects speed number of models  20 quick, 50 adequate, 100 complete 
 
+epr = GEV/K
+
+Total = 180256
+
+alphaT= 0.05/20000
+
+QT = NA
+
+TEST = 'Burden Test'
+
+QT = 'QT'
+
+JJ = NA
+
+source('PowerCalc_Rare_whole.r')
+
+source('calc_whole.r')
+
+### This parameters are NEEDed to be specified for linear test
+
+PC = 0.2 # percentage causal
+
+PRC = 0 # percentage protective
+
+calcGenomeLevel(K=K,
+                
+                m=m,
+                
+                grid=grid,
+                
+                epr=epr,
+                
+                alphaT=alphaT,
+                
+                Total=Total,
+                
+                CASE=NULL,
+                
+                CONTROL=NULL,
+                
+                PC=PC,
+                
+                TEST = TEST,
+                
+                QT=QT,
+                
+                nameEsseble=NULL,
+                
+                JJ=NA,PRC=PRC)
 
 #
 # Output to print: ModelS1_E, ModelS2_E, ModelS3_E - expected values minimum and maximum for three genetic models S1-E ind MAF, S2 - Beta ind MAF, S3 - log(MAF) 

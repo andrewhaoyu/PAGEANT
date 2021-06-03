@@ -146,7 +146,7 @@ function(input, output) {
         }
         
       }else if(input$SNPoption=='Whole Genome'){
-        
+        if((input$method)!='Burden Test'){
         calcGenomeLevel(K=input$K,
                         m=input$m,
                         grid=grid_transform(input$grid),
@@ -159,6 +159,21 @@ function(input, output) {
                         QT='CC',
                         PC=input$PC_whole,
                         JJ=input$JJ_whole)
+        }else{
+          calcGenomeLevel(K=input$K,
+                          m=input$m,
+                          grid=grid_transform(input$grid),
+                          epr=(input$GEV/(input$K*100)),
+                          alphaT=input$Alpha_whole,
+                          Total=as.numeric(input$ncases+input$ncont),
+                          CASE=as.numeric(input$ncases),
+                          CONTROL=as.numeric(input$ncont),
+                          TEST = input$method_whole,
+                          QT='CC',
+                          PC=input$PC_whole,
+                          PRC=input$PRC_whole,
+                          JJ=input$JJ_whole)
+        }
         
       }else{
         if(input$evoption=='Single EV'){
@@ -329,6 +344,7 @@ function(input, output) {
         }
         
       }else if(input$SNPoption2=='Whole Genome'){
+        if((input$method_whole2)!='Burden Test'){
         calcGenomeLevel(K=input$K2,
                         m=input$m2,
                         grid=grid_transform(input$grid2),
@@ -339,6 +355,19 @@ function(input, output) {
                         QT='QT',
                         PC=input$PC_whole2,
                         JJ=input$JJ_whole2)
+        }else{
+          calcGenomeLevel(K=input$K2,
+                          m=input$m2,
+                          grid=grid_transform(input$grid2),
+                          epr=(input$GEV2/(input$K2*100)),
+                          alphaT=input$Alpha_whole2,
+                          Total=as.numeric(input$total2),
+                          TEST = input$method_whole2,
+                          QT='QT',
+                          PC=input$PC_whole2,
+                          PRC = input$PRC_whole2,
+                          JJ=input$JJ_whole2)
+          }
       }else{
         if(input$evoption2=='Single EV'){
           if((input$method2)!='Burden Test'){

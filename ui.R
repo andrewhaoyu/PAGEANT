@@ -109,10 +109,21 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                      "method_whole", "Method",
                      c("SKAT","Calpha","Hotelling","Burden Test")
                    ),
-                   numericInput("K","Number of causal loci",value=1000, min=0,step=1),
-                   numericInput("m","Number of discoveries",value=0,min=0,step=1),
-                   numericInput("PC_whole","Proportion of Causal Variants (Optional)",value=NA,step = 0.1),
-                   numericInput("JJ_whole","Number of Variants (Optional)",value=NA)
+                   conditionalPanel(
+                     condition = "input.method_whole!='Burden Test'",
+                     numericInput("K","Number of causal loci",value=1000, min=0,step=1),
+                     numericInput("m","Number of discoveries",value=0,min=0,step=1),
+                     numericInput("PC_whole","Proportion of Causal Variants (Optional)",value=NA,step = 0.1),
+                     numericInput("JJ_whole","Number of Variants (Optional)",value=NA)
+                   ),
+                   conditionalPanel(
+                     condition = "input.method_whole=='Burden Test'",
+                     numericInput("K","Number of causal loci",value=1000, min=0,step=1),
+                     numericInput("m","Number of discoveries",value=0,min=0,step=1),
+                     numericInput("PC_whole","Proportion of Causal Variants",value=0.2,step = 0.1),
+                     numericInput("PRC_whole","Proportion of Protective",value=0, min = 0),
+                     numericInput("JJ_whole","Number of Variants (Optional)",value=NA)
+                   )
                  ),
                  conditionalPanel(
                    condition = "input.SNPoption!='Whole Genome'",
@@ -287,11 +298,22 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                    selectInput("grid2",
                                "Level of complexity (optional)",
                                c("Fast","Intermediate","Most accurate")),
-                   numericInput("K2","Number of causal loci",value=1000,min = 0),
-                   numericInput("m2","Number of discoveries",value=0, min = 0),
-                   numericInput("PC_whole2","Proportion of Causal Variants (Optional)",value=NA, min = 0, step =0.1),
-                   numericInput("JJ_whole2","Number of Variants (Optional)",value=NA, min =0)
-                 ),
+                   conditionalPanel(
+                     condition = "input.method_whole2!='Burden Test'",
+                     numericInput("K2","Number of causal loci",value=1000, min=0,step=1),
+                     numericInput("m2","Number of discoveries",value=0,min=0,step=1),
+                     numericInput("PC_whole2","Proportion of Causal Variants (Optional)",value=NA,step = 0.1),
+                     numericInput("JJ_whole2","Number of Variants (Optional)",value=NA)
+                   ),
+                   conditionalPanel(
+                     condition = "input.method_whole2=='Burden Test'",
+                     numericInput("K2","Number of causal loci",value=1000, min=0,step=1),
+                     numericInput("m2","Number of discoveries",value=0,min=0,step=1),
+                     numericInput("PC_whole2","Proportion of Causal Variants",value=0.2,step = 0.1),
+                     numericInput("PRC_whole2","Proportion of Protective",value=0, min = 0),
+                     numericInput("JJ_whole2","Number of Variants (Optional)",value=NA)
+                   )
+                   ),
                  conditionalPanel(
                    condition = "input.SNPoption2!='Whole Genome'",
                    numericInput("Alpha2",HTML("&alpha;:"), value=0.0001, min =0),
