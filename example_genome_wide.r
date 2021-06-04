@@ -43,7 +43,7 @@ JJ = NA
 # CASE=NULL
 # CONTROL=NULL
 PC=NA
-calcGenomeLevel(K=K,
+data2 = calcGenomeLevel(K=K,
                 m=m,
                 grid=grid,
                 epr=epr,
@@ -89,7 +89,7 @@ PC = 0.2 # percentage causal
 
 PRC = 0 # percentage protective
 
-calcGenomeLevel(K=K,
+result = calcGenomeLevel(K=K,
                 
                 m=m,
                 
@@ -105,7 +105,7 @@ calcGenomeLevel(K=K,
                 
                 CONTROL=NULL,
                 
-                PC=PC,
+                
                 
                 TEST = TEST,
                 
@@ -113,7 +113,8 @@ calcGenomeLevel(K=K,
                 
                 nameEsseble=NULL,
                 
-                JJ=NA,PRC=PRC)
+                JJ=NA,
+                PC=PC,PRC=PRC)
 
 #
 # Output to print: ModelS1_E, ModelS2_E, ModelS3_E - expected values minimum and maximum for three genetic models S1-E ind MAF, S2 - Beta ind MAF, S3 - log(MAF) 

@@ -51,7 +51,8 @@ tagList(
                  p("1)	Total number of variants (\\(J\\)): The total number of variants under study within a gene/region. This is a key parameter in power calculation for the gene-level tests and when it’s not specified the application evaluates distribution of power according to distribution observed for in the ExAC database.With J=1, gene based power calculation simplifies that for a single variant.", style = "font-family: 'times'; font-si20pt"),
                  withMathJax(),
                  p("2)	Proportion of causal variants (\\(J_c/J\\)) : Assumed proportion of causal variants in a locus as a ratio to the total number of variants. This parameter is required for burden test and a more accurate second-order approximation of the variance component test. For burden tests, it’s assumed that all causal variants are either deleterious or protective and by default proportion of causal variants is set to 0.2.", style = "font-family: 'times'; font-si20pt"),
-                 p("3)Range of EV: Instead of a single EV, the user can specify a range of EV over which power calculation is desired 
+                 p("3) Proportion of protective (\\(J_p/J_c\\)): Assumed proportion of causal variants in a locus with protective effect (i.e. decrease a risk of disease). This parameter is only required for burden test. By default, it’s assumed that all causal variants are deleterious, thus proportion is set to 0."),
+                 p("4) Range of EV: Instead of a single EV, the user can specify a range of EV over which power calculation is desired 
                    ", style = "font-family: 'times'; font-si20pt"),
                  h4("Output"),
                  p("The application conducts power analysis and sample size under three different models for genetic architecture assuming (S1): MAF is independent of EV ;(S2) MAF is independent of genetic effects measured in the unit of per copy of an allele (\\(\\beta^2=EV/\\{2MAF(1-MAF)\\}\\); and (S3) MAF is negatively correlated with genetic effect through the function \\(\\beta=-\\log_{10}\\)(MAF). When a single EV is specified, for each genetic architecture, it returns a distribution of power or sample size and key summary measures (mean, median, 25th and 75th percentiles). This distribution corresponds to uncertainty association with various additional parameters, such as number of variants within a gene and minor allele frequencies. Empirical distributions for these two parameters are displayed. If a range of EV is specified, plots and table for average power or sample size over the range of specified EV is returned.
@@ -109,20 +110,18 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                      "method_whole", "Method",
                      c("SKAT","Calpha","Hotelling","Burden Test")
                    ),
+                   numericInput("K","Number of causal loci",value=1000, min=0,step=1),
+                   numericInput("m","Number of discoveries",value=0,min=0,step=1),
                    conditionalPanel(
                      condition = "input.method_whole!='Burden Test'",
-                     numericInput("K","Number of causal loci",value=1000, min=0,step=1),
-                     numericInput("m","Number of discoveries",value=0,min=0,step=1),
                      numericInput("PC_whole","Proportion of Causal Variants (Optional)",value=NA,step = 0.1),
                      numericInput("JJ_whole","Number of Variants (Optional)",value=NA)
                    ),
                    conditionalPanel(
                      condition = "input.method_whole=='Burden Test'",
-                     numericInput("K","Number of causal loci",value=1000, min=0,step=1),
-                     numericInput("m","Number of discoveries",value=0,min=0,step=1),
-                     numericInput("PC_whole","Proportion of Causal Variants",value=0.2,step = 0.1),
+                     numericInput("PC_whole_new","Proportion of Causal Variants",value=0.2,step = 0.1),
                      numericInput("PRC_whole","Proportion of Protective",value=0, min = 0),
-                     numericInput("JJ_whole","Number of Variants (Optional)",value=NA)
+                     numericInput("JJ_whole_new","Number of Variants (Optional)",value=NA)
                    )
                  ),
                  conditionalPanel(
@@ -298,20 +297,20 @@ Fast option runs genome-wide calculations within 3 minutes and provides rough es
                    selectInput("grid2",
                                "Level of complexity (optional)",
                                c("Fast","Intermediate","Most accurate")),
+                   
+                   numericInput("K2","Number of causal loci",value=1000, min=0,step=1),
+                   numericInput("m2","Number of discoveries",value=0,min=0,step=1),
+                   
                    conditionalPanel(
                      condition = "input.method_whole2!='Burden Test'",
-                     numericInput("K2","Number of causal loci",value=1000, min=0,step=1),
-                     numericInput("m2","Number of discoveries",value=0,min=0,step=1),
                      numericInput("PC_whole2","Proportion of Causal Variants (Optional)",value=NA,step = 0.1),
                      numericInput("JJ_whole2","Number of Variants (Optional)",value=NA)
                    ),
                    conditionalPanel(
                      condition = "input.method_whole2=='Burden Test'",
-                     numericInput("K2","Number of causal loci",value=1000, min=0,step=1),
-                     numericInput("m2","Number of discoveries",value=0,min=0,step=1),
-                     numericInput("PC_whole2","Proportion of Causal Variants",value=0.2,step = 0.1),
+                     numericInput("PC_whole2_new","Proportion of Causal Variants",value=0.2,min=0,max = 1,step = 0.01),
                      numericInput("PRC_whole2","Proportion of Protective",value=0, min = 0),
-                     numericInput("JJ_whole2","Number of Variants (Optional)",value=NA)
+                     numericInput("JJ_whole2_new","Number of Variants (Optional)",value=NA)
                    )
                    ),
                  conditionalPanel(
