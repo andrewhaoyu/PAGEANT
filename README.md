@@ -26,9 +26,9 @@ The application allows rapid power and sample size analysis for a variety of gen
 
 2)	Proportion of causal variants (J_c/J) : Assumed proportion of causal variants in a locus as a ratio to the total number of variants. This parameter is required for burden test and a more accurate second-order approximation of the variance component test. For burden tests, it’s assumed that all causal variants are either deleterious or protective and by default proportion of causal variants is set to 20%;
 
-3)      Proportion of protective (J_p/J_c): Assumed proportion of causal variants in a locus with protective effect (i.e. decrease a risk of disease). This parameter is only required for burden test. By default, it’s assumed that all causal variants are deleterious, thus proportion is set to 0.
+3)      Proportion of protective (J_p/J_c): Assumed proportion of causal variants in a locus with protective effect (i.e. decrease a risk of disease). This parameter is only required for burden test. By default, it’s assumed that all causal variants are deleterious, thus proportion is set to 0;
 
-4)      Range of EV: Instead of a single EV, the user can specify a range of EV over which power calculation is desired ;
+4)      Range of EV: Instead of a single EV, the user can specify a range of EV over which power calculation is desired;
 
 ### Output
 
